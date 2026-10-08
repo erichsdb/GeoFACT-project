@@ -1,0 +1,49 @@
+scenario:
+  name: "Wohngebiete ohne ÖPNV in Laufnähe"
+  description: "Leipziger Wohnflächen außerhalb von 300 m um Bus-/Tram-Haltestellen"
+  region: "Leipzig, Deutschland"
+
+layers:
+  - id: haltestellen
+    source: osm
+    tags:
+      - { highway: bus_stop }
+      - { railway: tram_stop }
+
+  - id: wohnflaechen
+    source: osm
+    tags:
+      landuse: residential
+
+steps:
+  - id: haltestellen_punkte
+    op: to_points
+    inputs:
+      features: haltestellen
+
+  - id: einzugsbereiche
+    op: buffer
+    inputs:
+      geometry: haltestellen_punkte
+    params:
+      radius_km: 0.3
+
+  - id: abdeckung
+    op: dissolve
+    inputs:
+      features: einzugsbereiche
+
+  - id: unversorgt
+    op: overlay
+    inputs:
+      left: wohnflaechen
+      right: abdeckung
+    params:
+      method: difference
+
+output:
+  - type: map
+    source: unversorgt
+  - type: geojson
+    source: unversorgt
+    path: "output/leipzig4_oepnv_unversorgt.geojson"

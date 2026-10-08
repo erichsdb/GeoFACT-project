@@ -1,0 +1,56 @@
+# Reduziert den Build-Context für Dockerfile.backend/Dockerfile.frontend
+# (context: . im docker-compose.yml) - ohne diese Datei lud Docker den
+# kompletten Repo-Inhalt hoch (u.a. .venv/, node_modules/, .git/), was
+# einen einzelnen Build auf >240 MB Übertragung aufblähte, obwohl beide
+# Dockerfiles nur wenige Unterordner (src, examples, docker, frontend/*
+# ohne node_modules/.next) tatsächlich per COPY brauchen.
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+
+# Node/Next.js (frontend/node_modules etc. - jeweiliger Build installiert
+# frisch via npm ci, siehe Dockerfile.frontend)
+**/node_modules/
+frontend/.next/
+
+# Versionskontrolle / Editor / OS
+.git/
+.gitignore
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Lokale Laufzeit-/Snapshot-Verzeichnisse (siehe .gitignore)
+.geofact/
+.geofact_web/
+output/
+
+# Große lokale Rasterbeispiele (examples/data/, aktuell ~8.4 GB - v.a.
+# GHS_POP_*.tif, weltweite Bevölkerungsdaten in 100m-Auflösung). Nur
+# die examples/*.yaml-Konfigurationen sollen ins Image (winzig), NICHT
+# die Rasterdaten selbst - sonst wächst jedes Image um mehrere GB und
+# jeder Rebuild/Push/Pull wird entsprechend langsam. Im Deployment wird
+# GEOFACT_COPERNICUS_DIR stattdessen auf ein separates Volume/Bind-Mount
+# mit denselben Dateien gezeigt.
+examples/data/*.tif
+examples/data/*.tif.ovr
+examples/data/*.pdf
+examples/data/*.xlsx
+
+# Secrets - werden über Coolify-Environment-Variablen gesetzt, nie
+# ins Image gebacken
+.env
+.env.local
+
+# Ergebnisordner der Demo (docker-compose.demo.yml) und das gepackte
+# Datenpaket; demo-data/snapshots und demo-data/examples-data gehen bewusst
+# in den Build-Context (Dockerfile.backend, Ziel demo).
+geofact-output/
+demo-data/*.tar.gz

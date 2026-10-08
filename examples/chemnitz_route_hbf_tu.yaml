@@ -1,0 +1,58 @@
+scenario:
+  name: "Route vom Chemnitzer Hauptbahnhof zur TU Chemnitz"
+  description: "Kürzester Weg zwischen zwei geocodierten Orten auf dem OSM-Straßennetz von Chemnitz: Straßen -> Netz (Knoten an gemeinsamen Koordinaten) -> Route mit Länge, Fahrzeit und Umwegfaktor. Das Netz ist ungerichtet (Einbahnregeln bleiben unberücksichtigt)."
+  region: "Chemnitz, Deutschland"
+
+layers:
+  - id: strassen
+    source: osm
+    tags:
+      - highway: motorway
+      - highway: motorway_link
+      - highway: trunk
+      - highway: trunk_link
+      - highway: primary
+      - highway: primary_link
+      - highway: secondary
+      - highway: secondary_link
+      - highway: tertiary
+      - highway: tertiary_link
+      - highway: unclassified
+      - highway: residential
+      - highway: living_street
+
+  - id: start
+    source: geocode
+    query: "Chemnitz Hauptbahnhof"
+
+  - id: ziel
+    source: geocode
+    query: "Reichenhainer Straße 70, Chemnitz"
+
+steps:
+  - id: netz
+    op: line_network
+    inputs:
+      lines: strassen
+    params:
+      speed_kmh: 30
+      attributes: [highway, name]
+      # Kreisverkehre liefert OSM als Flächen; ihre Umrandung ist die Straße.
+      polygons: boundary
+
+  - id: route
+    op: route
+    inputs:
+      graph: netz
+      origins: start
+      destinations: ziel
+    params:
+      max_snap_m: 300
+
+output:
+  - type: map
+    source: route
+    path: "chemnitz_route_hbf_tu.html"
+  - type: geojson
+    source: route
+    path: "chemnitz_route_hbf_tu.geojson"

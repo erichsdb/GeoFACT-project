@@ -1,0 +1,3 @@
+line_id,bus0,bus1,voltage,length,tags,geometry
+L1,B1,B2,380,5930.17,relation/1;way/2,'LINESTRING (12.0 51.0, 12.05 51.02, 12.1 51.0)'
+L2,B2,B3,220,4100.5,way/3,'LINESTRING (12.1 51.0, 12.1 51.05)'

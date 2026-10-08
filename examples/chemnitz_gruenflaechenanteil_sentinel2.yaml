@@ -1,0 +1,85 @@
+scenario:
+  name: "Grünflächenanteil von Chemnitz aus Sentinel-2"
+  description: "Anteil der Zellen mit NDVI > 0,3 je Stadtteil und für die ganze Stadt (Sentinel-2 L2A, 13.08.2024)"
+  region: "Chemnitz, Deutschland"
+
+layers:
+  - id: stadtteile
+    source: osm
+    tags:
+      - { boundary: administrative, admin_level: "9", "name:prefix": Stadtteil }
+      - { boundary: administrative, admin_level: "10", "name:prefix": Stadtteil }
+
+  - id: sentinel2
+    source: stac
+    collection: sentinel-2-l2a
+    assets: { red: red, nir: nir, scl: scl }
+    datetime: "2024-08-12/2024-08-14"
+    grid_code: MGRS-33UUS
+    max_cloud_cover: 20
+    mask_clouds: true
+
+  - id: stadt
+    source: region
+
+steps:
+  - id: ndvi
+    op: raster_calc
+    inputs:
+      raster: sentinel2
+    params:
+      expression: "(nir - red) / (nir + red)"
+      output_band: ndvi
+
+  - id: gruen
+    op: raster_calc
+    inputs:
+      raster: ndvi
+    params:
+      expression: "ndvi > 0.3"
+      output_band: gruen
+
+  - id: anteil_stadtteile
+    op: zonal_stats
+    inputs:
+      zones: stadtteile
+      values: gruen
+    params:
+      stat: share
+      output_field: gruenanteil
+      decimals: 3
+
+  - id: anteil_stadt
+    op: zonal_stats
+    inputs:
+      zones: stadt
+      values: gruen
+    params:
+      stat: share
+      output_field: gruenanteil
+      decimals: 3
+
+output:
+  - type: map
+    source: anteil_stadtteile
+    path: "gruenanteil_stadtteile.html"
+    color_field: gruenanteil
+    normalize_by_area: false
+  - type: geojson
+    source: anteil_stadtteile
+    path: "gruenanteil_stadtteile.geojson"
+  - type: csv
+    source: anteil_stadtteile
+    path: "gruenanteil_stadtteile.csv"
+  - type: csv
+    source: anteil_stadt
+    path: "gruenanteil_stadt.csv"
+  - type: geotiff
+    source: ndvi
+    path: "ndvi.tif"
+  - type: map
+    source: ndvi
+    path: "ndvi.html"
+    colormap: rdylgn
+    vmin: 0
+    vmax: 0.9

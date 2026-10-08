@@ -1,0 +1,112 @@
+scenario:
+  name: "Grünanteil der Chemnitzer Stadtteile (OSM)"
+  description: "Von Park, Wald oder Gras bedeckter Flächenanteil je Stadtteil und die zehn größten benannten Grünflächen in der Stadt (OSM)"
+  region: "Chemnitz, Deutschland"
+
+layers:
+  - id: stadtteile
+    source: osm
+    geometry: polygon
+    columns: [name]
+    tags:
+      - { boundary: administrative, admin_level: "9", "name:prefix": Stadtteil }
+      - { boundary: administrative, admin_level: "10", "name:prefix": Stadtteil }
+
+  - id: gruen
+    source: osm
+    geometry: polygon
+    columns: [name, leisure, landuse, natural]
+    tags:
+      - { leisure: park }
+      - { landuse: forest }
+      - { natural: wood }
+      - { landuse: grass }
+
+steps:
+  - id: gruenanteil
+    op: area_share
+    inputs:
+      zones: stadtteile
+      features: gruen
+    params:
+      output_field: gruenanteil
+      absolute_field: gruen_m2
+      decimals: 3
+
+  - id: stadtteilflaeche
+    op: area
+    inputs:
+      features: gruenanteil
+    params:
+      unit: m2
+      decimals: 0
+
+  - id: kontrolle
+    op: calculate_field
+    inputs:
+      features: stadtteilflaeche
+    params:
+      expression: "gruen_m2 / area_m2"
+      output_field: anteil_kontrolle
+      decimals: 3
+
+  # Zuschneiden: der OSM-Lader behält Flächen, die die Region nur berühren, ganz.
+  - id: gruen_stadt
+    op: clip
+    inputs:
+      features: gruen
+      mask: stadtteile
+
+  - id: benannt
+    op: filter
+    inputs:
+      features: gruen_stadt
+    params:
+      condition: "name != ''"
+
+  - id: je_name
+    op: dissolve
+    inputs:
+      features: benannt
+    params:
+      by: name
+
+  - id: parkflaeche
+    op: area
+    inputs:
+      features: je_name
+    params:
+      unit: ha
+      decimals: 2
+
+  - id: groesste
+    op: top_n
+    inputs:
+      features: parkflaeche
+    params:
+      by: area_ha
+      n: 10
+      rank_field: rang
+
+  - id: rangliste
+    op: select_columns
+    inputs:
+      features: groesste
+    params:
+      keep: [rang, name, leisure, landuse, natural, area_ha]
+
+output:
+  - type: map
+    source: kontrolle
+    path: "gruenanteil_stadtteile.html"
+    color_field: gruenanteil
+    normalize_by_area: false
+  - type: geojson
+    source: kontrolle
+    path: "gruenanteil_stadtteile.geojson"
+  - type: csv
+    source: kontrolle
+    path: "gruenanteil_stadtteile.csv"
+  - type: csv
+    source: rangliste
+    path: "groesste_gruenflaechen.csv"

@@ -1,0 +1,105 @@
+scenario:
+  name: "Datenquellen und Lizenzen in Chemnitz"
+  description: "Grünanteil (Sentinel-2) der Stadtteile (OSM) an eigenen Messpunkten und Bürgerhinweisen - mit Namensnennung je Ausgabe"
+  region: "Chemnitz, Deutschland"
+  output_license:
+    name: ODbL-1.0
+    attribution: "Auswertung GeoFACT-Beispiel Chemnitz"
+    url: "https://opendatacommons.org/licenses/odbl/1-0/"
+
+layers:
+  - id: stadtteile
+    source: osm
+    tags:
+      - { boundary: administrative, admin_level: "9", "name:prefix": Stadtteil }
+      - { boundary: administrative, admin_level: "10", "name:prefix": Stadtteil }
+
+  - id: sentinel2
+    source: stac
+    collection: sentinel-2-l2a
+    assets: { red: red, nir: nir, scl: scl }
+    datetime: "2024-08-12/2024-08-14"
+    grid_code: MGRS-33UUS
+    max_cloud_cover: 20
+    mask_clouds: true
+
+  - id: messpunkte
+    source: points
+    license:
+      name: CC0-1.0
+      attribution: "Eigene Erhebung"
+    features:
+      - { name: "Messpunkt Schlossteich", lon: 12.9131, lat: 50.8418 }
+      - { name: "Messpunkt Küchwald", lon: 12.9030, lat: 50.8510 }
+      - { name: "Messpunkt Zeisigwald", lon: 12.9700, lat: 50.8440 }
+      - { name: "Messpunkt Stadtpark", lon: 12.9070, lat: 50.8180 }
+      - { name: "Messpunkt Botanischer Garten", lon: 12.8730, lat: 50.8060 }
+
+  - id: hinweise
+    source: points
+    features:
+      - { name: "Hinweis Sonnenberg", lon: 12.9420, lat: 50.8330 }
+      - { name: "Hinweis Kaßberg", lon: 12.9080, lat: 50.8320 }
+      - { name: "Hinweis Yorckgebiet", lon: 12.9646, lat: 50.8352 }
+
+steps:
+  - id: ndvi
+    op: raster_calc
+    inputs:
+      raster: sentinel2
+    params:
+      expression: "(nir - red) / (nir + red)"
+      output_band: ndvi
+
+  - id: gruen
+    op: raster_calc
+    inputs:
+      raster: ndvi
+    params:
+      expression: "ndvi > 0.3"
+      output_band: gruen
+
+  - id: anteil_stadtteile
+    op: zonal_stats
+    inputs:
+      zones: stadtteile
+      values: gruen
+    params:
+      stat: share
+      output_field: gruenanteil
+      decimals: 3
+
+  - id: alle_punkte
+    op: vector_union
+    inputs:
+      a: messpunkte
+      b: hinweise
+
+  - id: punkte_im_stadtteil
+    op: spatial_join
+    inputs:
+      left: alle_punkte
+      right: anteil_stadtteile
+    params:
+      predicate: within
+
+output:
+  - type: map
+    source: punkte_im_stadtteil
+    path: "punkte_im_stadtteil.html"
+    color_field: gruenanteil
+    normalize_by_area: false
+  - type: map
+    source: anteil_stadtteile
+    path: "gruenanteil_stadtteile.html"
+    color_field: gruenanteil
+    normalize_by_area: false
+  - type: geojson
+    source: punkte_im_stadtteil
+    path: "punkte_im_stadtteil.geojson"
+  - type: geotiff
+    source: ndvi
+    path: "ndvi.tif"
+  - type: rdf
+    source: punkte_im_stadtteil
+    path: "punkte_im_stadtteil.ttl"

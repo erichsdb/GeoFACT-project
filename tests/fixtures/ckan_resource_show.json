@@ -1,0 +1,8 @@
+{
+  "success": true,
+  "result": {
+    "id": "res-spielplaetze-001",
+    "format": "GeoJSON",
+    "url": "https://opendata.leipzig.de/dataset/spielplaetze/resource/res-spielplaetze-001/download/spielplaetze.geojson"
+  }
+}

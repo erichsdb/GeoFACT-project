@@ -1,0 +1,47 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "playground_1",
+        "name": "Spielplatz Connewitz"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.365,
+          51.3305
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "playground_2",
+        "name": "Spielplatz Wilhelm-Leuschner"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.371,
+          51.3355
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "playground_3",
+        "name": "Spielplatz Markt"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.3765,
+          51.3405
+        ]
+      }
+    }
+  ]
+}

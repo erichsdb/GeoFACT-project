@@ -1,0 +1,174 @@
+parameters:
+  cities:
+    type: list
+    items: mapping
+    description: >-
+      Großstädte (id = Spaltenwert stadt_id, region = Nominatim-Name der Stadtgrenze);
+      Default: alle 80 Städte mit mindestens 100.000 Einwohnern laut Destatis, Stand 31.12.2024
+    default:
+      - { id: berlin, region: "Berlin, Deutschland" }
+      - { id: hamburg, region: "Hamburg, Deutschland" }
+      - { id: muenchen, region: "München, Deutschland" }
+      - { id: koeln, region: "Köln, Deutschland" }
+      - { id: frankfurt, region: "Frankfurt am Main, Deutschland" }
+      - { id: duesseldorf, region: "Düsseldorf, Deutschland" }
+      - { id: stuttgart, region: "Stuttgart, Deutschland" }
+      - { id: leipzig, region: "Leipzig, Deutschland" }
+      - { id: dortmund, region: "Dortmund, Deutschland" }
+      - { id: bremen, region: "Bremen, Deutschland" }
+      - { id: essen, region: "Essen, Deutschland" }
+      - { id: dresden, region: "Dresden, Deutschland" }
+      - { id: nuernberg, region: "Nürnberg, Deutschland" }
+      - { id: hannover, region: "Hannover, Deutschland" }
+      - { id: duisburg, region: "Duisburg, Deutschland" }
+      - { id: bochum, region: "Bochum, Deutschland" }
+      - { id: wuppertal, region: "Wuppertal, Deutschland" }
+      - { id: bielefeld, region: "Bielefeld, Deutschland" }
+      - { id: bonn, region: "Bonn, Deutschland" }
+      - { id: mannheim, region: "Mannheim, Deutschland" }
+      - { id: karlsruhe, region: "Karlsruhe, Deutschland" }
+      - { id: muenster, region: "Münster, Deutschland" }
+      - { id: augsburg, region: "Augsburg, Deutschland" }
+      - { id: wiesbaden, region: "Wiesbaden, Deutschland" }
+      - { id: gelsenkirchen, region: "Gelsenkirchen, Deutschland" }
+      - { id: moenchengladbach, region: "Mönchengladbach, Deutschland" }
+      - { id: aachen, region: "Aachen, Deutschland" }
+      - { id: braunschweig, region: "Braunschweig, Deutschland" }
+      - { id: kiel, region: "Kiel, Deutschland" }
+      - { id: chemnitz, region: "Chemnitz, Deutschland" }
+      - { id: magdeburg, region: "Magdeburg, Deutschland" }
+      - { id: freiburg, region: "Freiburg im Breisgau, Deutschland" }
+      - { id: krefeld, region: "Krefeld, Deutschland" }
+      - { id: halle, region: "Halle (Saale), Deutschland" }
+      - { id: mainz, region: "Mainz, Deutschland" }
+      - { id: erfurt, region: "Erfurt, Deutschland" }
+      - { id: luebeck, region: "Lübeck, Deutschland" }
+      - { id: oberhausen, region: "Oberhausen, Deutschland" }
+      - { id: rostock, region: "Rostock, Deutschland" }
+      - { id: kassel, region: "Kassel, Deutschland" }
+      - { id: hagen, region: "Hagen, Deutschland" }
+      - { id: potsdam, region: "Potsdam, Deutschland" }
+      - { id: saarbruecken, region: "Saarbrücken, Deutschland" }
+      - { id: hamm, region: "Hamm, Deutschland" }
+      - { id: ludwigshafen, region: "Ludwigshafen am Rhein, Deutschland" }
+      - { id: oldenburg, region: "Oldenburg (Oldenburg), Deutschland" }
+      - { id: muelheim, region: "Mülheim an der Ruhr, Deutschland" }
+      - { id: leverkusen, region: "Leverkusen, Deutschland" }
+      - { id: darmstadt, region: "Darmstadt, Deutschland" }
+      - { id: osnabrueck, region: "Osnabrück, Deutschland" }
+      - { id: solingen, region: "Solingen, Deutschland" }
+      - { id: paderborn, region: "Paderborn, Deutschland" }
+      - { id: herne, region: "Herne, Deutschland" }
+      - { id: heidelberg, region: "Heidelberg, Deutschland" }
+      - { id: neuss, region: "Neuss, Deutschland" }
+      - { id: regensburg, region: "Regensburg, Deutschland" }
+      - { id: ingolstadt, region: "Ingolstadt, Deutschland" }
+      - { id: pforzheim, region: "Pforzheim, Deutschland" }
+      - { id: wuerzburg, region: "Würzburg, Deutschland" }
+      - { id: offenbach, region: "Offenbach am Main, Deutschland" }
+      - { id: fuerth, region: "Fürth, Deutschland" }
+      - { id: heilbronn, region: "Heilbronn, Deutschland" }
+      - { id: ulm, region: "Ulm, Deutschland" }
+      - { id: wolfsburg, region: "Wolfsburg, Deutschland" }
+      - { id: goettingen, region: "Göttingen, Deutschland" }
+      - { id: reutlingen, region: "Reutlingen, Deutschland" }
+      - { id: bremerhaven, region: "Bremerhaven, Deutschland" }
+      - { id: bottrop, region: "Bottrop, Deutschland" }
+      - { id: erlangen, region: "Erlangen, Deutschland" }
+      - { id: recklinghausen, region: "Recklinghausen, Deutschland" }
+      - { id: remscheid, region: "Remscheid, Deutschland" }
+      - { id: koblenz, region: "Koblenz, Deutschland" }
+      - { id: bergisch_gladbach, region: "Bergisch Gladbach, Deutschland" }
+      - { id: jena, region: "Jena, Deutschland" }
+      - { id: salzgitter, region: "Salzgitter, Deutschland" }
+      - { id: trier, region: "Trier, Deutschland" }
+      - { id: siegen, region: "Siegen, Deutschland" }
+      - { id: moers, region: "Moers, Deutschland" }
+      - { id: guetersloh, region: "Gütersloh, Deutschland" }
+      - { id: kaiserslautern, region: "Kaiserslautern, Deutschland" }
+  green_tags:
+    type: list
+    items: mapping
+    description: "OSM-Tag-Sets, die als grün zählen (mittlere Definition: Parks, Wald, Gras, Gebüsch)"
+    default:
+      - { leisure: park }
+      - { leisure: garden }
+      - { landuse: recreation_ground }
+      - { landuse: village_green }
+      - { landuse: forest }
+      - { natural: wood }
+      - { landuse: grass }
+      - { natural: grassland }
+      - { natural: scrub }
+      - { natural: heath }
+  top:
+    type: integer
+    default: 10
+    description: Länge der Rangliste
+  with_map:
+    type: boolean
+    default: true
+    description: Karte der Rangliste schreiben
+
+modules:
+  stadt_gruen:
+    description: Stadtgrenze, grüne Flächen und Grünanteil einer Stadt
+    args:
+      region: { type: string, description: Nominatim-Name der Stadtgrenze }
+    layers:
+      - id: grenze
+        source: region
+        region: "${region}"
+      - id: gruen
+        source: osm
+        region: "${region}"
+        tags: "${green_tags}"
+        geometry: polygon
+        columns: [name, leisure, landuse, natural]
+    steps:
+      - id: anteil
+        op: area_share
+        inputs: { zones: grenze, features: gruen }
+        params: { output_field: gruenanteil, absolute_field: gruen_m2, decimals: 4 }
+    exports: [anteil]
+
+scenario:
+  name: "Grünste Großstadt Deutschlands (OpenStreetMap)"
+  description: "Anteil der Stadtfläche unter Parks, Wald, Gras und Gebüsch je Großstadt, als Rangliste"
+  region: "Deutschland"
+  crs: "EPSG:25832"
+
+instances:
+  - id: stadt
+    module: stadt_gruen
+    foreach: { var: c, in: "${cities}" }
+    key: "${c.id}"
+    with: { region: "${c.region}" }
+
+steps:
+  - id: alle_staedte
+    op: collect
+    inputs: "stadt[*].anteil"
+    params: { source_field: stadt_id }
+
+  - id: rangliste
+    op: top_n
+    inputs: { features: alle_staedte }
+    params: { by: gruenanteil, n: "${top}", rank_field: rang }
+
+output:
+  - type: csv
+    source: alle_staedte
+    path: "gruenanteil_grossstaedte.csv"
+  - type: csv
+    source: rangliste
+    path: "rangliste_gruenste_grossstaedte.csv"
+  - type: geojson
+    source: rangliste
+    path: "rangliste_gruenste_grossstaedte.geojson"
+  - type: map
+    when: "${with_map}"
+    source: rangliste
+    path: "rangliste_gruenste_grossstaedte.html"
+    color_field: gruenanteil
+    normalize_by_area: false

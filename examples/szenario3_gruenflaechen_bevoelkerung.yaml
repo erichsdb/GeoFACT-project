@@ -1,0 +1,113 @@
+scenario:
+  name: "Grünflächen-Erreichbarkeit nach Bevölkerung"
+  description: "Bevölkerung je Erreichbarkeitsstufe zur nächsten Grünfläche in Dresden"
+  region: "Dresden, Deutschland"
+
+layers:
+  - id: parks
+    source: osm
+    tags:
+      - { leisure: park }
+      - { leisure: garden }
+      - { landuse: village_green }
+      - { landuse: recreation_ground }
+
+  - id: population
+    source: file
+    path: "data/GHS_POP_E2025_GLOBE_R2023A_54009_100_V1_0.tif"
+    data_type: raster
+    format: tif
+
+steps:
+  - id: buffered_300
+    op: buffer
+    inputs:
+      geometry: parks
+    params:
+      radius_km: 0.3
+
+  - id: buffered_500
+    op: buffer
+    inputs:
+      geometry: parks
+    params:
+      radius_km: 0.5
+
+  - id: buffered_1000
+    op: buffer
+    inputs:
+      geometry: parks
+    params:
+      radius_km: 1.0
+
+  - id: reach_300
+    op: dissolve
+    inputs:
+      features: buffered_300
+
+  - id: reach_500
+    op: dissolve
+    inputs:
+      features: buffered_500
+
+  - id: reach_1000
+    op: dissolve
+    inputs:
+      features: buffered_1000
+
+  - id: ring_gut
+    op: overlay
+    inputs:
+      left: reach_500
+      right: reach_300
+    params:
+      method: difference
+
+  - id: ring_maessig
+    op: overlay
+    inputs:
+      left: reach_1000
+      right: reach_500
+    params:
+      method: difference
+
+  - id: pop_sehr_gut
+    op: zonal_stats
+    inputs:
+      zones: reach_300
+      values: population
+    params:
+      stat: sum
+
+  - id: pop_gut
+    op: zonal_stats
+    inputs:
+      zones: ring_gut
+      values: population
+    params:
+      stat: sum
+
+  - id: pop_maessig
+    op: zonal_stats
+    inputs:
+      zones: ring_maessig
+      values: population
+    params:
+      stat: sum
+
+output:
+  - type: map
+    source: pop_sehr_gut
+  - type: map
+    source: pop_gut
+  - type: map
+    source: pop_maessig
+  - type: geojson
+    source: pop_sehr_gut
+    path: "output/szenario3_sehr_gut.geojson"
+  - type: geojson
+    source: pop_gut
+    path: "output/szenario3_gut.geojson"
+  - type: geojson
+    source: pop_maessig
+    path: "output/szenario3_maessig.geojson"

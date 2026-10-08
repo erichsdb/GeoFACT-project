@@ -1,0 +1,38 @@
+scenario:
+  name: "Baumkataster je Ortsteil (rein amtlich)"
+  description: "Amtliche Baumkataster-Punkte aggregiert je amtlicher Ortsteil-Fläche"
+  region: "12.2292,51.2378,12.5467,51.4501"
+
+layers:
+  - id: baeume_amtlich
+    source: wfs
+    url: "https://geodienste.leipzig.de/l3/OpenData/wfs"
+    typename: "OpenData:Baeume"
+
+  - id: ortsteile_amtlich
+    source: wfs
+    url: "https://geodienste.leipzig.de/l3/OpenData/wfs"
+    typename: "OpenData:ortsteil"
+
+steps:
+  - id: ortsteile_repariert
+    op: repair_geometry
+    inputs:
+      features: ortsteile_amtlich
+
+  - id: baeume_je_ortsteil
+    op: aggregate
+    inputs:
+      features: baeume_amtlich
+      zones: ortsteile_repariert
+    params:
+      statistic: count
+      predicate: within
+
+output:
+  - type: map
+    source: baeume_je_ortsteil
+    color_field: count
+  - type: geojson
+    source: baeume_je_ortsteil
+    path: "output/leipzig12_baeume_je_ortsteil.geojson"

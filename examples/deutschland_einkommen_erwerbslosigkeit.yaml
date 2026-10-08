@@ -1,0 +1,94 @@
+scenario:
+  name: Einkommen und Erwerbslosigkeit je Bundesland
+  description: >-
+    Amtliche Laendergrenzen (BKG VG250) verbunden mit dem verfuegbaren
+    Einkommen je Einwohner (2023) und der Erwerbslosenquote (2025),
+    zusammengefasst zu einer Rangfolge.
+  region: 5.8,47.2,15.1,55.1
+
+layers:
+  - id: bundeslaender
+    source: wfs
+    url: https://sgx.geodatenzentrum.de/wfs_vg250
+    typename: vg250:vg250_lan
+    data_type: vector
+    license:
+      name: DL-DE-BY-2.0
+      attribution: "© GeoBasis-DE / BKG 2026"
+      url: "https://www.govdata.de/dl-de/by-2-0"
+
+  - id: einkommen
+    source: table
+    path: tabellen/einkommen_bundeslaender_2023.csv
+    license:
+      name: CC-BY-4.0
+      attribution: "© Europäische Union, Eurostat (nama_10r_2hhinc)"
+      url: "https://creativecommons.org/licenses/by/4.0/"
+    format: csv
+    delimiter: ";"
+    columns:
+      nuts:
+        type: string
+      einkommen_eur_je_einwohner:
+        type: float
+
+  - id: erwerbslosigkeit
+    source: table
+    path: tabellen/erwerbslosenquote_bundeslaender_2025.csv
+    license:
+      name: CC-BY-4.0
+      attribution: "© Europäische Union, Eurostat (lfst_r_lfu3rt)"
+      url: "https://creativecommons.org/licenses/by/4.0/"
+    format: csv
+    delimiter: ";"
+    columns:
+      nuts:
+        type: string
+      erwerbslosenquote_prozent:
+        type: float
+
+steps:
+  # Der WFS liefert manche Laender als mehrere Flaechen (Land- und Gewaesserteile getrennt).
+  - id: laender
+    op: deduplicate
+    inputs:
+      features: bundeslaender
+    params:
+      by: [nuts]
+      keep: largest_geometry
+
+  - id: mit_einkommen
+    op: attribute_join
+    inputs:
+      left: laender
+      right: einkommen
+    params:
+      left_on: nuts
+      columns: [einkommen_eur_je_einwohner]
+
+  - id: mit_quote
+    op: attribute_join
+    inputs:
+      left: mit_einkommen
+      right: erwerbslosigkeit
+    params:
+      left_on: nuts
+      columns: [erwerbslosenquote_prozent]
+
+  - id: rangfolge
+    op: ranking
+    inputs:
+      features: mit_quote
+    params:
+      by: [einkommen_eur_je_einwohner, erwerbslosenquote_prozent]
+      weights: [0.5, 0.5]
+      ascending: [false, true]
+      output_field: wirtschaftslage
+
+output:
+  - type: map
+    source: rangfolge
+    color_field: wirtschaftslage
+  - type: csv
+    source: rangfolge
+    path: einkommen_erwerbslosigkeit.csv

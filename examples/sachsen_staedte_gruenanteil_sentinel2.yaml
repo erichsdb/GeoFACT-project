@@ -1,0 +1,61 @@
+scenario:
+  name: "Grünflächenanteil von Leipzig, Dresden und Chemnitz aus Sentinel-2"
+  description: "Anteil der Zellen mit NDVI > 0,3 je Stadt (Sentinel-2 L2A, 12.08.2025, 20-m-Zellen)"
+  region: "12.20,50.72,14.00,51.47"
+
+layers:
+  - id: staedte
+    source: osm
+    tags:
+      - { boundary: administrative, admin_level: "6", name: Leipzig }
+      - { boundary: administrative, admin_level: "6", name: Dresden }
+      - { boundary: administrative, admin_level: "6", name: Chemnitz }
+
+  - id: sentinel2
+    source: stac
+    collection: sentinel-2-l2a
+    assets: { red: red, nir: nir, scl: scl }
+    datetime: "2025-08-12"
+    max_cloud_cover: 10
+    mask_clouds: true
+    resolution_m: 20
+
+steps:
+  - id: ndvi
+    op: raster_calc
+    inputs:
+      raster: sentinel2
+    params:
+      expression: "(nir - red) / (nir + red)"
+      output_band: ndvi
+
+  - id: gruen
+    op: raster_calc
+    inputs:
+      raster: ndvi
+    params:
+      expression: "ndvi > 0.3"
+      output_band: gruen
+
+  - id: anteil
+    op: zonal_stats
+    inputs:
+      zones: staedte
+      values: gruen
+    params:
+      stat: share
+      output_field: gruenanteil
+      decimals: 3
+
+output:
+  - type: map
+    source: anteil
+    path: "gruenanteil_staedte.html"
+    color_field: gruenanteil
+    normalize_by_area: false
+  - type: geojson
+    source: anteil
+    path: "gruenanteil_staedte.geojson"
+  - type: csv
+    source: anteil
+    path: "gruenanteil_staedte.csv"

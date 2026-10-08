@@ -1,0 +1,4792 @@
+{
+  "components": {
+    "schemas": {
+      "ApiCatalogResponse": {
+        "properties": {
+          "apis": {
+            "items": {
+              "$ref": "#/components/schemas/CatalogApi"
+            },
+            "title": "Apis",
+            "type": "array"
+          }
+        },
+        "title": "ApiCatalogResponse",
+        "type": "object"
+      },
+      "ApiSpecResponse": {
+        "description": "Auf Anfrage geladene Spezifikation einer Schnittstelle. truncated\nmeldet, dass das Dokument am Limit abgeschnitten wurde - statt einen\nstillen Teilinhalt auszugeben (Goldene Regel 7).",
+        "properties": {
+          "api_id": {
+            "title": "Api Id",
+            "type": "string"
+          },
+          "content": {
+            "title": "Content",
+            "type": "string"
+          },
+          "spec_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spec Type"
+          },
+          "spec_url": {
+            "title": "Spec Url",
+            "type": "string"
+          },
+          "truncated": {
+            "default": false,
+            "title": "Truncated",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "api_id",
+          "spec_url",
+          "content"
+        ],
+        "title": "ApiSpecResponse",
+        "type": "object"
+      },
+      "AttributionOut": {
+        "description": "FA65: Lizenzen eines Knotens bzw. eines Laufs (NodeAttribution.to_dict).",
+        "properties": {
+          "licenses": {
+            "items": {
+              "$ref": "#/components/schemas/LicenseOut"
+            },
+            "title": "Licenses",
+            "type": "array"
+          },
+          "lines": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Lines",
+            "type": "array"
+          },
+          "undeclared": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Undeclared",
+            "type": "array"
+          }
+        },
+        "title": "AttributionOut",
+        "type": "object"
+      },
+      "Body_upload_api_uploads_post": {
+        "properties": {
+          "file": {
+            "contentMediaType": "application/octet-stream",
+            "title": "File",
+            "type": "string"
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "title": "Body_upload_api_uploads_post",
+        "type": "object"
+      },
+      "CatalogApi": {
+        "description": "Eintrag des kuratierten API-Katalogs (geofact_web/data/api_catalog.yaml).\nlayer_template ist - wo vorhanden - ein einbaufertiges Fragment für\ndie layers-Liste der Szenario-YAML, analog CatalogSource.",
+        "properties": {
+          "auth": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Auth"
+          },
+          "base_url": {
+            "title": "Base Url",
+            "type": "string"
+          },
+          "data_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Data Type"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "documentation_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Documentation Url"
+          },
+          "endpoints": {
+            "items": {
+              "$ref": "#/components/schemas/CatalogApiEndpoint"
+            },
+            "title": "Endpoints",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "layer_template": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Layer Template"
+          },
+          "license": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "License"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "protocol": {
+            "title": "Protocol",
+            "type": "string"
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Provider"
+          },
+          "spec_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spec Type"
+          },
+          "spec_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spec Url"
+          },
+          "verified": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Verified"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "protocol",
+          "base_url"
+        ],
+        "title": "CatalogApi",
+        "type": "object"
+      },
+      "CatalogApiEndpoint": {
+        "description": "Ein Endpunkt/Feature-Type einer Schnittstelle. attributes sind die\nin der Praxis relevanten Felder (nicht die vollständige Liste - die\nsteht in der Spezifikation); attribute_notes erklärt einzelne davon,\ndamit ein Mensch den Endpunkt ohne Spec-Studium einordnen kann.",
+        "properties": {
+          "attribute_notes": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Attribute Notes",
+            "type": "object"
+          },
+          "attributes": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Attributes",
+            "type": "array"
+          },
+          "geometry": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Geometry"
+          },
+          "method": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Method"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CatalogApiEndpoint",
+        "type": "object"
+      },
+      "CatalogResponse": {
+        "properties": {
+          "copernicus": {
+            "items": {
+              "$ref": "#/components/schemas/CatalogSource"
+            },
+            "title": "Copernicus",
+            "type": "array"
+          },
+          "osm_backend": {
+            "title": "Osm Backend",
+            "type": "string"
+          },
+          "osm_presets": {
+            "items": {
+              "$ref": "#/components/schemas/CatalogSource"
+            },
+            "title": "Osm Presets",
+            "type": "array"
+          },
+          "samples": {
+            "items": {
+              "$ref": "#/components/schemas/CatalogSource"
+            },
+            "title": "Samples",
+            "type": "array"
+          },
+          "uploads": {
+            "items": {
+              "$ref": "#/components/schemas/CatalogSource"
+            },
+            "title": "Uploads",
+            "type": "array"
+          }
+        },
+        "required": [
+          "osm_backend",
+          "osm_presets",
+          "copernicus",
+          "uploads"
+        ],
+        "title": "CatalogResponse",
+        "type": "object"
+      },
+      "CatalogSource": {
+        "properties": {
+          "data_type": {
+            "enum": [
+              "vector",
+              "raster"
+            ],
+            "title": "Data Type",
+            "type": "string"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "osm_preset",
+              "copernicus",
+              "upload",
+              "sample"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "layer_template": {
+            "additionalProperties": true,
+            "title": "Layer Template",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "label",
+          "data_type",
+          "layer_template"
+        ],
+        "title": "CatalogSource",
+        "type": "object"
+      },
+      "CopernicusCheck": {
+        "properties": {
+          "dir": {
+            "title": "Dir",
+            "type": "string"
+          },
+          "exists": {
+            "title": "Exists",
+            "type": "boolean"
+          },
+          "raster_count": {
+            "title": "Raster Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "dir",
+          "exists",
+          "raster_count"
+        ],
+        "title": "CopernicusCheck",
+        "type": "object"
+      },
+      "DroppedNode": {
+        "properties": {
+          "expression": {
+            "title": "Expression",
+            "type": "string"
+          },
+          "location": {
+            "title": "Location",
+            "type": "string"
+          }
+        },
+        "required": [
+          "location",
+          "expression"
+        ],
+        "title": "DroppedNode",
+        "type": "object"
+      },
+      "ErrorResponse": {
+        "description": "Fehlerantwort (``HTTPException``): ``detail`` ist die Meldung.",
+        "properties": {
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "detail"
+        ],
+        "title": "ErrorResponse",
+        "type": "object"
+      },
+      "ExpansionInfo": {
+        "description": "FA59/FA62/FA75: Kennzahlen der Expansion (nur wenn das Szenario\nParameter, Instanzen oder when nutzt).",
+        "properties": {
+          "dropped": {
+            "items": {
+              "$ref": "#/components/schemas/DroppedNode"
+            },
+            "title": "Dropped",
+            "type": "array"
+          },
+          "instances": {
+            "items": {
+              "$ref": "#/components/schemas/InstanceOut"
+            },
+            "title": "Instances",
+            "type": "array"
+          },
+          "node_count": {
+            "default": 0,
+            "title": "Node Count",
+            "type": "integer"
+          },
+          "node_origins": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/NodeOriginOut"
+            },
+            "title": "Node Origins",
+            "type": "object"
+          },
+          "overridden": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Overridden",
+            "type": "array"
+          }
+        },
+        "title": "ExpansionInfo",
+        "type": "object"
+      },
+      "GenerateRequest": {
+        "properties": {
+          "options": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/GenerationOptions"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "prompt": {
+            "title": "Prompt",
+            "type": "string"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Region"
+          },
+          "source_ids": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Source Ids",
+            "type": "array"
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "title": "GenerateRequest",
+        "type": "object"
+      },
+      "GenerateResponse": {
+        "properties": {
+          "config_yaml": {
+            "title": "Config Yaml",
+            "type": "string"
+          },
+          "missing_data": {
+            "items": {
+              "$ref": "#/components/schemas/MissingDatasetOut"
+            },
+            "title": "Missing Data",
+            "type": "array"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "trial_run": {
+            "$ref": "#/components/schemas/TrialRunOut"
+          },
+          "validation": {
+            "$ref": "#/components/schemas/ValidateResponse"
+          }
+        },
+        "required": [
+          "config_yaml",
+          "validation",
+          "model"
+        ],
+        "title": "GenerateResponse",
+        "type": "object"
+      },
+      "GenerationDefaults": {
+        "description": "Werte des Servers für die einstellbaren Felder der Erzeugung (FA81).",
+        "properties": {
+          "llm_deadline_s": {
+            "title": "Llm Deadline S",
+            "type": "number"
+          },
+          "trial_run": {
+            "title": "Trial Run",
+            "type": "boolean"
+          },
+          "trial_run_s": {
+            "title": "Trial Run S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "llm_deadline_s",
+          "trial_run",
+          "trial_run_s"
+        ],
+        "title": "GenerationDefaults",
+        "type": "object"
+      },
+      "GenerationLimits": {
+        "description": "Obergrenzen der Fristen in Sekunden (FA81).",
+        "properties": {
+          "llm_deadline_s": {
+            "title": "Llm Deadline S",
+            "type": "number"
+          },
+          "trial_run_s": {
+            "title": "Trial Run S",
+            "type": "number"
+          }
+        },
+        "required": [
+          "llm_deadline_s",
+          "trial_run_s"
+        ],
+        "title": "GenerationLimits",
+        "type": "object"
+      },
+      "GenerationOptions": {
+        "additionalProperties": false,
+        "description": "FA81: Einstellungen einer Erzeugung, die der Nutzer je Anfrage setzt.\nEin fehlendes Feld bedeutet: es gilt der Wert des Servers (Umgebungsvariable).",
+        "properties": {
+          "llm_choice": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Llm Choice"
+          },
+          "llm_deadline_s": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 1800.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Llm Deadline S"
+          },
+          "osm_backend": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Osm Backend"
+          },
+          "trial_run": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trial Run"
+          },
+          "trial_run_s": {
+            "anyOf": [
+              {
+                "exclusiveMinimum": 0.0,
+                "maximum": 600.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trial Run S"
+          }
+        },
+        "title": "GenerationOptions",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "HealthChecks": {
+        "properties": {
+          "copernicus": {
+            "$ref": "#/components/schemas/CopernicusCheck"
+          },
+          "llm": {
+            "$ref": "#/components/schemas/LlmCheck"
+          },
+          "postgis": {
+            "$ref": "#/components/schemas/PostgisCheck"
+          }
+        },
+        "required": [
+          "postgis",
+          "copernicus",
+          "llm"
+        ],
+        "title": "HealthChecks",
+        "type": "object"
+      },
+      "HealthResponse": {
+        "properties": {
+          "checks": {
+            "$ref": "#/components/schemas/HealthChecks"
+          },
+          "status": {
+            "enum": [
+              "ok",
+              "degraded"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "checks"
+        ],
+        "title": "HealthResponse",
+        "type": "object"
+      },
+      "InstanceOut": {
+        "description": "FA75: eine Instanz mit ihren Schlüsseln (Listenreihenfolge, leer ohne\nforeach) und den durch when entfernten Schlüsseln.",
+        "properties": {
+          "dropped_keys": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Dropped Keys",
+            "type": "array"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "keys": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Keys",
+            "type": "array"
+          },
+          "module": {
+            "title": "Module",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "module"
+        ],
+        "title": "InstanceOut",
+        "type": "object"
+      },
+      "InvalidConfigDetail": {
+        "properties": {
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationIssue"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "InvalidConfigDetail",
+        "type": "object"
+      },
+      "LLMChoiceOut": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "model": {
+            "title": "Model",
+            "type": "string"
+          },
+          "providers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Providers",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "model"
+        ],
+        "title": "LLMChoiceOut",
+        "type": "object"
+      },
+      "LayerProvenanceOut": {
+        "description": "FA58: CRS-Herkunft eines geladenen Layers (LayerProvenance.to_dict).",
+        "properties": {
+          "bounds": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bounds"
+          },
+          "crs_override": {
+            "default": false,
+            "title": "Crs Override",
+            "type": "boolean"
+          },
+          "feature_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Feature Count"
+          },
+          "layer": {
+            "title": "Layer",
+            "type": "string"
+          },
+          "raw_bounds": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raw Bounds"
+          },
+          "raw_sample": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "title": "Raw Sample",
+            "type": "array"
+          },
+          "sample": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "title": "Sample",
+            "type": "array"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "source_crs": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Crs"
+          },
+          "source_crs_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Crs Label"
+          },
+          "target_crs": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Crs"
+          },
+          "target_crs_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Crs Label"
+          }
+        },
+        "required": [
+          "layer",
+          "source"
+        ],
+        "title": "LayerProvenanceOut",
+        "type": "object"
+      },
+      "LicenseCheckOut": {
+        "description": "FA73: Ergebnis je Ausgabe (``engine/licenses.py::LicenseCheck.to_dict``).",
+        "properties": {
+          "checked_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checked At"
+          },
+          "conflicts": {
+            "items": {
+              "$ref": "#/components/schemas/LicenseConflictOut"
+            },
+            "title": "Conflicts",
+            "type": "array"
+          },
+          "declared_at": {
+            "anyOf": [
+              {
+                "enum": [
+                  "output",
+                  "scenario"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Declared At"
+          },
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "output_license": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/LicenseOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "source_licenses": {
+            "items": {
+              "$ref": "#/components/schemas/LicenseOut"
+            },
+            "title": "Source Licenses",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "compatible",
+              "conflicts",
+              "not_checkable",
+              "unreachable",
+              "no_licenses"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          },
+          "uncheckable": {
+            "items": {
+              "$ref": "#/components/schemas/UncheckableLicenseOut"
+            },
+            "title": "Uncheckable",
+            "type": "array"
+          },
+          "undeclared": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Undeclared",
+            "type": "array"
+          }
+        },
+        "required": [
+          "index",
+          "source",
+          "type",
+          "status",
+          "message"
+        ],
+        "title": "LicenseCheckOut",
+        "type": "object"
+      },
+      "LicenseCheckRequest": {
+        "description": "FA73: Lizenzprüfung gegen DALICC; ``refresh`` fragt neu statt aus der Ablage.",
+        "properties": {
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Config"
+          },
+          "config_yaml": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Config Yaml"
+          },
+          "parameters": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parameters"
+          },
+          "refresh": {
+            "default": false,
+            "title": "Refresh",
+            "type": "boolean"
+          }
+        },
+        "title": "LicenseCheckRequest",
+        "type": "object"
+      },
+      "LicenseCheckResponse": {
+        "description": "FA73: ``valid`` false = Konfiguration ungültig (``issues``), dann keine Prüfung.",
+        "properties": {
+          "checks": {
+            "items": {
+              "$ref": "#/components/schemas/LicenseCheckOut"
+            },
+            "title": "Checks",
+            "type": "array"
+          },
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationIssue"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "compatible",
+                  "conflicts",
+                  "not_checkable",
+                  "unreachable",
+                  "no_licenses"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "valid": {
+            "title": "Valid",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "valid"
+        ],
+        "title": "LicenseCheckResponse",
+        "type": "object"
+      },
+      "LicenseConflictOut": {
+        "properties": {
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "statement_1": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Statement 1",
+            "type": "array"
+          },
+          "statement_2": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Statement 2",
+            "type": "array"
+          }
+        },
+        "required": [
+          "kind",
+          "reason",
+          "message"
+        ],
+        "title": "LicenseConflictOut",
+        "type": "object"
+      },
+      "LicenseOut": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "LlmCheck": {
+        "properties": {
+          "configured": {
+            "title": "Configured",
+            "type": "boolean"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model"
+          }
+        },
+        "required": [
+          "configured"
+        ],
+        "title": "LlmCheck",
+        "type": "object"
+      },
+      "LoginRequest": {
+        "properties": {
+          "password": {
+            "title": "Password",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "username",
+          "password"
+        ],
+        "title": "LoginRequest",
+        "type": "object"
+      },
+      "LoginResponse": {
+        "properties": {
+          "expires_in_s": {
+            "title": "Expires In S",
+            "type": "integer"
+          },
+          "token": {
+            "title": "Token",
+            "type": "string"
+          },
+          "username": {
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token",
+          "username",
+          "expires_in_s"
+        ],
+        "title": "LoginResponse",
+        "type": "object"
+      },
+      "MetaResponse": {
+        "properties": {
+          "copernicus_dir": {
+            "title": "Copernicus Dir",
+            "type": "string"
+          },
+          "copernicus_dir_exists": {
+            "title": "Copernicus Dir Exists",
+            "type": "boolean"
+          },
+          "failed_plugins": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Failed Plugins",
+            "type": "object"
+          },
+          "generation_defaults": {
+            "$ref": "#/components/schemas/GenerationDefaults"
+          },
+          "generation_limits": {
+            "$ref": "#/components/schemas/GenerationLimits"
+          },
+          "llm_choices": {
+            "items": {
+              "$ref": "#/components/schemas/LLMChoiceOut"
+            },
+            "title": "Llm Choices",
+            "type": "array"
+          },
+          "llm_configured": {
+            "title": "Llm Configured",
+            "type": "boolean"
+          },
+          "llm_model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Llm Model"
+          },
+          "osm_backend": {
+            "title": "Osm Backend",
+            "type": "string"
+          },
+          "osm_backends": {
+            "$ref": "#/components/schemas/OsmBackendChoices"
+          }
+        },
+        "required": [
+          "osm_backend",
+          "llm_configured",
+          "generation_defaults",
+          "generation_limits",
+          "osm_backends",
+          "copernicus_dir",
+          "copernicus_dir_exists"
+        ],
+        "title": "MetaResponse",
+        "type": "object"
+      },
+      "MissingDatasetOut": {
+        "description": "FA87: ein Datensatz, den die Frage braucht und den das Modell in keiner\nQuelle findet. ``hint``: was der Nutzer hochladen kann. ``alternative``: eine\numformulierte Frage, die sich mit den verfügbaren Daten beantworten lässt.",
+        "properties": {
+          "alternative": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alternative"
+          },
+          "hint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Hint"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "MissingDatasetOut",
+        "type": "object"
+      },
+      "NodeDescription": {
+        "additionalProperties": true,
+        "description": "Zusammenfassung eines Knoten-Ergebnisses (``serialize.describe``). Außer\n``kind`` und ``crs`` hängen die Felder von der Art ab: Vektor\n``feature_count``, ``geometry_types``, ``columns``, ``numeric_fields``,\n``bounds``; Raster ``shape``, ``dtype``, ``bounds``, ``stats``, ``path``;\nGraph ``node_count``, ``edge_count``, ``node_attributes``.",
+        "properties": {
+          "crs": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Crs"
+          },
+          "kind": {
+            "enum": [
+              "vector",
+              "raster",
+              "graph"
+            ],
+            "title": "Kind",
+            "type": "string"
+          }
+        },
+        "required": [
+          "kind"
+        ],
+        "title": "NodeDescription",
+        "type": "object"
+      },
+      "NodeOriginOut": {
+        "description": "FA75: Herkunft eines Knotens im ausgedehnten Szenario\n(NodeOrigin.to_dict); module None = Knoten steht so in der YAML, sonst\nerzeugt aus Modul ``module`` in Instanz ``instance`` (Element ``key``,\nKnoten ``inner_id`` im Modul).",
+        "properties": {
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "inner_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Inner Id"
+          },
+          "instance": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Instance"
+          },
+          "key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Key"
+          },
+          "location": {
+            "title": "Location",
+            "type": "string"
+          },
+          "module": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Module"
+          },
+          "section": {
+            "title": "Section",
+            "type": "string"
+          }
+        },
+        "required": [
+          "section",
+          "index",
+          "location"
+        ],
+        "title": "NodeOriginOut",
+        "type": "object"
+      },
+      "NodeResult": {
+        "description": "Ergebnis eines Knotens für die Ansicht. Je nach ``describe.kind`` ist\ngenau eines vorhanden: ``geojson`` (Vektor), ``graph`` (Graph) oder\n``raster_png_url`` (Raster).",
+        "properties": {
+          "attribution": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AttributionOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "describe": {
+            "$ref": "#/components/schemas/NodeDescription"
+          },
+          "dropped_columns": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dropped Columns"
+          },
+          "feature_limit": {
+            "title": "Feature Limit",
+            "type": "integer"
+          },
+          "geojson": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Geojson"
+          },
+          "graph": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Graph"
+          },
+          "max_feature_limit": {
+            "title": "Max Feature Limit",
+            "type": "integer"
+          },
+          "node_id": {
+            "title": "Node Id",
+            "type": "string"
+          },
+          "raster_png_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Raster Png Url"
+          }
+        },
+        "required": [
+          "node_id",
+          "describe",
+          "feature_limit",
+          "max_feature_limit"
+        ],
+        "title": "NodeResult",
+        "type": "object"
+      },
+      "OperationContract": {
+        "description": "Vertrag einer registrierten Operation (``api.operation_catalog``). Die\nForm eines Eintrags in ``params`` bestimmt der Kern (type, required,\ndefault, description, choices, minimum, ...).",
+        "properties": {
+          "doc": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Doc"
+          },
+          "input_ports": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Input Ports",
+            "type": "object"
+          },
+          "op": {
+            "title": "Op",
+            "type": "string"
+          },
+          "output_type": {
+            "title": "Output Type",
+            "type": "string"
+          },
+          "params": {
+            "additionalProperties": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Params",
+            "type": "object"
+          },
+          "required_params": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Required Params",
+            "type": "array"
+          }
+        },
+        "required": [
+          "op",
+          "input_ports",
+          "output_type"
+        ],
+        "title": "OperationContract",
+        "type": "object"
+      },
+      "OsmBackendChoices": {
+        "properties": {
+          "available": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Available",
+            "type": "array"
+          },
+          "default": {
+            "title": "Default",
+            "type": "string"
+          }
+        },
+        "required": [
+          "default",
+          "available"
+        ],
+        "title": "OsmBackendChoices",
+        "type": "object"
+      },
+      "OutputLicenseInfo": {
+        "description": "FA73: vom Nutzer festgelegte Ausgabelizenz einer Ausgabe (ungeprüft).",
+        "properties": {
+          "declared_at": {
+            "enum": [
+              "output",
+              "scenario"
+            ],
+            "title": "Declared At",
+            "type": "string"
+          },
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "license": {
+            "$ref": "#/components/schemas/LicenseOut"
+          },
+          "line": {
+            "title": "Line",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index",
+          "source",
+          "type",
+          "license",
+          "declared_at",
+          "line"
+        ],
+        "title": "OutputLicenseInfo",
+        "type": "object"
+      },
+      "ParameterInfo": {
+        "description": "FA59: ein deklarierter Szenario-Parameter für das Web-Formular. Wird\nauch bei ungültiger Konfiguration geliefert (z. B. fehlt die Überschreibung\neines Pflichtparameters - genau dann braucht das Formular die Liste).",
+        "properties": {
+          "choices": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Choices"
+          },
+          "default": {
+            "title": "Default"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Items"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "overridden": {
+            "default": false,
+            "title": "Overridden",
+            "type": "boolean"
+          },
+          "required": {
+            "default": false,
+            "title": "Required",
+            "type": "boolean"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Type"
+          },
+          "value": {
+            "title": "Value"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "ParameterInfo",
+        "type": "object"
+      },
+      "PlannedStepOut": {
+        "description": "FA75: ein Schritt des Plans vor dem Lauf (id, op, Eingänge).",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "inputs": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Inputs",
+            "type": "object"
+          },
+          "op": {
+            "title": "Op",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "op"
+        ],
+        "title": "PlannedStepOut",
+        "type": "object"
+      },
+      "PostgisCheck": {
+        "properties": {
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "reachable": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reachable"
+          }
+        },
+        "required": [
+          "enabled"
+        ],
+        "title": "PostgisCheck",
+        "type": "object"
+      },
+      "RegionInfoOut": {
+        "description": "FA55/FA56: Region und Arbeits-CRS des Laufs (RegionInfo.to_dict).",
+        "properties": {
+          "area_km2": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Area Km2"
+          },
+          "bbox": {
+            "items": {
+              "type": "number"
+            },
+            "title": "Bbox",
+            "type": "array"
+          },
+          "crs": {
+            "title": "Crs",
+            "type": "string"
+          },
+          "crs_label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Crs Label"
+          },
+          "crs_mode": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Crs Mode"
+          },
+          "crs_spec": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Crs Spec"
+          },
+          "display_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Display Name"
+          },
+          "osm_class": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Osm Class"
+          },
+          "osm_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Osm Type"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "crs"
+        ],
+        "title": "RegionInfoOut",
+        "type": "object"
+      },
+      "RejectedRequestResponse": {
+        "description": "Antwort 422. ``detail`` ist je nach Ursache eine Meldung, die Prüffehler\neiner ungültigen Konfiguration (``message`` + ``issues``) oder die\nFeldfehler einer formal ungültigen Anfrage (Liste, von FastAPI).",
+        "properties": {
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/InvalidConfigDetail"
+              },
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            ],
+            "title": "Detail"
+          }
+        },
+        "required": [
+          "detail"
+        ],
+        "title": "RejectedRequestResponse",
+        "type": "object"
+      },
+      "RunCancelResponse": {
+        "properties": {
+          "cancelling": {
+            "title": "Cancelling",
+            "type": "boolean"
+          },
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "cancelling"
+        ],
+        "title": "RunCancelResponse",
+        "type": "object"
+      },
+      "RunCreated": {
+        "properties": {
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "status"
+        ],
+        "title": "RunCreated",
+        "type": "object"
+      },
+      "RunFileOut": {
+        "description": "FA88: eine Datei eines Laufs. ``output`` = geschriebene Ausgabe,\n``companion`` = Begleitdatei (scenario.yaml, ATTRIBUTION.txt, parameters.yaml).",
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "output",
+              "companion"
+            ],
+            "title": "Role",
+            "type": "string"
+          },
+          "size_bytes": {
+            "title": "Size Bytes",
+            "type": "integer"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Type"
+          }
+        },
+        "required": [
+          "name",
+          "role",
+          "size_bytes"
+        ],
+        "title": "RunFileOut",
+        "type": "object"
+      },
+      "RunHistory": {
+        "description": "FA89: die Läufe des Nutzers, die das Backend noch hält (neuester zuerst).",
+        "properties": {
+          "max_retained": {
+            "title": "Max Retained",
+            "type": "integer"
+          },
+          "runs": {
+            "items": {
+              "$ref": "#/components/schemas/RunSummary"
+            },
+            "title": "Runs",
+            "type": "array"
+          }
+        },
+        "required": [
+          "max_retained"
+        ],
+        "title": "RunHistory",
+        "type": "object"
+      },
+      "RunOptions": {
+        "additionalProperties": false,
+        "description": "FA82: Einstellungen eines Laufs, die der Nutzer je Anfrage setzt. Ein\nfehlendes Feld bedeutet: es gilt der Wert des Servers.",
+        "properties": {
+          "osm_backend": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Osm Backend"
+          }
+        },
+        "title": "RunOptions",
+        "type": "object"
+      },
+      "RunOutputs": {
+        "description": "FA88: die Dateien eines Laufs - dieselbe Aufzählung, aus der das ZIP entsteht.",
+        "properties": {
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/RunFileOut"
+            },
+            "title": "Files",
+            "type": "array"
+          },
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          },
+          "skipped": {
+            "items": {
+              "$ref": "#/components/schemas/SkippedOutputOut"
+            },
+            "title": "Skipped",
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "running",
+              "done",
+              "error",
+              "cancelled"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "run_id",
+          "status"
+        ],
+        "title": "RunOutputs",
+        "type": "object"
+      },
+      "RunRequest": {
+        "properties": {
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Config"
+          },
+          "config_yaml": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Config Yaml"
+          },
+          "options": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RunOptions"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "parameters": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parameters"
+          },
+          "refresh_snapshots": {
+            "default": false,
+            "title": "Refresh Snapshots",
+            "type": "boolean"
+          }
+        },
+        "title": "RunRequest",
+        "type": "object"
+      },
+      "RunStatus": {
+        "properties": {
+          "attribution": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AttributionOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "layer_load_ms": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Layer Load Ms",
+            "type": "object"
+          },
+          "layer_provenance": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/LayerProvenanceOut"
+            },
+            "title": "Layer Provenance",
+            "type": "object"
+          },
+          "layers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Layers",
+            "type": "array"
+          },
+          "loaded_layers": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Loaded Layers",
+            "type": "array"
+          },
+          "node_attribution": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/AttributionOut"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "title": "Node Attribution",
+            "type": "object"
+          },
+          "order": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Order",
+            "type": "array"
+          },
+          "origins": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/NodeOriginOut"
+            },
+            "title": "Origins",
+            "type": "object"
+          },
+          "region": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RegionInfoOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "released": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Released",
+            "type": "array"
+          },
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "running",
+              "done",
+              "error",
+              "cancelled"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "steps": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/StepState"
+            },
+            "title": "Steps",
+            "type": "object"
+          },
+          "warnings": {
+            "items": {
+              "$ref": "#/components/schemas/RunWarningOut"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "run_id",
+          "status"
+        ],
+        "title": "RunStatus",
+        "type": "object"
+      },
+      "RunSummary": {
+        "description": "FA89: ein Lauf in der Liste der Läufe.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "output_count": {
+            "title": "Output Count",
+            "type": "integer"
+          },
+          "parameters": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parameters"
+          },
+          "run_id": {
+            "title": "Run Id",
+            "type": "string"
+          },
+          "scenario_name": {
+            "title": "Scenario Name",
+            "type": "string"
+          },
+          "skipped_count": {
+            "title": "Skipped Count",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "running",
+              "done",
+              "error",
+              "cancelled"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "step_count": {
+            "title": "Step Count",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "run_id",
+          "status",
+          "scenario_name",
+          "created_at",
+          "step_count",
+          "output_count",
+          "skipped_count"
+        ],
+        "title": "RunSummary",
+        "type": "object"
+      },
+      "RunWarningOut": {
+        "properties": {
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category"
+          },
+          "layer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Layer"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "severity": {
+            "default": "warning",
+            "enum": [
+              "info",
+              "warning"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "step": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Step"
+          }
+        },
+        "required": [
+          "message"
+        ],
+        "title": "RunWarningOut",
+        "type": "object"
+      },
+      "SaveScenarioRequest": {
+        "properties": {
+          "config_yaml": {
+            "title": "Config Yaml",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "config_yaml"
+        ],
+        "title": "SaveScenarioRequest",
+        "type": "object"
+      },
+      "SavedScenario": {
+        "properties": {
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "source": {
+            "default": "user",
+            "enum": [
+              "user",
+              "example"
+            ],
+            "title": "Source",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "SavedScenario",
+        "type": "object"
+      },
+      "ScenarioContent": {
+        "properties": {
+          "config_yaml": {
+            "title": "Config Yaml",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "config_yaml"
+        ],
+        "title": "ScenarioContent",
+        "type": "object"
+      },
+      "ScenarioDeleted": {
+        "properties": {
+          "deleted": {
+            "title": "Deleted",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "deleted"
+        ],
+        "title": "ScenarioDeleted",
+        "type": "object"
+      },
+      "SkippedOutputOut": {
+        "description": "FA88: eine deklarierte Ausgabe, die der Lauf nicht geschrieben hat.",
+        "properties": {
+          "index": {
+            "title": "Index",
+            "type": "integer"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          },
+          "type": {
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index",
+          "type",
+          "reason"
+        ],
+        "title": "SkippedOutputOut",
+        "type": "object"
+      },
+      "StepState": {
+        "properties": {
+          "duration_ms": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Ms"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "inputs": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Inputs",
+            "type": "object"
+          },
+          "op": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Op"
+          },
+          "output_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Output Type"
+          },
+          "status": {
+            "default": "pending",
+            "enum": [
+              "pending",
+              "loading",
+              "running",
+              "done",
+              "error",
+              "cancelled"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "warning_details": {
+            "items": {
+              "$ref": "#/components/schemas/RunWarningOut"
+            },
+            "title": "Warning Details",
+            "type": "array"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "title": "StepState",
+        "type": "object"
+      },
+      "TrialRunOut": {
+        "description": "FA78: Probelauf der erzeugten Konfiguration. ``skipped``: nicht\nausgeführt (ungültig oder GEOFACT_LLM_TRIAL_RUN aus); ``timeout``: nach\nder Frist nicht fertig, also ungeprüft.",
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "repair_rounds": {
+            "default": 0,
+            "title": "Repair Rounds",
+            "type": "integer"
+          },
+          "status": {
+            "default": "skipped",
+            "enum": [
+              "ok",
+              "failed",
+              "timeout",
+              "skipped"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          }
+        },
+        "title": "TrialRunOut",
+        "type": "object"
+      },
+      "UncheckableLicenseOut": {
+        "properties": {
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "reason"
+        ],
+        "title": "UncheckableLicenseOut",
+        "type": "object"
+      },
+      "UploadResponse": {
+        "properties": {
+          "source": {
+            "$ref": "#/components/schemas/CatalogSource"
+          }
+        },
+        "required": [
+          "source"
+        ],
+        "title": "UploadResponse",
+        "type": "object"
+      },
+      "ValidateRequest": {
+        "properties": {
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Config"
+          },
+          "config_yaml": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Config Yaml"
+          },
+          "parameters": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parameters"
+          }
+        },
+        "title": "ValidateRequest",
+        "type": "object"
+      },
+      "ValidateResponse": {
+        "properties": {
+          "attribution": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AttributionOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "execution_order": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Execution Order"
+          },
+          "expansion": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExpansionInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "issues": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationIssue"
+            },
+            "title": "Issues",
+            "type": "array"
+          },
+          "output_licenses": {
+            "items": {
+              "$ref": "#/components/schemas/OutputLicenseInfo"
+            },
+            "title": "Output Licenses",
+            "type": "array"
+          },
+          "parameters": {
+            "items": {
+              "$ref": "#/components/schemas/ParameterInfo"
+            },
+            "title": "Parameters",
+            "type": "array"
+          },
+          "planned_steps": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PlannedStepOut"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Planned Steps"
+          },
+          "required_layers": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Required Layers"
+          },
+          "unused_layers": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unused Layers"
+          },
+          "valid": {
+            "title": "Valid",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "valid"
+        ],
+        "title": "ValidateResponse",
+        "type": "object"
+      },
+      "ValidationError": {
+        "properties": {
+          "ctx": {
+            "title": "Context",
+            "type": "object"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "ValidationIssue": {
+        "properties": {
+          "location": {
+            "title": "Location",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Type"
+          }
+        },
+        "required": [
+          "location",
+          "message"
+        ],
+        "title": "ValidationIssue",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "description": "Token aus POST /api/auth/login als 'Authorization: Bearer <token>'. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft.",
+        "scheme": "bearer",
+        "type": "http"
+      },
+      "QueryToken": {
+        "description": "Dasselbe Token als Query-Parameter - nur für Ereignisstrom, Rasterbild und Download, die der Browser ohne Authorization-Header abruft. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft.",
+        "in": "query",
+        "name": "token",
+        "type": "apiKey"
+      }
+    }
+  },
+  "info": {
+    "description": "Backend-API zur interaktiven Demonstration des GeoFACT-Frameworks.",
+    "title": "GeoFACT Web API",
+    "version": "0.1.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/apis": {
+      "get": {
+        "description": "Kuratierte offene Schnittstellen mit Endpunkten, Attributen, Lizenz und Layer-Fragment. Braucht kein Netz.",
+        "operationId": "list_apis_api_apis_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiCatalogResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Der Katalog des Servers fehlt oder ist nicht lesbar."
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "API-Katalog",
+        "tags": [
+          "apis"
+        ]
+      }
+    },
+    "/api/apis/{api_id}/spec": {
+      "get": {
+        "description": "Lädt GetCapabilities bzw. OpenAPI der Schnittstelle vom Anbieter. Der Text wird bei 400.000 Zeichen abgeschnitten (truncated).",
+        "operationId": "get_api_spec_api_apis__api_id__spec_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "api_id",
+            "required": true,
+            "schema": {
+              "title": "Api Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSpecResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unbekannte Schnittstelle, oder für sie ist keine Spezifikation hinterlegt."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Der Anbieter hat die Spezifikation nicht geliefert."
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Spezifikation einer Schnittstelle laden",
+        "tags": [
+          "apis"
+        ]
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "description": "Tauscht Nutzername und Passwort gegen ein Token mit Ablaufzeit. Nur nötig, wenn GEOFACT_WEB_USERS gesetzt ist; ohne konfigurierte Nutzer gibt es keine Anmeldung.",
+        "operationId": "login_api_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Nutzername oder Passwort falsch."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Anmelden",
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/catalog": {
+      "get": {
+        "description": "OSM-Presets, lokale Raster, mitgelieferte Beispieldaten und die Uploads des anfragenden Nutzers, je mit einbaufertigem Layer-Fragment.",
+        "operationId": "get_catalog_api_catalog_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Datenquellen auflisten",
+        "tags": [
+          "catalog"
+        ]
+      }
+    },
+    "/api/config/generate": {
+      "post": {
+        "description": "Erzeugt aus einer Frage in natürlicher Sprache eine Konfiguration, prüft sie, führt sie zur Probe aus und lässt sie bei Fehlern reparieren (FA78). Braucht die Frage einen Datensatz, den keine Quelle liefert, ist missing_data nicht leer und config_yaml leer (FA87).",
+        "operationId": "generate_api_config_generate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Der LLM-Anbieter hat nicht oder fehlerhaft geantwortet."
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Kein LLM-API-Key konfiguriert."
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Konfiguration erzeugen",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/api/config/generate/stream": {
+      "post": {
+        "description": "Wie /generate, als Server-Sent Events: thinking {delta} (Reasoning-Text), token {delta} (YAML-Text), phase {phase} (validating, repairing, trial_run, reviewing), zum Schluss done (Endergebnis in der Form von /generate) oder error {error}.",
+        "operationId": "generate_stream_api_config_generate_stream_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Ereignisstrom bis done oder error."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "503": {
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Kein LLM-API-Key konfiguriert."
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Konfiguration erzeugen (Ereignisstrom)",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/api/config/licenses": {
+      "post": {
+        "description": "Prüft je Ausgabe die Lizenzen der Quellen gegen die Ausgabelizenz (FA73). Fragt den externen Dienst DALICC.",
+        "operationId": "check_licenses_api_config_licenses_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LicenseCheckRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LicenseCheckResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Lizenzen prüfen",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/api/config/validate": {
+      "post": {
+        "description": "Prüft Schema, DAG und Porttypen, ohne Daten zu laden. Eine ungültige Konfiguration ist kein HTTP-Fehler: die Antwort trägt valid=false und die Meldungen.",
+        "operationId": "validate_api_config_validate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Konfiguration prüfen",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/api/health": {
+      "get": {
+        "description": "PostGIS erreichbar, Raster-Verzeichnis vorhanden, LLM konfiguriert. Ohne Anmeldung erreichbar (Monitoring).",
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "summary": "Betriebszustand",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
+    "/api/meta": {
+      "get": {
+        "description": "Gewähltes OSM-Backend, LLM-Modell, Raster-Verzeichnis und nicht geladene Plugins.",
+        "operationId": "meta_api_meta_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetaResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Server-Konfiguration",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
+    "/api/operations": {
+      "get": {
+        "description": "Alle registrierten Operationen (Kern und Plugins) mit Eingängen, Ausgabetyp und Parametern.",
+        "operationId": "operations_api_operations_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/OperationContract"
+                  },
+                  "title": "Response 200 Operations Api Operations Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Verträge, nach Name sortiert."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Operationskatalog",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
+    "/api/runs": {
+      "get": {
+        "description": "Die Läufe des Nutzers, die das Backend noch hält, neuester zuerst. Läufe liegen nur im Arbeitsspeicher: nach einem Neustart ist die Liste leer, und von den abgeschlossenen bleiben höchstens max_retained.",
+        "operationId": "list_runs_api_runs_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunHistory"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Läufe auflisten",
+        "tags": [
+          "runs"
+        ]
+      },
+      "post": {
+        "description": "Prüft die Konfiguration und startet den Lauf im Hintergrund. Fortschritt über GET /api/runs/{run_id} oder den Ereignisstrom.",
+        "operationId": "create_run_api_runs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunCreated"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RejectedRequestResponse"
+                }
+              }
+            },
+            "description": "Konfiguration ungültig (detail.issues) oder Anfrage formal ungültig."
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Zu viele gleichzeitige Läufe dieses Nutzers."
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Lauf starten",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/api/runs/{run_id}": {
+      "get": {
+        "description": "Zustand des Laufs und jedes Schritts, mit Warnungen, Ladezeiten, Region, CRS-Herkunft der Layer und Lizenzen.",
+        "operationId": "run_status_api_runs__run_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Lauf unbekannt oder gehört einem anderen Nutzer. Läufe liegen nur im Arbeitsspeicher; nach einem Neustart des Backends sind sie weg."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Lauf-Status",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/api/runs/{run_id}/cancel": {
+      "post": {
+        "description": "Der Lauf gilt sofort als abgebrochen (Status cancelled, Ereignis run_cancelled, Ende des Ereignisstroms). Ein gerade laufender Baustein endet im Hintergrund an der nächsten Schrittgrenze; sein Ergebnis wird verworfen. cancelling=false: der Lauf war schon beendet.",
+        "operationId": "cancel_run_api_runs__run_id__cancel_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunCancelResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Lauf unbekannt oder gehört einem anderen Nutzer. Läufe liegen nur im Arbeitsspeicher; nach einem Neustart des Backends sind sie weg."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Lauf abbrechen",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/api/runs/{run_id}/download": {
+      "get": {
+        "description": "ZIP mit den geschriebenen Ausgaben und scenario.yaml, dazu ATTRIBUTION.txt, parameters.yaml und SKIPPED_OUTPUTS.txt, soweit vorhanden.",
+        "operationId": "download_api_runs__run_id__download_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "ZIP-Archiv."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "404": {
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Lauf unbekannt oder gehört einem anderen Nutzer. Läufe liegen nur im Arbeitsspeicher; nach einem Neustart des Backends sind sie weg."
+          },
+          "409": {
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Lauf ist noch nicht abgeschlossen."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          },
+          {
+            "QueryToken": []
+          }
+        ],
+        "summary": "Ergebnis herunterladen",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/api/runs/{run_id}/events": {
+      "get": {
+        "description": "Server-Sent Events: zuerst status (Lauf-Status vor dem ersten Ereignis), dann je Ereignis des Laufs ein progress, zum Schluss status (Endstand) und end.",
+        "operationId": "run_events_api_runs__run_id__events_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Ereignisstrom bis end."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "404": {
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Lauf unbekannt oder gehört einem anderen Nutzer. Läufe liegen nur im Arbeitsspeicher; nach einem Neustart des Backends sind sie weg."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          },
+          {
+            "QueryToken": []
+          }
+        ],
+        "summary": "Live-Fortschritt (Ereignisstrom)",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/api/runs/{run_id}/nodes/{node_id}": {
+      "get": {
+        "description": "Ergebnis eines Layers oder Schritts für Karte und Tabelle: GeoJSON, Graph oder Raster-Metadaten. Die Ansicht ist begrenzt (Objekte, Attributspalten); das vollständige Ergebnis steht im Download.",
+        "operationId": "node_result_api_runs__run_id__nodes__node_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "node_id",
+            "required": true,
+            "schema": {
+              "title": "Node Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Gewünschte Objektzahl der Ansicht (Standard 10.000, höchstens 200.000). Der angewendete Wert steht in feature_limit.",
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Gewünschte Objektzahl der Ansicht (Standard 10.000, höchstens 200.000). Der angewendete Wert steht in feature_limit.",
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NodeResult"
+                }
+              }
+            },
+            "description": "Ergebnis des Knotens."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Lauf unbekannt oder gehört einem anderen Nutzer. Läufe liegen nur im Arbeitsspeicher; nach einem Neustart des Backends sind sie weg. Oder der Knoten hat (noch) kein Ergebnis."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RejectedRequestResponse"
+                }
+              }
+            },
+            "description": "limit ist keine Zahl >= 1."
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Knoten-Ergebnis",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/api/runs/{run_id}/nodes/{node_id}/raster.png": {
+      "get": {
+        "description": "Das Raster-Ergebnis eines Knotens als eingefärbtes PNG.",
+        "operationId": "node_raster_png_api_runs__run_id__nodes__node_id__raster_png_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "node_id",
+            "required": true,
+            "schema": {
+              "title": "Node Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "PNG-Bild."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "404": {
+            "content": {
+              "image/png": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Lauf unbekannt oder gehört einem anderen Nutzer. Läufe liegen nur im Arbeitsspeicher; nach einem Neustart des Backends sind sie weg. Oder der Knoten hat kein Raster-Ergebnis."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          },
+          {
+            "QueryToken": []
+          }
+        ],
+        "summary": "Raster-Vorschau",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/api/runs/{run_id}/outputs": {
+      "get": {
+        "description": "Die geschriebenen Ausgaben mit Format und Quellknoten, die Begleitdateien (scenario.yaml, ATTRIBUTION.txt, parameters.yaml) und die übersprungenen Ausgaben mit Grund. Dieselben Dateien wie im ZIP. Vor dem Abschluss und nach einem Fehler nur die Begleitdateien.",
+        "operationId": "run_outputs_api_runs__run_id__outputs_get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RunOutputs"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Lauf unbekannt oder gehört einem anderen Nutzer. Läufe liegen nur im Arbeitsspeicher; nach einem Neustart des Backends sind sie weg."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Dateien des Laufs",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/api/runs/{run_id}/outputs/{name}": {
+      "get": {
+        "description": "Eine Datei aus der Liste GET /api/runs/{run_id}/outputs als Anhang, mit denselben Bytes wie im ZIP.",
+        "operationId": "run_output_file_api_runs__run_id__outputs__name__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "title": "Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Die Datei."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "404": {
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Lauf unbekannt oder gehört einem anderen Nutzer. Läufe liegen nur im Arbeitsspeicher; nach einem Neustart des Backends sind sie weg. Oder der Lauf hat keine Datei dieses Namens."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          },
+          {
+            "QueryToken": []
+          }
+        ],
+        "summary": "Einzelne Datei herunterladen",
+        "tags": [
+          "runs"
+        ]
+      }
+    },
+    "/api/scenarios": {
+      "get": {
+        "description": "Gespeicherte Szenarien (source=user, gemeinsamer Pool aller Nutzer) und die mitgelieferten Beispiele (source=example), je Gruppe nach Namen sortiert.",
+        "operationId": "list_scenarios_api_scenarios_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SavedScenario"
+                  },
+                  "title": "Response List Scenarios Api Scenarios Get",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Szenarien auflisten",
+        "tags": [
+          "scenarios"
+        ]
+      },
+      "post": {
+        "description": "Speichert den YAML-Text unter dem Namen; ein vorhandenes Szenario gleichen Namens wird überschrieben. Der Text wird nicht geprüft.",
+        "operationId": "save_scenario_api_scenarios_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SaveScenarioRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SavedScenario"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Der Name enthält kein verwertbares Zeichen."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Szenario speichern",
+        "tags": [
+          "scenarios"
+        ]
+      }
+    },
+    "/api/scenarios/examples/{example_id}": {
+      "get": {
+        "description": "example_id ist der Pfad unter examples/ ohne Endung. Dem Text ist die Kopfzeile '# geofact-origin: <id>' vorangestellt, gegen die relative Pfade aufgelöst werden.",
+        "operationId": "load_example_scenario_api_scenarios_examples__example_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "example_id",
+            "required": true,
+            "schema": {
+              "title": "Example Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioContent"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Kein Beispiel mit dieser id."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Mitgeliefertes Beispiel laden",
+        "tags": [
+          "scenarios"
+        ]
+      }
+    },
+    "/api/scenarios/{name}": {
+      "delete": {
+        "description": "Ein unbekannter Name ist kein Fehler: deleted ist dann false.",
+        "operationId": "delete_scenario_api_scenarios__name__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "title": "Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioDeleted"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Der Name enthält kein verwertbares Zeichen."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Gespeichertes Szenario löschen",
+        "tags": [
+          "scenarios"
+        ]
+      },
+      "get": {
+        "description": "Liefert den gespeicherten YAML-Text.",
+        "operationId": "load_scenario_api_scenarios__name__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "title": "Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioContent"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Der Name enthält kein verwertbares Zeichen."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Kein Szenario dieses Namens."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Gespeichertes Szenario laden",
+        "tags": [
+          "scenarios"
+        ]
+      }
+    },
+    "/api/schema": {
+      "get": {
+        "description": "JSON-Schema der Szenario-Konfiguration, abgeleitet aus den registrierten Bausteinen. Die Antwort ist selbst ein JSON-Schema-Dokument.",
+        "operationId": "scenario_schema_api_schema_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Scenario Schema Api Schema Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Szenario-Schema",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
+    "/api/uploads": {
+      "post": {
+        "description": "Speichert eine Vektor-, Raster- oder Tabellendatei und liefert das Layer-Fragment für die Konfiguration. Die Datei gehört dem anfragenden Nutzer.",
+        "operationId": "upload_api_uploads_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_upload_api_uploads_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Dateiendung wird nicht unterstützt."
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Datei größer als die Obergrenze des Servers."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Datei hochladen",
+        "tags": [
+          "uploads"
+        ]
+      }
+    },
+    "/api/uploads/{source_id}": {
+      "delete": {
+        "description": "Löscht einen eigenen Upload endgültig.",
+        "operationId": "delete_api_uploads__source_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "source_id",
+            "required": true,
+            "schema": {
+              "title": "Source Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Token fehlt, ist ungültig oder abgelaufen. Nur wirksam, wenn GEOFACT_WEB_USERS gesetzt ist (FA24); ohne konfigurierte Nutzer wird kein Token geprüft."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Upload unbekannt oder gehört einem anderen Nutzer."
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Upload löschen",
+        "tags": [
+          "uploads"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "description": "Anmeldung (FA24): Nutzername und Passwort gegen ein Token.",
+      "name": "auth"
+    },
+    {
+      "description": "Betriebszustand, Operationskatalog und Szenario-Schema.",
+      "name": "meta"
+    },
+    {
+      "description": "Datenquellen: OSM-Presets, lokale Raster, eigene Uploads.",
+      "name": "catalog"
+    },
+    {
+      "description": "Kuratierter Katalog offener Schnittstellen (FA36).",
+      "name": "apis"
+    },
+    {
+      "description": "Eigene Dateien als Layer-Quelle hochladen und löschen (FA28).",
+      "name": "uploads"
+    },
+    {
+      "description": "Konfiguration prüfen, Lizenzen prüfen, per LLM erzeugen.",
+      "name": "config"
+    },
+    {
+      "description": "Lauf starten, verfolgen, auflisten; Ergebnisse je Knoten, als einzelne Datei und als ZIP abrufen.",
+      "name": "runs"
+    },
+    {
+      "description": "Gespeicherte Szenarien und mitgelieferte Beispiele.",
+      "name": "scenarios"
+    }
+  ]
+}

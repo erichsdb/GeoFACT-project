@@ -1,0 +1,730 @@
+lon,lat,name,gewaesser,fluss_km,nummer
+10.06216,52.62271,Celle,Aller,1.74,48300105
+9.70346,52.68276,Marklendorf,Aller,38.47,48700103
+9.57088,52.76243,Ahlden,Aller,58.71,48900102
+9.38284,52.7891,Rethem,Aller,82.32,48900204
+9.27677,52.90407,Eitze,Aller,107.75,48900237
+13.32314,52.5437,Berlin-Plötzensee Op,Berlin-Spandauer-Schifffahrtskanal,7.4,586640
+13.32386,52.54304,Berlin-Plötzensee Up,Berlin-Spandauer-Schifffahrtskanal,7.5,586650
+9.18104,47.66075,Konstanz,Bodensee,0.0,906
+9.49431,53.66896,Abbenfleth Sperrwerk,Bützflether Süderelbe,2.95,126013
+13.65358,52.3744,Berlin-Schmöckwitz,Dahme-Wasserstrasse,0.3,586810
+13.64964,52.29747,Neue Mühle Schleuse Up,Dahme-Wasserstrasse,9.4,586280
+13.65176,52.29682,Neue Mühle Schleuse Op,Dahme-Wasserstrasse,9.56,586270
+7.3802,51.63974,Waltrop,Datteln-Hamm-Kanal,2.144,27800090
+7.81579,51.68481,Hamm Uw,Datteln-Hamm-Kanal,36.59,27800080
+7.84276,51.69378,Hamm Ow,Datteln-Hamm-Kanal,38.72,27800060
+7.87005,51.69515,Werries Ow,Datteln-Hamm-Kanal,40.611,27800050
+8.73078,51.38148,Helminghausen,Diemel,90.0,44100206
+8.72865,51.3777,Diemeltalsperre,Diemel,90.6,44100104
+8.72395,51.34631,Wilhelmsbrücke,Diemel,97.4,44100024
+13.58681,48.56738,Erlau,Donau,2214.5,10096001
+13.50319,48.58205,Achleiten,Donau,2223.1,10094006
+13.47802,48.5752,Passau Ilzstadt,Donau,2225.2,10092000
+13.47283,48.57583,Passau Luitpoldbrücke Dfh,Donau,2225.75,10091013
+13.45908,48.57613,Passau Donau,Donau,2226.7,10091008
+13.41269,48.57823,Kachlet Schleuse Up,Donau,2230.3,10090708
+13.47546,48.57567,Passau Steinbachbrücke Dfh,Donau,2230.31,10090710
+13.18243,48.6373,Vilshofen,Donau,2249.5,10089006
+13.11515,48.67668,Hofkirchen,Donau,2256.9,10088003
+12.96235,48.82494,Deggendorf,Donau,2284.4,10081004
+12.74722,48.87977,Pfelling,Donau,2305.5,10078000
+12.38377,48.98044,Pfatter,Donau,2350.7,10068006
+12.13869,49.02358,Schwabelweis,Donau,2376.5,10062000
+12.10183,49.02136,Regensburg Eiserne Brücke,Donau,2379.3,10061007
+12.01489,48.94697,Oberndorf,Donau,2397.4,10056302
+11.93206,48.91186,Kelheimwinzer,Donau,2409.7,10054500
+11.86463,48.9166,Kelheim Donau,Donau,2414.8,10053009
+11.42605,48.75741,Ingolstadt Luitpoldstrasse,Donau,2458.3,10046105
+7.38419,51.60472,Groppenbruch,Dortmund-Ems-Kanal,10.546,27700122
+7.339,51.61605,Henrichenburg Ow,Dortmund-Ems-Kanal,14.3,27700111
+7.32942,51.62112,Henrichenburg Uw,Dortmund-Ems-Kanal,15.9,27700133
+7.40195,51.79811,Lüdinghausen,Dortmund-Ems-Kanal,39.32,27800020
+7.66437,51.96894,Münster Ow,Dortmund-Ems-Kanal,70.315,27800040
+7.66013,51.98712,Münster Uw,Dortmund-Ems-Kanal,72.49,27800030
+7.60496,52.27585,Bergeshövede,Dortmund-Ems-Kanal,108.26,34000010
+7.29291,52.69419,Hasehubbrücke,Dortmund-Ems-Kanal,166.42,3690010
+7.26086,52.73119,Versen Trennspitze,Dortmund-Ems-Kanal,171.309,25463
+7.31714,53.04192,Herbrum Hafendamm,Dortmund-Ems-Kanal,213.07,3770030
+7.28698,53.07242,Rhede,Dortmund-Ems-Kanal,217.86,3770040
+9.26289,53.95724,Gw-Pwdrfp 02,Dyhrssenmoor,11.94,2130154610
+9.26039,53.95941,Gw-Pwdrfp 01,Dyhrssenmoor,12.03,1130154610
+9.26503,53.96212,Gw-Pwdrfp 08,Dyhrssenmoor,12.45,8130154610
+9.26864,53.96081,Gw-Pwdrfp 03,Dyhrssenmoor,12.49,3130154610
+9.26752,53.9642,Gw-Pwdrfp 09,Dyhrssenmoor,12.73,9130154610
+9.2768,53.96278,Gw-Pwdrfp 04,Dyhrssenmoor,13.0,4130154610
+9.27218,53.96864,Gw-Pwdrfp 06,Dyhrssenmoor,13.31,6130154610
+9.27597,53.96794,Gw-Pwdrfp 05,Dyhrssenmoor,13.4,5130154610
+9.27596,53.97312,Gw-Pwdrfp 07,Dyhrssenmoor,13.86,7130154610
+9.08473,51.16414,Affoldern,Eder,44.02,42800502
+9.05893,51.18404,Edertalsperre,Eder,49.2,42800310
+8.89796,51.15573,Schmittlotheim,Eder,74.5,42800309
+9.43614,54.22247,Lexfähre Oberwasser,Eider,26.09,9520020
+9.43568,54.22322,Lexfähre Unterwasser,Eider,26.09,9520030
+9.13964,54.33873,Nordfeld Oberwasser,Eider,78.19,9520040
+9.13825,54.33946,Nordfeld Unterwasser,Eider,78.312,9520050
+9.0946,54.36847,Friedrichstadt Strassenbrücke,Eider,83.14,9520060
+8.95015,54.31468,Tönning,Eider,99.8,9520070
+8.84959,54.26587,Eider-Sperrwerk Bp,Eider,110.1,9520081
+14.23523,50.87576,Schöna,Elbe,2.05,501010
+13.92976,50.96458,Pirna,Elbe,34.67,501040
+13.73883,51.05446,Dresden,Elbe,55.63,501060
+13.47547,51.16441,Meissen,Elbe,82.2,501080
+13.29334,51.31148,Riesa,Elbe,108.4,501110
+13.19176,51.43735,Mühlberg,Elbe,128.02,501160
+13.01013,51.55369,Torgau,Elbe,154.15,501261
+12.8233,51.71699,Pretzsch-Mauken,Elbe,184.45,501330
+12.82726,51.82685,Elster,Elbe,200.15,501390
+12.64631,51.85653,Wittenberg,Elbe,214.14,501420
+12.45401,51.87694,Coswig,Elbe,236.31,501470
+12.35539,51.85133,Vockerode,Elbe,245.62,501480
+12.23654,51.88141,Rosslau,Elbe,257.84,501490
+12.22328,51.85689,Dessau,Elbe,261.16,502000
+12.05886,51.85787,Aken,Elbe,274.8,502010
+11.88225,51.98483,Barby,Elbe,294.82,502070
+11.7388,52.02453,Schönebeck,Elbe,311.76,502130
+11.63499,52.11927,Magdeburg-Buckau,Elbe,325.39,502170
+11.64433,52.1297,Magdeburg-Strombrücke,Elbe,326.67,502180
+11.68265,52.18095,Rothensee,Elbe,333.12,502210
+11.73755,52.24975,Niegripp Ap,Elbe,343.6,502240
+11.76883,52.31385,Rogätz,Elbe,350.64,502250
+11.97806,52.54131,Tangermünde,Elbe,388.26,502350
+12.00248,52.61041,Storkau,Elbe,396.11,502370
+12.0313,52.78477,Sandau,Elbe,416.06,502430
+11.83756,52.95697,Scharleuk,Elbe,447.22,503030
+11.75944,52.98553,Wittenberge,Elbe,453.98,503050
+11.65621,53.0079,Müggendorf,Elbe,463.94,503070
+11.56916,53.03825,Schnackenburg,Elbe,474.56,5910010
+11.45595,53.07999,Lenzen,Elbe,484.7,503120
+11.3495,53.05028,Gorleben,Elbe,492.95,5910020
+11.24291,53.14033,Dömitz,Elbe,504.7,5910025
+11.17944,53.13777,Damnatz,Elbe,509.35,5910030
+11.04549,53.15463,Hitzacker,Elbe,522.639,5920010
+10.88882,53.23226,Neu Darchau,Elbe,536.385,5930010
+10.735,53.29508,Bleckede,Elbe,549.633,5930020
+10.71777,53.37547,Boizenburg,Elbe,558.534,5930033
+10.55884,53.36626,Hohnstorf,Elbe,568.987,5930040
+10.48922,53.37617,Artlenburg,Elbe,573.86,5930050
+10.37452,53.4265,Geesthacht,Elbe,583.393,5930060
+10.33477,53.42329,Wehr Geesthacht Up,Elbe,585.99,5930062
+10.29679,53.43084,Altengamme,Elbe,588.787,5930070
+10.18537,53.39871,Zollenspieker,Elbe,598.159,5930090
+10.10112,53.42869,Over,Elbe,605.273,5950010
+10.06402,53.46141,Bunthaus,Elbe,609.9,5952020
+9.99183,53.47273,Hamburg-Harburg,Elbe,615.0,5952025
+10.0616,53.50839,Schöpfstelle,Elbe,615.3,5952030
+9.96997,53.54544,Hamburg St. Pauli,Elbe,623.1,5952050
+9.88086,53.54016,Seemannshöft,Elbe,628.9,5952060
+9.79154,53.53594,Cranz,Elbe,634.42,5950070
+9.80711,53.55558,Blankenese Uf,Elbe,635.0,5952065
+9.70289,53.56791,Schulau,Elbe,641.0,5950090
+9.69049,53.54824,Hahnöfer Sand West Siel,Elbe,641.5,126017
+9.67207,53.56571,D1 Hanskalbsand Oberfläche,Elbe,643.0,71160198
+9.63336,53.57158,Lühort,Elbe,645.5,5960010
+9.58432,53.60941,Hetlingen,Elbe,650.5,5970010
+9.56714,53.59875,Twielenfleth Siel,Elbe,650.7,126015
+9.5266,53.62973,Stadersand,Elbe,654.9,5970013
+9.55823,53.67139,Pinnau-Sperrwerk Ap,Elbe,658.444,5970019
+9.4948,53.67915,Grauerort Reede,Elbe,660.738,5970026
+9.52634,53.71614,Krückau-Sperrwerk Ap,Elbe,663.3,5970024
+9.45976,53.73112,Kollmar,Elbe,666.9,5970025
+9.39119,53.75471,Krautsand Reede,Elbe,671.787,5970031
+9.40943,53.78436,Glückstadt,Elbe,674.0,5970035
+9.40098,53.82595,Stör-Sperrwerk Ap,Elbe,678.636,5970041
+9.31603,53.8627,Brokdorf,Elbe,684.2,5970050
+9.2882,53.8469,Schöneworth Siel,Elbe,685.1,126005
+9.14874,53.88781,Brunsbüttel Mpm,Elbe,695.214,5970094
+9.03163,53.85637,Osteriff Mpm,Elbe,703.44,5970096
+8.87072,53.83537,Otterndorf Mpm,Elbe,714.02,5990011
+8.71743,53.86769,Cuxhaven Steubenhöft,Elbe,724.0,5990020
+11.76256,52.25137,Detershagen,Elbe-Havel-Kanal,326.83,587505
+11.83203,52.27674,Burg,Elbe-Havel-Kanal,332.54,587507
+11.95739,52.33961,Zerben Op,Elbe-Havel-Kanal,344.686,587510
+11.96978,52.35068,Zerben Up,Elbe-Havel-Kanal,346.162,587520
+12.14002,52.41086,Genthin,Elbe-Havel-Kanal,361.444,587535
+12.27935,52.39705,Kade,Elbe-Havel-Kanal,371.285,587541
+12.35612,52.39427,Wusterwitz Op,Elbe-Havel-Kanal,376.56,587540
+12.37047,52.39283,Wusterwitz Up,Elbe-Havel-Kanal,376.965,587550
+10.62538,53.81755,Büssau Up,Elbe-Lübeck-Kanal,3.4,9669040
+10.6369,53.67203,Donnerschleuse Op,Elbe-Lübeck-Kanal,20.722,9660049
+10.6748,53.62445,Mölln,Elbe-Lübeck-Kanal,26.772,9660050
+10.66792,52.47767,Osloss,Elbeseitenkanal,9.72,90100100
+10.66448,52.72773,Wittingen,Elbeseitenkanal,39.0,90100101
+10.61472,52.90934,Uelzen Ow,Elbeseitenkanal,60.38,90100111
+10.61351,52.91193,Uelzen,Elbeseitenkanal,60.68,90100113
+10.61231,52.91453,Uelzen Uw,Elbeseitenkanal,60.98,90100110
+10.60335,53.0748,Bevensen,Elbeseitenkanal,79.72,90100112
+10.48546,53.27249,Lüneburg Ow,Elbeseitenkanal,104.0,90100121
+10.48699,53.28296,Lüneburg,Elbeseitenkanal,105.1,90100123
+10.48856,53.29343,Lüneburg Uw,Elbeseitenkanal,106.3,90100120
+10.50199,53.36856,Artlenburg-Esk,Elbeseitenkanal,114.7,90100122
+7.36559,53.10819,Papenburg,Ems,0.39,3790010
+7.37191,53.16119,Weener,Ems,6.852,3790020
+7.42619,53.21534,Leerort,Ems,14.79,3910010
+7.3961,53.2927,Terborg,Ems,24.67,3910020
+7.2598,53.32135,Pogum,Ems,35.302,3950020
+7.18635,53.33678,Emden Neue Seeschleuse,Ems,40.45,3970010
+7.03067,53.32717,Knock,Ems,50.848,3990010
+6.92621,53.4336,Dukegat,Ems,65.69,3990020
+6.8412,53.49352,Emshörn,Ems,74.32,9340010
+7.26952,52.54565,Wachendorf,Ems,96.71,3500031
+7.68024,52.04027,Fuestrup,Ems,102.177,3310010
+7.43408,52.28803,Rheine Unterschleuse,Ems,153.03,3390020
+7.28834,52.49659,Lingen-Darme,Ems,196.2,3500015
+7.24853,52.5956,Dalum,Ems,212.04,3550040
+7.25583,52.67002,Rühle,Ems,223.1,3500070
+7.24194,52.73298,Versen Wehrdurchstich,Ems,234.78,3730010
+7.24782,52.7313,Versen Wehr Op,Ems,,3730001
+9.70337,53.48045,Buxtehude,Este,0.71,5950080
+9.7765,53.53283,Este Inneres Sperrwerk Bp,Este,1.0,5950081
+9.77675,53.53303,Este Inneres Sperrwerk Ap,Este,1.0,5950082
+13.56625,52.83918,Ruhlsdorf Op,Finowkanal,59.2,693010
+13.59394,52.8377,Leesenbrück Op,Finowkanal,61.1,693030
+13.62571,52.84204,Grafenbrück Op,Finowkanal,63.3,693050
+13.82093,52.83583,Eberswalde Op,Finowkanal,77.9,693170
+13.85628,52.8493,Ragöse Op,Finowkanal,81.0,693190
+13.90217,52.84003,Stecher Op,Finowkanal,84.4,693210
+13.95346,52.84897,Liepe Op,Finowkanal,88.9,693230
+13.95402,52.84947,Liepe Up,Finowkanal,88.9,693240
+9.29508,53.82693,Freiburg Sperrwerk,Freiburger Hafenpriel,0.45,126006
+9.63204,51.40349,Bonaforth,Fulda,3.61,42900201
+9.46933,51.22658,Guntershausen,Fulda,43.99,42900100
+9.49819,51.19313,Grebenau,Fulda,55.49,42700202
+9.72045,51.00377,Rotenburg,Fulda,95.69,42700100
+8.76334,53.18193,Ritterhude,Hamme,25.45,4940030
+13.20935,52.54006,Berlin-Spandau Up,Havel-Oder-Wasserstrasse,0.55,580310
+13.20904,52.54186,Berlin-Spandau Op,Havel-Oder-Wasserstrasse,0.76,580300
+13.25125,52.70049,Borgsdorf,Havel-Oder-Wasserstrasse,20.3,581591
+13.28031,52.7674,Lehnitz Up,Havel-Oder-Wasserstrasse,28.4,581590
+13.28042,52.76756,Lehnitz Op,Havel-Oder-Wasserstrasse,28.7,581580
+13.93648,52.85007,Niederfinow Shw Op,Havel-Oder-Wasserstrasse,77.4,692080
+13.94433,52.84904,Niederfinow Shw Up,Havel-Oder-Wasserstrasse,78.0,692090
+14.14933,52.87426,Hohensaaten West Bp,Havel-Oder-Wasserstrasse,92.7,603310
+14.15179,52.87669,Hohensaaten West Ap,Havel-Oder-Wasserstrasse,93.0,603400
+14.32185,53.06888,Schwedt Schleuse Bp,Havel-Oder-Wasserstrasse,123.5,603410
+14.35723,53.15589,Friedrichsthal,Havel-Oder-Wasserstrasse,133.7,603420
+13.08886,52.60786,Schönwalde Op,Havelkanal,8.676,587050
+13.08408,52.60773,Schönwalde Up,Havelkanal,9.002,587060
+8.23408,53.14023,Oldenburg-Drielake,Hunte,0.547,4960030
+8.32252,53.16121,Reithörne,Hunte,7.6,4960040
+8.3785,53.16814,Hollersiel,Hunte,11.535,4960050
+8.41261,53.1799,Buttelerhörne,Hunte,14.249,4960060
+8.44739,53.20028,Huntebrück,Hunte,17.8,4960070
+8.45994,53.22122,Elsfleth Ohrt,Hunte,21.493,4960080
+10.41986,53.26104,Lüne,Ilmenau,1.501,5940020
+10.40111,53.2911,Bardowick Op,Ilmenau,5.624,5940029
+10.40107,53.29166,Bardowick Up,Ilmenau,5.687,5940030
+10.38355,53.34159,Wittorf Op,Ilmenau,12.2,5940049
+10.38356,53.34213,Wittorf Up,Ilmenau,12.3,5940050
+10.31638,53.36028,Fahrenholz Op,Ilmenau,17.64,5940070
+10.31549,53.36032,Fahrenholz Up,Ilmenau,17.71,5940060
+10.17855,53.39389,Ilmenau Sperrwerk Ap,Ilmenau,28.467,5940080
+8.68279,51.36356,Kotthausen,Itter Zur Diemel,3.4,44100013
+8.88881,51.19303,Herzhausen,Itter Zur Eder,1.3,42800218
+8.14513,53.5145,Whv Alter Vorhafen,Jade,1.565,9440020
+8.16073,53.53031,Whv Neuer Vorhafen,Jade,4.053,9440030
+8.14905,53.60204,Jade-Weser-Port,Jade,11.6,9430050
+8.14859,53.66916,Hooksielplate,Jade,18.098,9430020
+8.04707,53.699,Schillig,Jade,24.137,9430030
+8.09251,53.77171,Mellumplate,Jade,31.13,9420010
+7.98492,53.76708,Wangerooge Ost,Jade,34.999,9420020
+7.9292,53.8063,Wangerooge Nord,Jade,41.049,9420030
+7.86794,53.77624,Wangerooge West,Jade,43.208,9420040
+13.77038,54.04174,Wolgast,Kleines Haff,0.0,9650080
+13.85849,53.84367,Karnin,Kleines Haff,0.0,9690084
+13.80762,54.10786,Karlshagen,Kleines Haff,0.0,9690085
+14.06648,53.75031,Ueckermünde,Kleines Haff,0.0,9690088
+9.65389,53.75218,Elmshorn Hafen,Krückau,0.028,5970022
+9.52696,53.71626,Krückau-Sperrwerk Bp,Krückau,10.5,5970023
+8.17307,53.10885,Hundsmühlen,Küstenkanal,5.188,4960020
+7.69928,53.01895,Hilkenbrook,Küstenkanal,41.194,3800010
+8.76449,50.79872,Marburg,Lahn,-38.7,25830056
+8.6486,50.57504,Giessen Klärwerk,Lahn,-3.2,25800100
+8.42567,50.5471,Niederbiel Schleuse Kanal Op,Lahn,19.3,25800177
+8.35523,50.54512,Leun Neu,Lahn,25.1,25800200
+8.25194,50.42698,Fürfurt Schleuse Up,Lahn,51.2,25800300
+8.15857,50.40528,Runkel Schleuse Up,Lahn,65.3,25800400
+8.06519,50.39151,Limburg Schleuse Up,Lahn,76.6,25800440
+8.00243,50.37621,Diez Schleuse Op,Lahn,83.2,25800478
+8.00259,50.37581,Diez Schleuse Up,Lahn,83.2,25800480
+8.00507,50.37239,Diez Hafen,Lahn,83.7,25800500
+7.95581,50.34266,Cramberg Schleuse Op,Lahn,91.8,25800538
+7.95522,50.34282,Cramberg Schleuse Up,Lahn,91.8,25800540
+7.92959,50.33761,Scheidt Schleuse Op,Lahn,96.8,25800558
+7.92997,50.33731,Scheidt Schleuse Up,Lahn,96.8,25800560
+7.89635,50.31407,Kalkofen Schleuse Op,Lahn,105.6,25800578
+7.88982,50.31783,Kalkofen Neu,Lahn,106.4,25800600
+7.83304,50.30472,Hollerich Schleuse Op,Lahn,113.0,25800618
+7.8331,50.30457,Hollerich Schleuse Up,Lahn,113.1,25800620
+7.78801,50.3171,Nassau Schleuse Op,Lahn,117.6,25800638
+7.74376,50.32144,Dausenau Schleuse Op,Lahn,122.3,25800678
+7.74333,50.32114,Dausenau Schleuse Up,Lahn,122.4,25800680
+7.7109,50.33188,Bad Ems Wehr Op,Lahn,125.9,25800690
+7.69635,50.3351,Bad Ems Schleuse Up,Lahn,127.0,25800700
+7.6165,50.30789,Lahnstein Schleuse Op,Lahn,135.9,25800798
+7.61296,50.30803,Lahnstein Schleuse Up,Lahn,136.0,25800800
+13.33504,52.51161,Berlin-Unterschleuse Up,Landwehrkanal,1.61,586630
+13.33652,52.5114,Berlin-Unterschleuse Op,Landwehrkanal,1.71,586620
+13.44883,52.49741,Berlin-Oberschleuse Up,Landwehrkanal,10.51,586610
+13.44973,52.49828,Berlin-Oberschleuse Op,Landwehrkanal,10.62,586600
+7.66914,53.17799,Dreyschloot,Leda,0.73,3880010
+7.47324,53.21355,Ledasperrwerk Up,Leda,21.125,3880050
+9.67606,52.38807,Herrenhausen,Leine,25.12,48800108
+9.46672,52.50959,Neustadt,Leine,66.4,48800200
+9.60402,52.6834,Schwarmstedt,Leine,106.04,48800301
+8.71821,53.16282,Wasserhorst,Lesum,2.3,4930010
+13.22997,53.17717,Himmelpfort Up,Lychener Gewässer,0.2,581120
+13.23063,53.17745,Himmelpfort Op,Lychener Gewässer,0.3,581110
+9.59113,53.51227,Horneburg,Lühe,0.25,5960020
+9.63367,53.57138,Lühort Lfk,Lühe,12.6,126016
+8.44829,50.01616,Raunheim,Main,12.213,24900108
+8.715,50.10574,Frankfurt Osthafen,Main,37.591,24700404
+8.91758,50.12018,Hanau Brücke Dfh,Main,56.398,24700347
+8.93636,50.10704,Auheim Brücke Dfh,Main,59.56,24700346
+8.9536,50.07972,Krotzenburg,Main,63.23,24700335
+9.03373,50.01537,Mainflingen,Main,76.43,24700325
+9.04071,50.00824,Kleinostheim_Wuk,Main,77.8,24700323
+9.12908,49.9338,Obernau,Main,92.385,24700302
+9.22524,49.71614,Kleinheubach,Main,121.7,24700200
+9.43883,49.78498,Faulbach,Main,146.6,24700109
+9.5183,49.76094,Wertheim,Main,156.96,24709089
+9.60208,50.01105,Steinbach,Main,200.52,24500100
+9.92597,49.79621,Würzburg,Main,251.97,24300600
+10.21766,49.85841,Astheim,Main,311.22,24300406
+10.22186,50.03098,Schweinfurt Neuer Hafen,Main,330.78,24300304
+10.75521,49.9297,Trunstadt,Main,378.44,24300202
+10.90681,49.882,Bamberg,Main-Donau-Kanal,7.31,24300042
+11.68498,48.97344,Riedenburg_Up,Main-Donau-Kanal,151.2,13409200
+13.39605,52.85031,Liebenwalde Up,Malzer Kanal,43.3,581550
+13.39607,52.85095,Liebenwalde Op,Malzer Kanal,45.3,581540
+7.60545,52.28313,Hörstel,Mittellandkanal,0.6,31010010
+7.70627,52.35433,Recke,Mittellandkanal,12.595,31010011
+7.97817,52.39617,Bramsche,Mittellandkanal,31.95,31010020
+8.19018,52.39067,Broxten,Mittellandkanal,47.43,31010032
+8.34252,52.32454,Bad Essen,Mittellandkanal,60.8,31010030
+8.61714,52.33496,Lübbecke,Mittellandkanal,80.1,31010031
+8.8689,52.29731,Hahlen,Mittellandkanal,98.09,31010041
+8.9269,52.30308,Minden,Mittellandkanal,102.132,3101004
+8.93223,52.30361,Weser,Mittellandkanal,102.5,31010045
+8.99063,52.29495,Berenbusch,Mittellandkanal,106.732,31010042
+9.05335,52.31112,Warber Graben,Mittellandkanal,111.75,31010040
+9.05827,52.31325,Rusbend,Mittellandkanal,112.16,31010043
+9.22853,52.3792,Nienbrügge,Mittellandkanal,126.7,31010044
+9.31591,52.38759,Rodenberger Aue-West,Mittellandkanal,132.68,31010052
+9.32865,52.3882,Rodenberger Aue-Ost,Mittellandkanal,133.55,31010051
+9.56415,52.39931,Lohnde,Mittellandkanal,150.1,31010050
+9.74577,52.40596,Hann. List,Mittellandkanal,163.56,31010062
+9.85878,52.36671,Anderten Uw,Mittellandkanal,173.425,31010060
+9.86658,52.35833,Anderten,Mittellandkanal,174.5,31010063
+9.86974,52.35468,Anderten Ow,Mittellandkanal,174.96,31010061
+9.96209,52.30605,Sehnde,Mittellandkanal,183.58,31010070
+10.09332,52.31075,Mehrum,Mittellandkanal,192.556,31010071
+10.51713,52.33524,Thune,Mittellandkanal,222.85,31010080
+10.64738,52.41683,Sülfeld Ow,Mittellandkanal,235.7,31010092
+10.66198,52.42107,Sülfeld,Mittellandkanal,236.8,31010094
+10.6783,52.42507,Sülfeld Uw,Mittellandkanal,238.0,31010091
+10.84064,52.43289,Vorsfelde,Mittellandkanal,249.12,31010090
+10.90958,52.47882,Rühen,Mittellandkanal,256.1,31010093
+11.27265,52.40916,Velsdorf,Mittellandkanal,283.1,3101012
+11.40877,52.27792,Haldensleben,Mittellandkanal,300.9,3101013
+11.6891,52.22969,Kanalbrücke,Mittellandkanal,321.33,3101018
+7.59079,50.36491,Koblenz-Lützel Dfh,Mosel,1.3,26900910
+7.58074,50.36791,Koblenz Op,Mosel,2.111,26900880
+7.4577,50.27847,Lehmen Up,Mosel,20.37,26900700
+7.45704,50.27321,Lehmen Op,Mosel,21.04,26900680
+7.4461,50.25019,Alken,Mosel,24.1,26900510
+7.33687,50.18242,Müden Up,Mosel,36.8,26900500
+7.32719,50.18415,Müden Op,Mosel,37.47,26900480
+7.16767,50.14451,Cochem,Mosel,51.6,26900400
+7.22724,50.12805,Fankel Up,Mosel,58.9,26900300
+7.22943,50.12176,Fankel Op,Mosel,59.7,26900280
+7.13399,50.08932,Sankt Aldegund Up,Mosel,78.1,26900100
+7.13329,50.086,Sankt Aldegund Op,Mosel,78.48,26900080
+7.12293,49.97807,Enkirch Up,Mosel,102.6,26700900
+7.12297,49.97808,Enkirch Op,Mosel,103.128,26700880
+7.01604,49.95018,Zeltingen Up,Mosel,123.4,26700600
+7.0277,49.94842,Zeltingen Op,Mosel,124.1,26700580
+6.94662,49.87571,Wintrich Up,Mosel,141.1,26700400
+6.9553,49.8818,Wintrich Op,Mosel,141.7,26700380
+6.8413,49.82411,Detzem Up,Mosel,165.4,26700200
+6.85217,49.80702,Detzem Op,Mosel,167.7,26700180
+6.70423,49.78305,Ruwer,Mosel,185.94,26500150
+6.62685,49.73219,Trier Up,Mosel,195.3,26500100
+6.44141,49.67505,Grevenmacher Up,Mosel,212.5,26100200
+6.40446,49.60679,Wincheringen,Mosel,222.2,26100140
+6.37209,49.56303,Stadtbredimus Up,Mosel,229.44,26100130
+6.36904,49.47257,Perl,Mosel,241.8,26100100
+13.99639,52.36905,Grosse Tränke Wehr Up,Müggelspree,44.91,582670
+13.99695,52.36799,Grosse Tränke Wehr Op,Müggelspree,45.03,582660
+11.25995,53.14017,Dömitz Up,Müritz-Elde-Wasserstrasse,0.9,596460
+11.26063,53.14111,Dömitz Op,Müritz-Elde-Wasserstrasse,1.0,596450
+11.28638,53.17204,Neu Kalliss Op,Müritz-Elde-Wasserstrasse,4.97,596430
+11.29493,53.17767,Findenwirunshier Op,Müritz-Elde-Wasserstrasse,5.838,596410
+11.34393,53.19044,Malliss Up,Müritz-Elde-Wasserstrasse,9.431,596400
+11.34503,53.19058,Malliss Op,Müritz-Elde-Wasserstrasse,9.507,596390
+11.42828,53.23204,Eldena Op,Müritz-Elde-Wasserstrasse,18.004,596370
+11.47983,53.25454,Güritz Op,Müritz-Elde-Wasserstrasse,22.8,596350
+11.57341,53.28314,Grabow Op,Müritz-Elde-Wasserstrasse,30.849,596330
+11.59191,53.35816,Klein Laasch Wehr Op,Müritz-Elde-Wasserstrasse,42.718,596300
+11.58939,53.38167,Neustadt Glewe Op,Müritz-Elde-Wasserstrasse,46.197,596280
+11.6016,53.41839,Lewitz Op,Müritz-Elde-Wasserstrasse,50.599,596250
+11.7011,53.45387,Garwitz Up,Müritz-Elde-Wasserstrasse,60.655,596230
+11.76515,53.44244,Malchow Wehr Op,Müritz-Elde-Wasserstrasse,65.201,596200
+11.83457,53.42526,Parchim Güte,Müritz-Elde-Wasserstrasse,72.567,5961801
+11.93033,53.41602,Neuburg Op,Müritz-Elde-Wasserstrasse,83.362,596160
+11.97494,53.39015,Burow,Müritz-Elde-Wasserstrasse,88.39,5961601
+12.02849,53.46279,Lübz Op,Müritz-Elde-Wasserstrasse,98.977,596140
+12.07189,53.4919,Bobzin Op,Müritz-Elde-Wasserstrasse,103.8,596120
+12.18889,53.46932,Barkow Op,Müritz-Elde-Wasserstrasse,114.086,596100
+12.2599,53.45671,Plau Up,Müritz-Elde-Wasserstrasse,120.004,596090
+12.26104,53.45676,Plau Op,Müritz-Elde-Wasserstrasse,120.08,596080
+12.67419,53.51438,Waren,Müritz-Elde-Wasserstrasse,151.975,596030
+12.99691,53.20625,Strasen Op,Müritz-Havel-Wasserstrasse,2.7,581060
+12.99782,53.20637,Strasen Up,Müritz-Havel-Wasserstrasse,2.7,581070
+12.86046,53.2078,Diemitz Op,Müritz-Havel-Wasserstrasse,13.7,581020
+12.86133,53.20799,Diemitz Up,Müritz-Havel-Wasserstrasse,13.7,581030
+12.80277,53.27148,Mirow Up,Müritz-Havel-Wasserstrasse,22.9,581010
+12.80024,53.27255,Mirow Op,Müritz-Havel-Wasserstrasse,23.1,581000
+8.46936,49.49435,Mannheim Neckar,Neckar,3.1,23800900
+8.71774,49.41469,Heidelberg Up,Neckar,26.1,23800760
+8.7619,49.41661,Ziegelhausen Ams,Neckar,29.4,23800745
+9.00502,49.43825,Rockenau Ska,Neckar,60.7,23800690
+9.15362,49.2814,Gundelsheim Up,Neckar,93.8,23800620
+9.21544,49.22565,Kochendorf Schleuse Up,Neckar,103.8,23800600
+9.21546,49.18974,Neckarsulm Wehr Up,Neckar,107.0,23800580
+9.1527,49.09965,Horkheim Wehr Up,Neckar,119.8,23800520
+9.1606,49.07394,Lauffen Schleuse Up,Neckar,125.1,23800501
+9.15979,49.07233,Lauffen,Neckar,125.43,23800500
+9.15435,49.00775,Besigheim Schleuse Up,Neckar,136.2,23800480
+9.15241,49.00733,Besigheim Ska,Neckar,136.284,23800460
+9.14812,49.00421,Besigheim Wehr Up,Neckar,136.9,23800440
+9.19217,48.99314,Hessigheim Schleuse Up,Neckar,142.9,23800420
+9.19637,48.96057,Pleidelsheim Schleuse Up,Neckar,150.0,23800400
+9.20962,48.94365,Beihingen Wehr Up,Neckar,154.3,23800360
+9.25008,48.9371,Marbach Schleuse Up,Neckar,157.5,23800322
+9.23964,48.9288,Marbach Wehr Up,Neckar,158.931,23800320
+9.2441,48.91082,Poppenweiler Schleuse Up,Neckar,164.7,23800300
+9.26113,48.86716,Aldingen Schleuse Up,Neckar,171.9,23800280
+9.22598,48.83897,Hofen Schleuse Up,Neckar,176.0,23800260
+9.20946,48.80209,Cannstatt Schleuse Up,Neckar,182.7,23800240
+9.24316,48.77801,Untertürkheim Schleuse Up,Neckar,186.2,23800220
+9.26451,48.7537,Obertürkheim Schleuse Up,Neckar,189.4,23800200
+9.31106,48.73239,Esslingen Schleuse Up,Neckar,193.9,23800180
+9.31349,48.73153,Esslingen Wehr Op,Neckar,194.1,23800176
+9.32121,48.72746,Oberesslingen Schleuse Up,Neckar,194.8,23800145
+9.34129,48.7218,Oberesslingen Wehr Up,Neckar,196.5,23800140
+9.38186,48.71653,Deizisau Schleuse Up,Neckar,199.5,23800120
+9.41919,48.70743,Plochingen,Neckar,202.56,23800100
+14.29053,52.26642,Neuhaus Op,Neuhauser Speisekanal,2.7,585850
+14.29038,52.26577,Neuhaus Up,Neuhauser Speisekanal,2.77,585860
+11.74188,52.24874,Niegripp Bp,Niegripper Verbindungskanal,0.59,587500
+9.96777,54.33483,Awk Strohbrück,Nord-Ostsee-Kanal,0.89,5970069
+9.14986,53.8984,Nok Brunsbüttel,Nord-Ostsee-Kanal,2.116,5970091
+9.30224,54.04072,Nok Dükerswisch,Nord-Ostsee-Kanal,21.5,5970085
+9.55232,54.20016,Nok Breiholz,Nord-Ostsee-Kanal,48.5,5970075
+9.69363,54.29769,Nok Rendsburg,Nord-Ostsee-Kanal,63.5,5970074
+9.88325,54.35683,Nok Königsförde,Nord-Ostsee-Kanal,79.63,5970067
+10.13887,54.36569,Nok Kiel Binnen,Nord-Ostsee-Kanal,97.76,5979020
+10.14453,54.36486,Nok Kiel Aussen,Nord-Ostsee-Kanal,98.13,5650068
+7.8899,54.17889,Helgoland Binnenhafen,Nordsee,0.0,9510070
+8.70202,54.50092,Pellworm Anleger,Nordsee,0.0,9550021
+8.38394,54.63176,Wittdün,Nordsee,0.0,9570010
+6.74789,53.55744,Borkum Fischerbalje,Nordsee,83.5,9340020
+6.66142,53.57685,Borkum Südstrand,Nordsee,89.23,9340030
+7.89431,54.17497,Helgoland Südhafen,Nordsee,100.0,9510075
+8.8591,54.12176,Büsum,Nordsee,100.0,9510095
+9.02477,54.47228,Husum,Nordsee,100.0,9530020
+8.68697,54.73051,Dagebüll,Nordsee,100.0,9570040
+8.29603,54.75809,Hörnum,Nordsee,100.0,9570050
+8.44041,55.01654,List Auf Sylt,Nordsee,100.0,9570070
+8.84213,54.26592,Eider-Sperrwerk Ap,Nordsee,109.617,9530010
+7.15776,53.6965,Norderney Riffgat,Nordsee,159.333,9360010
+7.50165,53.72323,Langeoog,Nordsee,182.129,9390010
+7.68194,53.74924,Spiekeroog,Nordsee,194.374,9410010
+8.65823,53.95551,Zehnerloch,Nordsee,733.0,9510010
+8.6362,53.94208,Mittelgrund,Nordsee,733.7,9510132
+8.46256,53.96704,Scharhörn,Nordsee,745.0,9510060
+8.31514,53.98442,Bake A,Nordsee,755.7,9510063
+8.3146,54.01352,Bake Z,Nordsee,755.9,9510066
+13.38096,52.89222,Bischofswerder Up,Obere Havel-Wasserstrasse,4.2,581530
+13.38107,52.89287,Bischofswerder Op,Obere Havel-Wasserstrasse,4.5,581520
+13.33328,52.98201,Zehdenick Up,Obere Havel-Wasserstrasse,15.8,580170
+13.33121,52.98346,Zehdenick Op,Obere Havel-Wasserstrasse,16.1,580160
+13.24142,53.1348,Bredereiche Up,Obere Havel-Wasserstrasse,47.6,580090
+13.23936,53.13818,Bredereiche Op,Obere Havel-Wasserstrasse,48.0,580080
+13.14645,53.18165,Fürstenberg Up,Obere Havel-Wasserstrasse,60.7,580070
+13.14457,53.18149,Fürstenberg Op,Obere Havel-Wasserstrasse,60.8,580060
+12.9895,53.27391,Wesenberg Up,Obere Havel-Wasserstrasse,81.7,580030
+12.98876,53.27442,Wesenberg Op,Obere Havel-Wasserstrasse,81.8,580020
+13.03244,53.32134,Vosswinkel Op,Obere Havel-Wasserstrasse,88.1,580000
+13.03154,53.32054,Vosswinkel Up,Obere Havel-Wasserstrasse,90.0,580010
+14.75295,52.07054,Ratzdorf,Oder,542.5,603140
+14.68793,52.15317,Eisenhüttenstadt,Oder,554.1,603000
+14.55173,52.35781,Frankfurt1 (Oder),Oder,585.3,603031
+14.6303,52.5776,Kietz,Oder,614.8,603040
+14.43364,52.68003,Kienitz,Oder,632.9,603050
+14.14113,52.86474,Hohensaaten-Finow,Oder,665.0,603080
+14.19335,52.98372,Stützkow,Oder,680.6,603100
+14.31163,53.03558,Schwedt-Oderbrücke,Oder,690.6,603130
+13.24355,52.75019,Ohv Km 1.467 (Blaues Wunder),Oranienburger Havel,1.5,580272
+13.23602,52.76244,Ohv Km 3.014 (Hochspannung),Oranienburger Havel,3.0,580271
+13.24291,52.77644,Sachsenhausen Op,Oranienburger Kanal,29.8,580240
+13.24285,52.77637,Sachsenhausen Up,Oranienburger Kanal,29.8,581840
+9.15478,53.48412,Bremervörde Uw,Oste,0.03,5980010
+9.25277,53.64053,Hechthausen,Oste,30.94,5980030
+9.16339,53.70158,Achthöfener Fleth Siel,Oste,49.1,126004
+9.1309,53.78069,Neuenseer Schleusenfleth Siel,Oste,58.9,126003
+9.08046,53.80124,Geversdorf Brücke,Oste,64.45,126002
+9.03988,53.82037,Oste-Sperrwerk Bp,Oste,69.575,9000000532
+9.03973,53.82038,Oste-Sperrwerk Ap,Oste,69.575,9000000590
+9.03713,53.82276,Belum Pegel,Oste,69.89,126019
+9.03713,53.82276,Belum,Oste,69.89,5980060
+10.27327,54.49959,Lt Kiel,Ostsee,0.0,9610050
+12.10339,54.16973,Warnemünde,Ostsee,0.0,9640015
+12.41896,54.37176,Althagen,Ostsee,0.0,9650024
+12.72322,54.37122,Barth,Ostsee,0.0,9650030
+13.03222,54.43454,Barhöft,Ostsee,0.0,9650040
+13.11901,54.30568,Stralsund,Ostsee,0.0,9650043
+13.28971,54.23446,Stahlbrode,Ostsee,0.0,9650070
+13.09356,54.52449,Neuendorf Hafen,Ostsee,0.0,9670046
+13.11136,54.58477,Kloster,Ostsee,0.0,9670050
+13.24513,54.55759,Wittower Fähre,Ostsee,0.0,9670055
+13.4997,54.3416,Lauterbach,Ostsee,0.0,9670063
+13.63665,54.50829,Sassnitz,Ostsee,0.0,9670065
+13.70976,54.28067,Thiessow,Ostsee,0.0,9670067
+13.77191,54.20435,Ruden,Ostsee,0.0,9690077
+13.90721,54.24131,Greifswald Oie,Ostsee,0.0,9690078
+14.00082,54.06038,Koserow,Ostsee,0.0,9690093
+13.45715,54.09771,Greifswald-Wieck,Ostsee,1.0,9650073
+9.43302,54.79506,Flensburg,Ostsee,4.0,9610010
+9.65414,54.82327,Langballigau,Ostsee,35.0,9610015
+10.03669,54.67274,Schleimünde Sp,Ostsee,78.0,9610025
+11.37564,53.992,Timmendorf Poel,Ostsee,100.0,9630007
+11.45792,53.89876,Wismar-Baumhaus,Ostsee,100.0,9630008
+11.00566,54.37296,Heiligenhafen,Ostsee,123.0,9610070
+10.15705,54.37209,Kiel-Holtenau,Ostsee,150.0,9610066
+10.80499,54.09652,Neustadt,Ostsee,263.0,9610080
+11.23887,54.49663,Marienleuchte,Ostsee,284.7,9610075
+9.93794,54.66438,Kappeln,Ostsee,507.3,9610035
+9.56906,54.51143,Schleswig,Ostsee,540.0,9610040
+9.83601,54.4747,Eckernförde,Ostsee,612.0,9610045
+12.57182,54.459,Prerow,Ostsee,,9650027
+11.97665,52.40385,Parey Ep,Pareyer Verbindungskanal,0.685,502300
+11.97905,52.40307,Parey Up,Pareyer Verbindungskanal,0.85,587530
+12.88804,53.84793,Aalbude,Peene,14.9,9660009
+13.02656,53.91635,Demmin,Peene,31.8,9660007
+13.34228,53.92875,Jarmen,Peene,61.7,9660005
+13.70428,53.86275,Anklam,Peene,89.8,9660001
+9.67708,53.67819,Uetersen,Pinnau,9.51,5970016
+9.55876,53.67117,Pinnau-Sperrwerk Bp,Pinnau,18.1,5970018
+13.07207,52.39989,Potsdam,Potsdamer Havel,26.63,580412
+9.17286,47.66789,Konstanz-Rhein,Rhein,0.5,3329
+7.61667,47.55949,Basel-Rheinhalle,Rhein,164.3,2310010
+7.52928,47.71106,Rheinweiler,Rhein,186.2,23300130
+7.57257,48.04321,Breisach,Rhein,227.6,23300320
+7.68237,48.25747,Rust,Rhein,254.2,23300580
+7.73266,48.38464,Ottenheim,Rhein,270.6,23300800
+7.80769,48.56332,Kehl-Kronenhof,Rhein,292.2,23300900
+8.1169,48.85215,Iffezheim,Rhein,336.2,23500600
+8.13593,48.88597,Plittersdorf,Rhein,340.2,23500700
+8.30556,49.03898,Maxau,Rhein,362.327,23700200
+8.42883,49.25527,Philippsburg,Rhein,389.33,23700500
+8.44871,49.32381,Speyer,Rhein,400.61,23700600
+8.45516,49.48394,Mannheim,Rhein,424.733,23700700
+8.37752,49.63184,Worms,Rhein,443.37,23900200
+8.35238,49.86498,Nierstein-Oppenheim,Rhein,480.606,23900600
+8.34278,49.93565,Bodenheim,Rhein,489.0,23900620
+8.27532,50.004,Mainz,Rhein,498.27,25100100
+8.03005,50.00287,Oestrich,Rhein,518.08,25100300
+7.89967,49.97034,Bingen,Rhein,528.36,25300200
+7.76496,50.08544,Kaub,Rhein,546.23,25700100
+7.71262,50.15256,Sankt Goar,Rhein,556.43,25700300
+7.59213,50.23291,Boppard,Rhein,570.45,25700500
+7.64567,50.2705,Braubach,Rhein,579.98,25700600
+7.60474,50.35864,Koblenz,Rhein,591.49,25900700
+7.45745,50.42428,Neuwied Stadt,Rhein,608.04,27100370
+7.39206,50.44339,Andernach,Rhein,613.78,27100400
+7.21022,50.61369,Oberwinter,Rhein,638.19,27100700
+7.10804,50.7364,Bonn,Rhein,654.8,2710080
+6.9633,50.93695,Köln,Rhein,688.0,2730010
+6.76989,51.2255,Düsseldorf,Rhein,744.2,2750010
+6.72793,51.45535,Duisburg-Ruhrort,Rhein,780.8,2770010
+6.60682,51.64614,Wesel,Rhein,814.0,2770040
+6.39569,51.75695,Rees,Rhein,837.4,2790010
+6.24559,51.82925,Emmerich,Rhein,851.9,2790020
+6.11245,51.84983,Lobith,Rhein,862.0,2790050
+6.04008,51.86972,Pannerdense Kop,Rhein,867.3,2790060
+6.77596,51.45172,Duisburg-Meiderich Schleuse Ow,Rhein-Herne-Kanal,0.869,27700262
+6.77912,51.45237,Duisburg-Meiderich Schleuse Uw,Rhein-Herne-Kanal,1.1,27700273
+6.81546,51.47897,Oberhausen Schleuse Uw,Rhein-Herne-Kanal,5.189,27700251
+6.82145,51.48214,Oberhausen Schleuse Ow,Rhein-Herne-Kanal,5.734,27700240
+7.05389,51.52979,Gelsenkirchen Schleuse Uw,Rhein-Herne-Kanal,23.069,27700230
+7.05989,51.53223,Gelsenkirchen Schleuse Ow,Rhein-Herne-Kanal,23.566,27700229
+7.158,51.54725,Wanne Eickel Schleuse Uw,Rhein-Herne-Kanal,30.907,27700218
+7.16599,51.54816,Wanne Eickel Schleuse Ow,Rhein-Herne-Kanal,31.47,27700193
+7.30614,51.6031,Herne Uw,Rhein-Herne-Kanal,36.825,27700160
+7.24582,51.5646,Herne Ow,Rhein-Herne-Kanal,37.35,27700150
+12.90535,53.18244,Wolfsbruch Op,Rheinsberger Gewässer,2.3,589000
+12.90264,53.18216,Wolfsbruch Up,Rheinsberger Gewässer,2.5,589010
+11.6744,52.22051,Schleuse Rothensee Up,Rothenseer-Verbindungskanal,1.3,3101016
+11.68727,52.19704,Magdeburg-Ro Nws,Rothenseer-Verbindungskanal,4.15,13101016
+6.75744,51.44592,Ruhrwehr Ow,Ruhr,2.961,27600090
+6.87596,51.42676,Schlossbrücke Mülheim,Ruhr,12.183,27600030
+7.16103,51.39975,Hattingen,Ruhr,56.9,2769510000100
+9.41941,53.71996,Ruthenstrom-Sperrwerk,Ruthenstrom,3.64,126010
+13.76418,52.44177,Woltersdorf Up,Rüdersdorfer Gewässer,3.71,586050
+13.76487,52.44332,Woltersdorf Op,Rüdersdorfer Gewässer,3.89,586040
+11.87401,51.91711,Gross Rosenburg,Saale,9.64,570950
+11.81221,51.91641,Calbe Grizehne,Saale,17.43,570940
+11.78882,51.90628,Calbe Up,Saale,19.67,570930
+11.78871,51.90107,Calbe Op,Saale,20.08,570920
+11.7722,51.83918,Nienburg (Saale),Saale,27.9,579100
+11.73542,51.79679,Bernburg Up,Saale,36.05,570910
+11.73383,51.79584,Bernburg Op,Saale,36.2,570900
+11.67737,51.70755,Alsleben Up,Saale,50.24,570880
+11.67921,51.70638,Alsleben Op,Saale,50.42,570870
+11.75128,51.6553,Rothenburg Up,Saale,58.6,570860
+11.75218,51.65386,Rothenburg Op,Saale,58.78,570850
+11.79298,51.58234,Wettin Up,Saale,70.3,570840
+11.79533,51.58261,Wettin Op,Saale,70.47,570830
+11.95455,51.51425,Trotha Up,Saale,89.15,570810
+11.95489,51.51369,Trotha Op,Saale,89.22,570800
+11.94465,51.43507,Röpzig,Saale,101.9,570710
+12.00339,51.35059,Rischmühle Up,Saale,115.19,570630
+12.00225,51.3502,Rischmühle Op,Saale,115.26,570620
+6.57456,49.63852,Schoden Ska,Saar,7.19,26400840
+6.57353,49.63952,Schoden Up,Saar,7.7,26400750
+6.58989,49.56545,Serrig Up,Saar,18.2,26400670
+6.58741,49.49199,Mettlach Up,Saar,30.9,26400600
+6.64842,49.40893,Fremersdorf,Saar,48.514,26400550
+6.69911,49.37626,Rehlingen Up,Saar,53.9,26400500
+6.76464,49.29868,Lisdorf Up,Saar,65.9,26400400
+6.98039,49.23661,Westspange,Saar,86.5,26400240
+7.02266,49.21487,Sankt Arnual,Saar,90.906,26400220
+7.06561,49.11433,Hanweiler,Saar,104.6,26400100
+14.32342,53.07017,Schwedt Schleuse Ap,Schwedter Querfahrt,0.5,603110
+9.51432,53.62485,Schwinge-Sperrwerk,Schwinge,3.6,126014
+13.28255,52.53004,Berlin-Charlottenburg Up,Spree-Oder-Wasserstrasse,6.24,582750
+13.29222,52.53142,Berlin-Charlottenburg Op,Spree-Oder-Wasserstrasse,6.44,582740
+13.40869,52.5149,Berlin-Mühlendamm Up,Spree-Oder-Wasserstrasse,17.7,582730
+13.41146,52.51446,Berlin-Mühlendamm Op,Spree-Oder-Wasserstrasse,17.9,582720
+13.57399,52.42969,Berlin-Köpenick,Spree-Oder-Wasserstrasse,35.02,586290
+13.70755,52.37263,Wernsdorf Up,Spree-Oder-Wasserstrasse,47.46,585930
+13.71121,52.37118,Wernsdorf Op,Spree-Oder-Wasserstrasse,47.74,585920
+14.06514,52.35413,Fürstenwalde Up,Spree-Oder-Wasserstrasse,74.7,582650
+14.06653,52.35426,Fürstenwalde Op,Spree-Oder-Wasserstrasse,74.8,582640
+14.23908,52.30511,Kersdorf Up,Spree-Oder-Wasserstrasse,89.66,585950
+14.24176,52.30458,Kersdorf Op,Spree-Oder-Wasserstrasse,89.86,585940
+14.65221,52.13217,Eisenhüttenstadt Schl. Op,Spree-Oder-Wasserstrasse,127.2,690050
+14.65628,52.13213,Eisenhüttenstadt Schl. Up,Spree-Oder-Wasserstrasse,127.5,603020
+13.8646,52.26878,Kummersdorf Up,Storkower Gewaesser,10.21,586360
+13.86613,52.2674,Kummersdorf Op,Storkower Gewaesser,10.4,586350
+13.93106,52.2584,Storkow Up,Storkower Gewaesser,15.39,586340
+13.93356,52.25857,Storkow Op,Storkower Gewaesser,15.56,586330
+14.00297,52.21429,Wendisch Rietz Up,Storkower Gewaesser,22.71,586320
+14.00433,52.21419,Wendisch Rietz Op,Storkower Gewaesser,22.77,586310
+9.69058,53.9357,Grönhude,Stör,5.1,5970037
+9.63232,53.92768,Breitenberg,Stör,11.9,5970038
+9.50061,53.92446,Itzehoe Hafen,Stör,24.88,5970042
+9.4014,53.82615,Stör-Sperrwerk Bp,Stör,50.2,5970040
+11.52182,53.52284,Banzkow Up,Stör-Wasserstrasse,10.852,596930
+11.52019,53.52376,Banzkow Op,Stör-Wasserstrasse,11.001,596920
+11.42745,53.64639,Schwerin Werderbrücke,Stör-Wasserstrasse,26.06,596900
+13.20798,52.39553,Kleinmachnow Up,Teltowkanal,8.28,587030
+13.20995,52.39569,Kleinmachnow Op,Teltowkanal,8.42,587020
+13.39211,53.07462,Kannenburg Op,Templiner Gewässer,3.6,581220
+13.39129,53.07446,Kannenburg Up,Templiner Gewässer,3.6,581230
+13.49531,53.1225,Templin Op,Templiner Gewässer,13.3,581200
+13.49475,53.12225,Templin Up,Templiner Gewässer,13.3,581210
+10.70307,53.89301,Lübeck-Bauhof,Trave,7.79,9620090
+10.87218,53.95802,Travemünde,Trave,26.2,9620085
+9.08381,54.37365,Friedrichstadt Treene,Treene,0.0,9520061
+12.85678,52.46315,Ketzin,Untere Havel-Wasserstrasse,34.053,580430
+12.58082,52.42087,Brandenburg Op,Untere Havel-Wasserstrasse,55.115,580440
+12.56884,52.42366,Brandenburg Up,Untere Havel-Wasserstrasse,56.0,580450
+12.39302,52.4027,Plaue Op,Untere Havel-Wasserstrasse,67.8,587560
+12.39477,52.40297,Plaue Up,Untere Havel-Wasserstrasse,68.0,580600
+12.4475,52.47273,Tieckow,Untere Havel-Wasserstrasse,76.33,580601
+12.41871,52.50136,Bahnitz Op,Untere Havel-Wasserstrasse,81.793,580620
+12.41524,52.50076,Bahnitz Up,Untere Havel-Wasserstrasse,82.11,580630
+12.31384,52.60049,Rathenow Op,Untere Havel-Wasserstrasse,102.86,580640
+12.32102,52.60744,Rathenow Up,Untere Havel-Wasserstrasse,103.94,580650
+12.33371,52.65595,Albertsheim,Untere Havel-Wasserstrasse,109.83,580520
+12.25967,52.66716,Grütz Op,Untere Havel-Wasserstrasse,116.772,580700
+12.25462,52.66655,Grütz Up,Untere Havel-Wasserstrasse,117.238,580710
+12.20458,52.74012,Warnau Polder,Untere Havel-Wasserstrasse,127.5,588321
+12.22163,52.73853,Gülpe Op,Untere Havel-Wasserstrasse,127.644,580747
+12.2149,52.74594,Garz Op,Untere Havel-Wasserstrasse,128.845,580750
+12.21269,52.74861,Garz Up,Untere Havel-Wasserstrasse,129.18,580760
+12.09766,52.81757,Trübengraben Polder,Untere Havel-Wasserstrasse,141.0,580795
+12.07656,52.8232,Havelberg Stadt,Untere Havel-Wasserstrasse,145.261,580790
+12.0571,52.83099,Havelberg Up,Untere Havel-Wasserstrasse,146.89,580800
+12.05303,52.83375,Havelberg Ep,Untere Havel-Wasserstrasse,147.305,502475
+12.00543,52.88086,Quitzöbel Op,Untere Havel-Wasserstrasse,156.105,580820
+12.00406,52.88077,Quitzöbel Up,Untere Havel-Wasserstrasse,156.19,580830
+12.00801,52.87736,Neuwerben Ep,Untere Havel-Wasserstrasse,156.21,502470
+11.88725,52.90761,Gnevsdorf Op,Untere Havel-Wasserstrasse,165.45,580840
+11.88597,52.90799,Gnevsdorf Ep,Untere Havel-Wasserstrasse,165.48,503010
+14.15097,52.87443,Hohensaaten Ost Ap,Verbindungskanal Hohensaaten,92.9,603090
+5.85067,51.85245,Nijmegen Haven,Waal,885.0,852369741
+5.45568,51.90053,Tiel,Waal,913.5,123456781
+12.15427,54.08244,Rostock Mühlendamm Ow,Warnow,141.5,9640002
+12.15511,54.08306,Rostock Mühlendamm Uw,Warnow,141.6,9640018
+13.29274,53.05136,Marienthal Op,Wentow-Gewässer,0.1,581390
+13.2936,53.05125,Marienthal Up,Wentow-Gewässer,0.1,581400
+13.63902,52.89114,Eichhorst Op,Werbelliner Gewässer,8.7,693320
+13.63888,52.89142,Eichhorst Up,Werbelliner Gewässer,8.7,693330
+9.67808,51.41565,Letzter Heller,Werra,2.32,41900206
+9.96647,51.27677,Allendorf,Werra,40.79,41900104
+10.197,51.12501,Heldra,Werra,77.32,41700105
+6.61394,51.62902,Friedrichsfeld Schleuse Uw,Wesel-Datteln-Kanal,1.628,27800234
+6.6231,51.62723,Friedrichsfeld Schleuse Ow,Wesel-Datteln-Kanal,2.295,27800223
+6.76907,51.6483,Hünxe Schleuse Uw,Wesel-Datteln-Kanal,12.875,27800212
+6.78047,51.64857,Hünxe Schleuse Ow,Wesel-Datteln-Kanal,13.664,27800198
+6.9985,51.663,Dorsten Schleuse Uw,Wesel-Datteln-Kanal,30.016,27800187
+7.01073,51.6628,Dorsten Schleuse Ow,Wesel-Datteln-Kanal,30.863,27800176
+7.23807,51.72038,Flaesheim Schleuse Uw,Wesel-Datteln-Kanal,48.99,27800165
+7.24688,51.71662,Flaesheim Schleuse Ow,Wesel-Datteln-Kanal,49.73,27800154
+7.32152,51.68901,Ahsen Schleuse Uw,Wesel-Datteln-Kanal,55.924,27800143
+7.32545,51.68698,Ahsen Schleuse Ow,Wesel-Datteln-Kanal,56.278,27800132
+7.35366,51.67138,Datteln Schleuse Uw,Wesel-Datteln-Kanal,58.89,27800121
+7.36498,51.66299,Datteln Schleuse Ow,Wesel-Datteln-Kanal,60.11,27800110
+8.80364,53.0731,Grosse Weserbrücke,Weser,0.04,4910050
+9.64092,51.42579,Hann.Muenden,Weser,0.65,43100109
+8.71222,53.1198,Oslebshausen,Weser,8.367,4910060
+8.61953,53.16941,Vegesack,Weser,17.843,4950010
+8.51019,53.20471,Farge,Weser,26.261,4950020
+8.48142,53.26395,Elsfleth,Weser,33.325,4970010
+9.51973,51.62562,Wahmbeck,Weser,35.97,43900105
+8.48655,53.31598,Brake,Weser,39.2,4970020
+9.43868,51.64799,Karlshafen,Weser,45.52,45100100
+8.50055,53.38116,Rechtenfleth,Weser,46.464,4970030
+8.48805,53.4645,Nordenham,Weser,55.811,4970040
+8.53741,53.51758,Blexen Abz,Weser,62.46,4970090
+8.56818,53.54496,Bhv Alter Leuchtturm,Weser,66.638,4990010
+9.40047,51.7758,Höxter,Weser,69.62,45300109
+8.4452,53.63922,Robbensüdsteert,Weser,79.942,9460010
+8.30762,53.71864,Dwarsgat,Weser,92.656,9460020
+9.51574,51.97373,Bodenwerder,Weser,110.72,45300200
+8.12757,53.86327,Leuchtturm Alte Weser,Weser,115.0,9460040
+9.30654,52.12373,Hameln Wehrbergen,Weser,139.68,45700207
+9.0817,52.18975,Rinteln,Weser,163.2,45900109
+8.86241,52.1764,Vlotho,Weser,184.0,45900208
+8.92204,52.24871,Porta,Weser,198.4,47100100
+8.97078,52.38234,Petershagen,Weser,215.77,47300100
+9.07774,52.51825,Stolzenau,Weser,243.39,47500110
+9.11277,52.59421,Liebenau,Weser,256.15,47500200
+9.20466,52.64415,Nienburg,Weser,268.18,47900118
+9.22558,52.6931,Drakenburg,Weser,278.88,47900107
+9.14692,52.80098,Hoya,Weser,298.4,47900129
+9.21032,52.85227,Dörverden,Weser,308.95,47900209
+9.1258,52.96417,Intschede,Weser,331.28,49100101
+8.89125,53.01436,Dreye,Weser,355.8,4910020
+8.86913,53.05858,Weserwehr Ow,Weser,361.8,4910030
+8.8548,53.06025,Weserwehr Uw,Weser,362.79,4910040
+14.39427,53.20633,Gartz,Westoder,8.0,603510
+14.43643,53.25088,Mescherin,Westoder,14.1,603520
+9.34802,53.73778,Dornbusch Brücke,Wischhafener Süderelbe,3.7,126009
+9.34079,53.78518,Wischhafen Sperrwerk,Wischhafener Süderelbe,10.0,126008
+8.8944,53.13397,Borgfeld,Wümme,0.265,4940010
+8.8265,53.1615,Niederblockland,Wümme,7.992,4940020

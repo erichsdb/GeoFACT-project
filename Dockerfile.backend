@@ -1,0 +1,117 @@
+# GeoFACT Web-Backend (FastAPI). Kein Bestandteil des Kern-Frameworks -
+# reine Auslieferungs-Infrastruktur, siehe docs/web_demo.md für Architektur/
+# Env-Variablen.
+#
+# Zwei Ziele aus einem gemeinsamen Unterbau:
+#   demo     lokale Demo ohne Tailscale, mit dem Datenpaket aus demo-data/
+#            (docker-compose.demo.yml, docs/schnellstart.md):
+#            docker build -f Dockerfile.backend --target demo .
+#   coolify  Hosting für 2-3 Nutzer mit tailscaled im Container
+#            (docker-compose.yml). LETZTE Stufe
+#            und damit das Standardziel - ein Build ohne --target liefert
+#            unverändert das Coolify-Image.
+
+FROM python:3.11-slim AS system
+
+# GDAL/GEOS/PROJ für GeoPandas/Shapely/Rasterio (Kern-Abhängigkeiten).
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gdal-bin \
+    libgdal-dev \
+    libgeos-dev \
+    libproj-dev \
+    build-essential \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
+
+
+FROM system AS app
+
+WORKDIR /app
+
+# Abhängigkeiten zuerst kopieren (Docker-Layer-Cache).
+COPY pyproject.toml uv.lock ./
+RUN uv sync --extra web --no-install-project --no-dev
+
+# Anwendungscode. README.md wird von hatchling (Build-Backend, siehe
+# pyproject.toml readme = "README.md") beim editierbaren Install
+# gebraucht - ohne diese Zeile bricht "uv sync" mit "Readme file does
+# not exist" ab, obwohl README.md selbst gar nicht zur Laufzeit benötigt
+# wird. backend/geofact_web ist neben src/geofact das ZWEITE Paket, das
+# pyproject.toml deklariert (tool.hatch.build.targets.wheel.packages) -
+# ohne diese COPY-Zeile baut "uv sync" scheinbar erfolgreich, aber
+# geofact_web landet nie im installierten Paket (nur ein editable .pth
+# auf src/geofact), und der Container scheitert beim Start mit
+# "ModuleNotFoundError: No module named 'geofact_web'".
+COPY README.md ./
+COPY src ./src
+COPY backend ./backend
+COPY examples ./examples
+RUN uv sync --extra web --no-dev
+
+ENV PATH="/app/.venv/bin:$PATH" \
+    GEOFACT_WEB_HOST=0.0.0.0 \
+    GEOFACT_WEB_PORT=8000 \
+    GEOFACT_PLUGIN_PATH=/app/examples/plugins
+
+EXPOSE 8000
+
+
+FROM python:3.11-slim AS demo
+
+# Schlankes Image: die Python-Wheels (rasterio, pyogrio, shapely, pyproj)
+# bringen GDAL/GEOS/PROJ selbst mit, die Systempakete der Stufe "system"
+# braucht die Demo nicht (nur libexpat, gegen das rasterio dynamisch linkt).
+# Die virtuelle Umgebung liegt mit dem Code unter /app.
+RUN apt-get update && apt-get install -y --no-install-recommends libexpat1     && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY --from=app /app /app
+
+ENV PATH="/app/.venv/bin:$PATH"     GEOFACT_WEB_HOST=0.0.0.0     GEOFACT_WEB_PORT=8000 GEOFACT_PLUGIN_PATH=/app/examples/plugins
+
+EXPOSE 8000
+
+# Datenpaket der Demo (scripts/build_demo_data.py): Snapshots der
+# mitgelieferten Szenarien und auf Sachsen zugeschnittene Raster. Beide
+# Ordner sind im Repo leer (nur .gitkeep) - ohne Paket startet die Demo
+# trotzdem, die Szenarien beziehen ihre Daten dann aus dem Netz.
+# .geofact/snapshots ist der Standardwert von GEOFACT_SNAPSHOT_DIR,
+# examples/data der von GEOFACT_COPERNICUS_DIR und zugleich der Ort, auf den
+# die Beispiel-YAMLs relativ verweisen.
+COPY demo-data/snapshots ./.geofact/snapshots
+COPY demo-data/examples-data ./examples/data
+
+CMD ["geofact-api"]
+
+
+FROM system AS coolify-system
+
+# tailscale: läuft als zweiter Prozess IM Container (docker/backend-
+# entrypoint.sh) statt als separater Sidecar-Service - erhält dem
+# Container seinen eigenen Netzwerk-Namespace/Servicenamen, damit Coolifys
+# automatisches Traefik-Routing unverändert einfach bleibt.
+RUN curl -fsSL https://pkgs.tailscale.com/stable/debian/bookworm.noarmor.gpg -o /usr/share/keyrings/tailscale-archive-keyring.gpg \
+    && curl -fsSL https://pkgs.tailscale.com/stable/debian/bookworm.tailscale-keyring.list -o /etc/apt/sources.list.d/tailscale.list \
+    && apt-get update && apt-get install -y --no-install-recommends tailscale \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /var/run/tailscale /var/lib/tailscale
+
+
+FROM coolify-system AS coolify
+
+WORKDIR /app
+COPY --from=app /app /app
+COPY docker/backend-entrypoint.sh /usr/local/bin/backend-entrypoint.sh
+RUN chmod +x /usr/local/bin/backend-entrypoint.sh
+
+ENV PATH="/app/.venv/bin:$PATH" \
+    GEOFACT_WEB_HOST=0.0.0.0 \
+    GEOFACT_WEB_PORT=8000 \
+    GEOFACT_PLUGIN_PATH=/app/examples/plugins
+
+EXPOSE 8000
+
+ENTRYPOINT ["/usr/local/bin/backend-entrypoint.sh"]

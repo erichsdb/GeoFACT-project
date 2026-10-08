@@ -1,0 +1,40 @@
+scenario:
+  name: "Grünflächen-Erreichbarkeit"
+  description: "Erreichbarkeit öffentlicher Grünflächen für Wohngebäude in Dresden"
+  region: "Dresden, Deutschland"
+
+layers:
+  - id: parks
+    source: osm
+    tags:
+      - { leisure: park }
+      - { leisure: garden }
+      - { landuse: village_green }
+      - { landuse: recreation_ground }
+
+  - id: buildings
+    source: osm
+    tags: { building: residential }
+
+steps:
+  - id: with_distance
+    op: nearest_distance
+    inputs:
+      from: buildings
+      to: parks
+
+  - id: classified
+    op: classify
+    inputs:
+      features: with_distance
+    params:
+      field: distance
+      breaks: [300, 500, 1000]
+      labels: ["sehr gut", "gut", "mäßig", "schlecht"]
+
+output:
+  - type: map
+    source: classified
+  - type: geojson
+    source: classified
+    path: "output/gruenflaechen_erreichbarkeit.geojson"

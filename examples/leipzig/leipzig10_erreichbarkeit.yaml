@@ -1,0 +1,115 @@
+scenario:
+  name: "Tram-, S-Bahn- und Bus-Erreichbarkeit im Hexraster"
+  description: "Netzdistanz von Hexraster-Zellmittelpunkten zum Hauptbahnhof über das kombinierte Tram-, S-Bahn- und Bus-Netz"
+  region: "Leipzig, Deutschland"
+
+layers:
+  - id: tramgleise
+    source: osm
+    tags:
+      railway: tram
+
+  - id: sbahn_gleise
+    source: osm
+    tags:
+      railway: rail
+
+  - id: bus_liniennetz
+    source: gtfs
+    url: "https://opendata.leipzig.de/dataset/8803f612-2ce1-4643-82d1-213434889200/resource/b38955c4-431c-4e8b-a4ef-9964a3a2c95d/download/gtfsmdvlvb.zip"
+    route_types: [3]
+
+  - id: gebiet
+    source: region
+
+  - id: bahnhoefe
+    source: osm
+    tags:
+      railway: station
+
+steps:
+  - id: gleisnetz_bahn
+    op: vector_union
+    inputs:
+      a: tramgleise
+      b: sbahn_gleise
+
+  - id: gleisnetz
+    op: vector_union
+    inputs:
+      a: gleisnetz_bahn
+      b: bus_liniennetz
+
+  - id: netz_knoten
+    op: network_nodes
+    inputs:
+      lines: gleisnetz
+    params:
+      tolerance_m: 100
+
+  - id: netz
+    op: build_network
+    inputs:
+      lines: gleisnetz
+      nodes: netz_knoten
+    params:
+      tolerance_m: 100
+
+  - id: raster
+    op: hex_grid
+    inputs:
+      region: gebiet
+    params:
+      cell_km: 1.5
+
+  - id: zentren
+    op: to_points
+    inputs:
+      features: raster
+
+  - id: hbf
+    op: filter
+    inputs:
+      features: bahnhoefe
+    params:
+      condition: "name == 'Leipzig Hauptbahnhof'"
+
+  - id: anbindung
+    op: shortest_path
+    inputs:
+      graph: netz
+      origins: zentren
+      destinations: hbf
+    params:
+      max_snap_m: 500
+
+  - id: anbindung_zellen
+    op: spatial_join
+    inputs:
+      left: raster
+      right: anbindung
+    params:
+      predicate: contains
+
+  - id: einzugsbereiche
+    op: isochrone
+    inputs:
+      graph: netz
+      origins: hbf
+    params:
+      breaks_m: [2000, 4000, 6000]
+      max_snap_m: 500
+
+output:
+  - type: map
+    source: anbindung_zellen
+    color_field: network_distance
+  - type: map
+    source: einzugsbereiche
+    color_field: break_m
+  - type: geojson
+    source: anbindung_zellen
+    path: "output/leipzig10_anbindung.geojson"
+  - type: geojson
+    source: einzugsbereiche
+    path: "output/leipzig10_einzugsbereiche.geojson"

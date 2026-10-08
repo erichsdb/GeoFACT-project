@@ -1,0 +1,19 @@
+{
+  "success": true,
+  "result": {
+    "id": "pkg-spielplaetze",
+    "name": "spielplaetze",
+    "resources": [
+      {
+        "id": "res-spielplaetze-csv",
+        "format": "CSV",
+        "url": "https://opendata.leipzig.de/dataset/spielplaetze/resource/csv/download/spielplaetze.csv"
+      },
+      {
+        "id": "res-spielplaetze-001",
+        "format": "GeoJSON",
+        "url": "https://opendata.leipzig.de/dataset/spielplaetze/resource/res-spielplaetze-001/download/spielplaetze.geojson"
+      }
+    ]
+  }
+}

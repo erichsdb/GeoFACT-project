@@ -1,0 +1,46 @@
+# Lokale Demo für Prüfer und Leser: fertige Images, ein Befehl, kein Konto.
+#
+#   docker compose -f docker-compose.demo.yml up
+#   -> http://localhost:3000   (Web-Demo)
+#   -> http://localhost:8000/docs   (API)
+#
+# Anleitung, CLI im Container und Fehlersuche: docs/schnellstart.md.
+# Aus dem Quelltext statt aus der Registry bauen:
+#   docker compose -f docker-compose.demo.yml -f docker-compose.demo.build.yml up --build
+#
+# Bewusst anders als docker-compose.yml (Coolify-Hosting): kein Tailscale,
+# keine PostGIS-Instanz, keine Anmeldung, Ports nur auf localhost.
+
+services:
+  backend:
+    image: ${GEOFACT_IMAGE:-ghcr.io/erichsdb/geofact-project}-backend:${GEOFACT_VERSION:-latest}
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      GEOFACT_WEB_HOST: 0.0.0.0
+      # Overpass braucht keine eigene Datenbank. Die mitgelieferten Szenarien
+      # laufen aus den Snapshots im Image, eigene Abfragen gehen ins Netz.
+      GEOFACT_OSM_BACKEND: overpass
+      # Optional: ohne Schlüssel ist nur "Szenario generieren" abgeschaltet.
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://openrouter.ai/api/v1}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GEOFACT_LLM_MODEL: ${GEOFACT_LLM_MODEL:-anthropic/claude-3.5-sonnet}
+    volumes:
+      # Ergebnisse von "geofact run" im Container landen hier auf dem Host.
+      - ./geofact-output:/app/output
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=5)"]
+      interval: 5s
+      timeout: 6s
+      retries: 30
+      start_period: 20s
+
+  frontend:
+    # Die Backend-Adresse http://localhost:8000 ist in dieses Image eingebaut
+    # (NEXT_PUBLIC_API_BASE zur Build-Zeit) - der Backend-Port oben muss 8000 bleiben.
+    image: ${GEOFACT_IMAGE:-ghcr.io/erichsdb/geofact-project}-frontend:${GEOFACT_VERSION:-latest}
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy

@@ -1,0 +1,27 @@
+[
+  {
+    "place_id": 123456,
+    "licence": "Data (c) OpenStreetMap contributors, ODbL 1.0",
+    "osm_type": "relation",
+    "osm_id": 62410,
+    "boundingbox": ["51.01", "51.15", "13.60", "13.94"],
+    "lat": "51.0504",
+    "lon": "13.7373",
+    "display_name": "Dresden, Sachsen, Deutschland",
+    "class": "boundary",
+    "type": "administrative",
+    "importance": 0.75,
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [13.60, 51.01],
+          [13.94, 51.01],
+          [13.94, 51.15],
+          [13.60, 51.15],
+          [13.60, 51.01]
+        ]
+      ]
+    }
+  }
+]

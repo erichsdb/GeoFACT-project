@@ -1,0 +1,18 @@
+# Zusatz zu docker-compose.demo.yml: die Demo-Images lokal aus dem Quelltext
+# bauen statt sie aus der Registry zu holen.
+#
+#   docker compose -f docker-compose.demo.yml -f docker-compose.demo.build.yml up --build
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      target: demo
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        NEXT_PUBLIC_API_BASE: http://localhost:8000

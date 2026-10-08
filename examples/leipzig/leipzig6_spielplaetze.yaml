@@ -1,0 +1,48 @@
+scenario:
+  name: "Spielplätze je Ortsteil"
+  description: "Anzahl Spielplätze je Leipziger Ortsteil, in Versorgungsstufen"
+  region: "Leipzig, Deutschland"
+
+layers:
+  - id: spielplaetze
+    source: osm
+    tags:
+      leisure: playground
+
+  - id: ortsteile
+    source: osm
+    tags:
+      boundary: administrative
+      admin_level: "10"
+
+steps:
+  - id: spielplatz_punkte
+    op: to_points
+    inputs:
+      features: spielplaetze
+
+  - id: je_ortsteil
+    op: aggregate
+    inputs:
+      features: spielplatz_punkte
+      zones: ortsteile
+    params:
+      statistic: count
+      predicate: within
+
+  - id: stufen
+    op: classify
+    inputs:
+      features: je_ortsteil
+    params:
+      field: count
+      breaks: [1, 5, 15]
+      labels: ["keine", "wenige (1-4)", "mittel (5-14)", "viele (15+)"]
+
+output:
+  - type: map
+    source: stufen
+    color_field: count
+  - type: geojson
+    source: stufen
+    path: "output/leipzig6_spielplaetze.geojson"

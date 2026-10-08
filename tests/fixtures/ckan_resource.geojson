@@ -1,0 +1,35 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "playground_1",
+        "name": "Spielplatz Connewitz",
+        "amtlich": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.365,
+          51.3305
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "playground_2",
+        "name": "Spielplatz Wilhelm-Leuschner",
+        "amtlich": true
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.371,
+          51.3355
+        ]
+      }
+    }
+  ]
+}

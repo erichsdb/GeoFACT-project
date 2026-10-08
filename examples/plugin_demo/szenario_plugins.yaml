@@ -1,0 +1,47 @@
+scenario:
+  name: "Plugin-Demonstration: Messstellen im Versorgungsgebiet"
+  description: "FlatGeobuf- und REST-Quelle, Puffer und Zuschnitt im Kern, Huelle und KML als externe Dienste"
+  region: "13.60,51.01,13.94,51.15"
+
+layers:
+  - id: umspannwerke
+    source: file
+    path: "daten/umspannwerke.fgb"
+    data_type: vector
+  - id: messstellen
+    source: rest
+    url: "http://127.0.0.1:${GEOFACT_REST_DEMO_PORT}/messstellen"
+    query: { art: pegel }
+    region_mode: bbox
+    response: { format: geojson }
+
+steps:
+  - id: einzugsgebiete
+    op: buffer
+    inputs: { geometry: umspannwerke }
+    params: { radius_km: 1 }
+  - id: versorgungsgebiet
+    op: rest
+    inputs: { features: einzugsgebiete }
+    params:
+      url: "http://127.0.0.1:${GEOFACT_REST_DEMO_PORT}/huelle"
+      input_types: { features: vector }
+      output_type: vector
+      body:
+        # "@features" wird durch das GeoJSON des Eingangs ersetzt.
+        inputs: { features: "@features" }
+        bezeichnung: "Versorgungsgebiet"
+  - id: messstellen_im_gebiet
+    op: clip
+    inputs: { features: messstellen, mask: versorgungsgebiet }
+
+output:
+  - { type: map, source: versorgungsgebiet }
+  - type: geojson
+    source: messstellen_im_gebiet
+    path: "out/messstellen_im_gebiet.geojson"
+  - type: rest
+    source: versorgungsgebiet
+    url: "http://127.0.0.1:${GEOFACT_REST_DEMO_PORT}/kml"
+    extension: kml
+    body: { result: "@result", titel: "Versorgungsgebiet der Umspannwerke" }

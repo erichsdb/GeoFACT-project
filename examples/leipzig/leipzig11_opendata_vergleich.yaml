@@ -1,0 +1,63 @@
+scenario:
+  name: "Bäume: amtliches Kataster vs. OSM"
+  description: "Vergleich amtlicher (WFS) und community-basierter (OSM) Baumdaten je Ortsteil"
+  region: "Leipzig, Deutschland"
+
+layers:
+  - id: baeume_amtlich
+    source: wfs
+    url: "https://geodienste.leipzig.de/l3/OpenData/Baeume/wfs"
+    typename: "OpenData:Baeume"
+
+  - id: baeume_osm
+    source: osm
+    tags:
+      natural: tree
+
+  - id: ortsteile
+    source: osm
+    tags:
+      boundary: administrative
+      admin_level: "10"
+    validation:
+      spatial_check:
+        within: scenario_region
+      on_violation: drop
+
+steps:
+  - id: ortsteile_flaechen
+    op: homogenize_geometry
+    inputs:
+      features: ortsteile
+
+  - id: amtlich_je_ortsteil
+    op: aggregate
+    inputs:
+      features: baeume_amtlich
+      zones: ortsteile_flaechen
+    params:
+      statistic: count
+      predicate: within
+
+  - id: osm_je_ortsteil
+    op: aggregate
+    inputs:
+      features: baeume_osm
+      zones: ortsteile_flaechen
+    params:
+      statistic: count
+      predicate: within
+
+output:
+  - type: map
+    source: amtlich_je_ortsteil
+    color_field: count
+  - type: map
+    source: osm_je_ortsteil
+    color_field: count
+  - type: geojson
+    source: amtlich_je_ortsteil
+    path: "output/leipzig11_amtlich.geojson"
+  - type: geojson
+    source: osm_je_ortsteil
+    path: "output/leipzig11_osm.geojson"

@@ -1,0 +1,27 @@
+scenario:
+  name: "Supermarkt-Dichte"
+  description: "Wabenraster der Supermarkt-Dichte in Leipzig (500 m Zellen)"
+  region: "Leipzig, Deutschland"
+
+layers:
+  - id: supermaerkte
+    source: osm
+    tags:
+      - { shop: supermarket }
+      - { shop: convenience }
+
+steps:
+  - id: dichte
+    op: hexbin
+    inputs:
+      features: supermaerkte
+    params:
+      cell_km: 0.5
+
+output:
+  - type: map
+    source: dichte
+    color_field: count
+  - type: geojson
+    source: dichte
+    path: "output/leipzig3_supermarkt_dichte.geojson"

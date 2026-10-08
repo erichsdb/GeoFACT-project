@@ -1,0 +1,72 @@
+scenario:
+  name: "Sterneschauen in Sachsen"
+  description: "Dunkle, hoch gelegene und erreichbare Aussichtspunkte in Sachsen"
+  region: "Sachsen, Deutschland"
+
+layers:
+  - id: aussichtspunkte
+    source: osm
+    tags: { tourism: viewpoint }
+
+  - id: parkplaetze
+    source: osm
+    tags: { amenity: parking }
+
+  - id: nachtlicht
+    source: file
+    path: "data/ntl_2024_simviirs.tif"
+    data_type: raster
+
+  - id: hoehe
+    source: file
+    path: "data/dem_sachsen_glo90.tif"
+    data_type: raster
+
+steps:
+  - id: orte
+    op: to_points
+    inputs: { features: aussichtspunkte }
+
+  - id: mit_parkplatz
+    op: nearest_distance
+    inputs: { from: orte, to: parkplaetze }
+
+  - id: umfeld_hoehe
+    op: buffer
+    inputs: { geometry: mit_parkplatz }
+    params: { radius_km: 0.1 }
+
+  - id: mit_hoehe
+    op: zonal_stats
+    inputs: { zones: umfeld_hoehe, values: hoehe }
+    params: { stat: max }
+
+  - id: umfeld_licht
+    op: buffer
+    inputs: { geometry: mit_hoehe }
+    params: { radius_km: 1.9 }
+
+  - id: mit_licht
+    op: zonal_stats
+    inputs: { zones: umfeld_licht, values: nachtlicht }
+    params: { stat: mean, decimals: 2 }
+
+  # distance: Meter zum nächsten Parkplatz (nearest_distance); mean_value: mittlere Lichtstärke (zonal_stats).
+  - id: geeignet
+    op: filter
+    inputs: { features: mit_licht }
+    params: { condition: "distance <= 1000 and mean_value <= 5" }
+
+  - id: beste
+    op: top_n
+    inputs: { features: geeignet }
+    params: { by: max_value, n: 10, rank_field: rang }
+
+output:
+  - type: map
+    source: beste
+    color_field: max_value
+    path: "sachsen_nachthimmel.html"
+  - type: geojson
+    source: beste
+    path: "sachsen_nachthimmel_beste_orte.geojson"

@@ -1,0 +1,659 @@
+# Kuratierter API-Katalog (FA36)
+#
+# Beispielhafte offene Schnittstellen - ueberwiegend amtlich/behoerdlich -
+# die als Layer-Quelle in einem Szenario nutzbar sind. Zweck des Katalogs:
+#
+#  1. FUER MENSCHEN: eine API ist von aussen undurchdringlich. Hier steht
+#     je Schnittstelle, welche Endpunkte/Feature-Types es gibt, was sie
+#     liefern und wo die maschinenlesbare Spezifikation liegt
+#     (WFS GetCapabilities, OpenAPI/Swagger, CSW) - statt sich das aus
+#     Portalseiten zusammensuchen zu muessen.
+#  2. FUER DAS LLM: dieselben Angaben landen im Grounding-Prompt, damit
+#     generierte Konfigurationen echte Endpunkte und echte Attributnamen
+#     verwenden statt plausibel klingende Erfindungen.
+#
+# WICHTIG - Pflege und Grenzen:
+# - `spec_url` ist die maschinenlesbare Beschreibung (falls vorhanden).
+#   Sie wird NICHT beim Start abgerufen; der Katalog bleibt offline
+#   nutzbar und reproduzierbar (Evaluation). Die Web-Demo kann sie
+#   auf Anfrage einmalig laden und cachen (FA36, /api/apis/{id}/spec).
+# - `attributes` sind die in der Praxis vorhandenen, fuer Analysen
+#   relevanten Felder. Bewusst NICHT vollstaendig: eine vollstaendige
+#   Feldliste steht in der Spezifikation, hier steht, was man braucht.
+# - Endpunkte aendern sich. Die Angaben sind mit Stand 2026-09 erhoben;
+#   `verified` haelt dieses Datum fest. Ein nicht erreichbarer Endpunkt
+#   liefert eine explizite Fehlermeldung (FA16), kein stilles Leerergebnis.
+# - ALKIS/ATKIS-Liegenschaftsdaten sind laenderweise unterschiedlich
+#   lizenziert und teils zugangsbeschraenkt. Aufgenommen sind hier nur
+#   offene Dienste; wo nur ein Ausschnitt offen ist, steht das im
+#   `notes`-Feld.
+
+apis:
+  # =====================================================================
+  # Bundesweite amtliche Geodaten (BKG)
+  # =====================================================================
+  - id: bkg_vg250
+    label: Verwaltungsgebiete 1:250.000 (BKG)
+    provider: Bundesamt fuer Kartographie und Geodaesie (BKG)
+    protocol: wfs
+    base_url: https://sgx.geodatenzentrum.de/wfs_vg250
+    spec_url: https://sgx.geodatenzentrum.de/wfs_vg250?REQUEST=GetCapabilities&SERVICE=WFS&VERSION=2.0.0
+    spec_type: wfs_capabilities
+    license: Datenlizenz Deutschland Namensnennung 2.0
+    documentation_url: https://gdz.bkg.bund.de/index.php/default/wfs-verwaltungsgebiete-1-250-000-wfs-vg250.html
+    verified: 2026-10
+    description: >-
+      Amtliche Verwaltungsgrenzen aller Ebenen (Staat, Bundeslaender,
+      Regierungsbezirke, Kreise, Gemeinden) inklusive amtlichem
+      Gemeindeschluessel (AGS). Die Referenzquelle, um statistische
+      Tabellendaten (BIP, Bevoelkerung, Wahlergebnisse) per attribute_join
+      an Geometrien zu haengen. KEINE Einwohnerzahl und keine
+      Katasterflaeche: ewz und kfl liefert nur der Schwesterdienst
+      bkg_vg250_ew (wfs_vg250-ew, Typnamen vg250-ew:...).
+    endpoints:
+      - name: vg250:vg250_lan
+        title: Bundeslaender (16 Flaechen)
+        geometry: polygon
+        attributes: [gen, ags, sn_l, bez, nuts]
+        attribute_notes:
+          gen: Geografischer Name, z. B. "Sachsen" - Join-Schluessel fuer Statistiken
+          nuts: NUTS-Code (Laender 3 Zeichen, z. B. "DED") - Join-Schluessel fuer Eurostat-Tabellen
+          ags: Amtlicher Gemeindeschluessel (hier 2-stellig je Land)
+          bez: Bezeichnung der Verwaltungseinheit ("Land", "Freistaat")
+      - name: vg250:vg250_krs
+        title: Kreise und kreisfreie Staedte (~400 Flaechen)
+        geometry: polygon
+        attributes: [gen, ags, sn_l, bez, nuts]
+        attribute_notes:
+          nuts: >-
+            NUTS-Code (Kreise 5 Zeichen, z. B. "DED21" fuer Dresden) -
+            eindeutiger Join-Schluessel fuer Eurostat-Tabellen; der Name
+            'gen' ist es nicht ("Leipzig" gibt es als Stadt und als Landkreis)
+        notes: >-
+          Auch die richtige Quelle fuer Landkreise innerhalb eines
+          Bundeslandes (z. B. die 13 saechsischen Kreise) - die BBox der
+          Szenario-Region filtert bereits vor, sn_l/ags grenzen bei Bedarf
+          exakt ab (Sachsen: sn_l = "14").
+      - name: vg250:vg250_gem
+        title: Gemeinden (~11.000 Flaechen)
+        geometry: polygon
+        attributes: [gen, ags, sn_l, bez]
+        notes: Grosse Ergebnismenge - Szenario-Region eng waehlen.
+    example_layer:
+      id: bundeslaender
+      source: wfs
+      url: https://sgx.geodatenzentrum.de/wfs_vg250
+      typename: vg250:vg250_lan
+      data_type: vector
+
+  - id: bkg_vg250_ew
+    label: Verwaltungsgebiete 1:250.000 mit Einwohnerzahlen (BKG)
+    provider: Bundesamt fuer Kartographie und Geodaesie (BKG)
+    protocol: wfs
+    base_url: https://sgx.geodatenzentrum.de/wfs_vg250-ew
+    spec_url: https://sgx.geodatenzentrum.de/wfs_vg250-ew?REQUEST=GetCapabilities&SERVICE=WFS&VERSION=2.0.0
+    spec_type: wfs_capabilities
+    license: Datenlizenz Deutschland Namensnennung 2.0
+    documentation_url: https://gdz.bkg.bund.de/index.php/default/wfs-verwaltungsgebiete-1-250-000-mit-einwohnerzahlen-stand-31-12-wfs-vg250-ew.html
+    verified: 2026-10
+    description: >-
+      Dieselben Verwaltungsgrenzen wie bkg_vg250, zusaetzlich mit
+      Einwohnerzahl (ewz, Stand 31.12.) und Katasterflaeche (kfl). Die
+      richtige Quelle, wenn nach Einwohnern gefiltert oder gerankt wird
+      ("die zehn groessten Staedte"). Die Typnamen tragen das Praefix
+      vg250-ew: statt vg250:.
+    endpoints:
+      - name: vg250-ew:vg250_gem
+        title: Gemeinden mit Einwohnerzahl (~11.000 Flaechen)
+        geometry: polygon
+        attributes: [gen, ags, sn_l, bez, ewz, kfl]
+        attribute_notes:
+          gen: Geografischer Name, z. B. "Dresden"
+          ewz: Einwohnerzahl (Ganzzahl)
+          kfl: Katasterflaeche in km²
+          bez: Bezeichnung ("Stadt", "Gemeinde", "Kreisfreie Stadt")
+        notes: >-
+          Grosse Ergebnismenge - Szenario-Region eng waehlen. Die BBox
+          liefert auch Gemeinden der Nachbarlaender; sn_l grenzt auf ein
+          Land ab (Sachsen: sn_l = "14").
+      - name: vg250-ew:vg250_krs
+        title: Kreise und kreisfreie Staedte mit Einwohnerzahl
+        geometry: polygon
+        attributes: [gen, ags, sn_l, bez, ewz, kfl, nuts]
+      - name: vg250-ew:vg250_lan
+        title: Bundeslaender mit Einwohnerzahl
+        geometry: polygon
+        attributes: [gen, ags, sn_l, bez, ewz, kfl, nuts]
+    example_layer:
+      id: gemeinden_einwohner
+      source: wfs
+      url: https://sgx.geodatenzentrum.de/wfs_vg250-ew
+      typename: vg250-ew:vg250_gem
+      data_type: vector
+
+  # =====================================================================
+  # Amtliche Statistik (nicht-raeumlich, per attribute_join nutzbar)
+  # =====================================================================
+  - id: destatis_genesis
+    label: GENESIS-Online (Statistisches Bundesamt)
+    provider: Statistisches Bundesamt (Destatis)
+    protocol: rest
+    base_url: https://www-genesis.destatis.de/genesisWS/rest/2020
+    spec_url: https://www-genesis.destatis.de/datenbank/online/docs/GENESIS-Webservices_Einfuehrung.pdf
+    spec_type: documentation
+    license: Datenlizenz Deutschland Namensnennung 2.0
+    documentation_url: https://www-genesis.destatis.de/datenbank/online
+    verified: 2026-09
+    auth: api_token
+    data_type: table
+    description: >-
+      Amtliche Statistik des Bundes als Tabellen - darunter das
+      Bruttoinlandsprodukt je Bundesland (Tabelle 82111), Bevoelkerung,
+      Erwerbstaetige. KEINE Geodaten: die Tabellen tragen ihren Raumbezug
+      nur als Gebietsname bzw. amtlichen Schluessel und werden per
+      attribute_join (FA34) mit Verwaltungsgrenzen verbunden.
+    endpoints:
+      - name: /data/table
+        title: Tabellenabruf (Parameter name=<Tabellen-Code>)
+        method: GET
+        attributes: [name, area, compress, format, language]
+        attribute_notes:
+          name: Tabellen-Code, z. B. "82111-0001" (BIP je Bundesland)
+          format: Ausgabeformat (csv, ffcsv, json)
+      - name: /catalogue/tables
+        title: Tabellensuche (Parameter selection=<Suchbegriff>)
+        method: GET
+    notes: >-
+      Braucht einen kostenlosen Zugangs-Token (Parameter username/password
+      bzw. Header). Der Token gehoert NICHT in die Szenario-YAML, sondern
+      in eine Umgebungsvariable - siehe docs/api_catalog.md.
+    example_layer:
+      id: bip_bundeslaender
+      source: table
+      path: bip_bundeslaender.csv
+      format: csv
+      encoding: windows-1252
+      delimiter: ";"
+      decimal: ","
+      thousands: "."
+      geometry:
+        x_column: lon
+        y_column: lat
+        crs: EPSG:4326
+      columns: {}
+
+  - id: regionalstatistik
+    label: Regionalstatistik (Statistische Aemter des Bundes und der Laender)
+    provider: Statistische Aemter des Bundes und der Laender
+    protocol: rest
+    base_url: https://www.regionalstatistik.de/genesisws/rest/2020
+    spec_url: https://www.regionalstatistik.de/genesis/online
+    spec_type: documentation
+    license: Datenlizenz Deutschland Namensnennung 2.0
+    verified: 2026-09
+    auth: api_token
+    data_type: table
+    description: >-
+      Wie GENESIS, aber auf Kreis- und Gemeindeebene - die passende Quelle
+      fuer kleinraeumige Kennzahlen (Bevoelkerung, Flaechennutzung,
+      Beschaeftigte) zum Verbinden mit VG250-Kreisgrenzen.
+    endpoints:
+      - name: /data/table
+        title: Tabellenabruf je Gebietsebene
+        method: GET
+        attributes: [name, area, format]
+
+  - id: eurostat
+    label: Eurostat-Regionalstatistik (NUTS-Regionen, ohne Anmeldung)
+    provider: Eurostat (Statistisches Amt der Europaeischen Union)
+    protocol: rest
+    base_url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data
+    spec_url: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/dataflow/ESTAT/nama_10r_3gdp
+    spec_type: documentation
+    license: CC BY 4.0 (Quellenangabe Eurostat)
+    documentation_url: https://ec.europa.eu/eurostat/web/user-guides/data-browser/api-data-access/api-getting-started/api
+    verified: 2026-10
+    data_type: table
+    description: >-
+      Regionale Kennzahlen fuer alle europaeischen NUTS-Regionen als CSV,
+      OHNE Anmeldung und ohne Token - die erste Wahl fuer BIP, Einkommen,
+      Erwerbslosigkeit, Bevoelkerung und Alter je Bundesland oder Kreis.
+      KEINE Geodaten: jede Zeile traegt den NUTS-Code in der Spalte 'geo'
+      und den Wert in 'OBS_VALUE'. Verbunden wird per attribute_join mit
+      dem Attribut 'nuts' der BKG-Grenzen (bkg_vg250, bkg_vg250_ew) oder
+      mit 'NUTS_ID' der europaeischen Regionsgrenzen (gisco_nuts). In
+      Deutschland ist NUTS 1 = Bundesland ("DED" = Sachsen), NUTS 2 =
+      Regierungsbezirk bzw. Direktionsbezirk, NUTS 3 = Kreis ("DED21" =
+      Dresden). Eine Tabelle enthaelt alle Ebenen gemischt - der Join
+      trifft von selbst nur die Ebene der Geometriequelle. Der Endpunktname
+      wird unveraendert an die Basis-URL gehaengt und ergibt den 'path'
+      eines table-Layers; das Jahr steht in startPeriod/endPeriod und darf
+      nur auf ein Jahr gesetzt werden, das die Tabelle fuehrt (die unten
+      genannten sind geprueft).
+    endpoints:
+      - name: /nama_10r_3gdp/A.EUR_HAB.?format=SDMX-CSV&startPeriod=2023&endPeriod=2023
+        title: Bruttoinlandsprodukt je Einwohner in Euro, bis Kreisebene (NUTS 0-3), 2023
+        method: GET
+        attributes: [geo, TIME_PERIOD, OBS_VALUE]
+      - name: /nama_10r_3gdp/A.MIO_EUR.?format=SDMX-CSV&startPeriod=2023&endPeriod=2023
+        title: Bruttoinlandsprodukt in Mio. Euro, bis Kreisebene (NUTS 0-3), 2023
+        method: GET
+        attributes: [geo, TIME_PERIOD, OBS_VALUE]
+      - name: /nama_10r_2hhinc/A.EUR_HAB.BAL.B6N.?format=SDMX-CSV&startPeriod=2023&endPeriod=2023
+        title: Verfuegbares Einkommen der privaten Haushalte je Einwohner in Euro, bis Regierungsbezirk (NUTS 0-2, NICHT Kreise), 2023
+        method: GET
+        attributes: [geo, TIME_PERIOD, OBS_VALUE]
+      - name: /lfst_r_lfu3rt/A.TOTAL.T.Y15-74.PC.?format=SDMX-CSV&startPeriod=2025&endPeriod=2025
+        title: Erwerbslosenquote der 15- bis 74-Jaehrigen in Prozent, bis Regierungsbezirk (NUTS 0-2, NICHT Kreise), 2025
+        method: GET
+        attributes: [geo, TIME_PERIOD, OBS_VALUE]
+        notes: >-
+          Konzept der Arbeitskraefteerhebung, nicht die Arbeitslosenquote
+          der Bundesagentur fuer Arbeit. Einzelne Regionen fehlen
+          (unsichere Werte werden nicht veroeffentlicht).
+      - name: /demo_r_pjanaggr3/A.NR.T.TOTAL.?format=SDMX-CSV&startPeriod=2024&endPeriod=2024
+        title: Bevoelkerung am 1. Januar (Personen), bis Kreisebene (NUTS 0-3), 2024
+        method: GET
+        attributes: [geo, TIME_PERIOD, OBS_VALUE]
+      - name: /demo_r_pjanaggr3/A.NR.T.Y_GE65.?format=SDMX-CSV&startPeriod=2024&endPeriod=2024
+        title: Bevoelkerung ab 65 Jahren (Personen), bis Kreisebene (NUTS 0-3), 2024
+        method: GET
+        attributes: [geo, TIME_PERIOD, OBS_VALUE]
+        notes: Anteil der Aelteren = dieser Wert geteilt durch die Bevoelkerung insgesamt (calculate_field).
+      - name: /demo_r_pjanind3/A.MEDAGEPOP.YR.?format=SDMX-CSV&startPeriod=2024&endPeriod=2024
+        title: Medianalter der Bevoelkerung in Jahren, bis Kreisebene (NUTS 0-3), 2024
+        method: GET
+        attributes: [geo, TIME_PERIOD, OBS_VALUE]
+      - name: /demo_r_d3dens/A.PER_KM2.?format=SDMX-CSV&startPeriod=2023&endPeriod=2023
+        title: Bevoelkerungsdichte in Einwohnern je km2, bis Kreisebene (NUTS 0-3), 2023
+        method: GET
+        attributes: [geo, TIME_PERIOD, OBS_VALUE]
+    notes: >-
+      Jeder Endpunkt liefert genau EINE Kennzahl in der Spalte OBS_VALUE.
+      Fuer mehrere Kennzahlen je einen table-Layer anlegen und OBS_VALUE
+      ueber 'columns' umbenennen (as: ...), sonst stossen die Spalten beim
+      zweiten attribute_join zusammen. Kein 'geometry'-Block (FA37), der
+      Trenner ist das Komma (Standard). Die Werte des juengsten Jahres
+      sind teils vorlaeufig.
+    example_layer:
+      id: bip_je_einwohner
+      source: table
+      path: https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/nama_10r_3gdp/A.EUR_HAB.?format=SDMX-CSV&startPeriod=2023&endPeriod=2023
+      format: csv
+      columns:
+        geo:
+          as: nuts
+          type: string
+        OBS_VALUE:
+          as: bip_eur_je_einwohner
+          type: float
+      license:
+        name: CC-BY-4.0
+        attribution: "© Europäische Union, Eurostat (nama_10r_3gdp)"
+        url: "https://creativecommons.org/licenses/by/4.0/"
+
+  - id: gisco_nuts
+    label: NUTS-Regionsgrenzen Europa (Eurostat GISCO)
+    provider: Eurostat (Statistisches Amt der Europaeischen Union)
+    protocol: rest
+    base_url: https://gisco-services.ec.europa.eu/distribution/v2/nuts
+    spec_url: https://gisco-services.ec.europa.eu/distribution/v2/nuts/nuts-2024-files.json
+    spec_type: documentation
+    license: Nutzung mit Quellenangabe "© EuroGeographics bezueglich der Verwaltungsgrenzen" (Bedingungen siehe Dokumentation)
+    documentation_url: https://ec.europa.eu/eurostat/web/gisco/geodata/statistical-units/territorial-units-statistics
+    verified: 2026-10
+    data_type: vector
+    description: >-
+      Grenzen der NUTS-Regionen aller europaeischen Laender als GeoJSON
+      (Massstab 1:20 Mio., EPSG:4326) - die Geometriequelle fuer
+      EUROPAWEITE Vergleiche mit Eurostat-Tabellen (eurostat), Join ueber
+      'NUTS_ID'. Fuer Auswertungen nur in Deutschland sind die genaueren
+      BKG-Grenzen (bkg_vg250) die bessere Wahl. Das ist KEINE Tabelle:
+      die URL kommt als 'path' in einen file-Layer (source: file), nicht
+      in einen table-Layer.
+    endpoints:
+      - name: /geojson/NUTS_RG_20M_2024_4326_LEVL_0.geojson
+        title: Staaten (NUTS 0)
+        method: GET
+        geometry: polygon
+        attributes: [NUTS_ID, NAME_LATN, CNTR_CODE, LEVL_CODE]
+      - name: /geojson/NUTS_RG_20M_2024_4326_LEVL_1.geojson
+        title: Grossregionen (NUTS 1, in Deutschland die Bundeslaender)
+        method: GET
+        geometry: polygon
+        attributes: [NUTS_ID, NAME_LATN, CNTR_CODE, LEVL_CODE]
+      - name: /geojson/NUTS_RG_20M_2024_4326_LEVL_2.geojson
+        title: Regionen (NUTS 2, rund 240 in der EU)
+        method: GET
+        geometry: polygon
+        attributes: [NUTS_ID, NAME_LATN, CNTR_CODE, LEVL_CODE]
+        attribute_notes:
+          NUTS_ID: NUTS-Code, z. B. "DED2" - Join-Schluessel zu 'geo' der Eurostat-Tabellen
+          CNTR_CODE: Staat als zwei Buchstaben, z. B. "DE", "PL", "CZ" - zum Filtern auf Laender
+      - name: /geojson/NUTS_RG_20M_2024_4326_LEVL_3.geojson
+        title: Kleinregionen (NUTS 3, in Deutschland die Kreise)
+        method: GET
+        geometry: polygon
+        attributes: [NUTS_ID, NAME_LATN, CNTR_CODE, LEVL_CODE]
+    notes: >-
+      Die Szenario-Region schneidet die Datei raeumlich zu; fuer einen
+      Europavergleich die Region entsprechend weit waehlen.
+    example_layer:
+      id: nuts2_regionen
+      source: file
+      path: https://gisco-services.ec.europa.eu/distribution/v2/nuts/geojson/NUTS_RG_20M_2024_4326_LEVL_2.geojson
+      format: geojson
+      data_type: vector
+
+  # =====================================================================
+  # Laender-Geoportale
+  # =====================================================================
+  # Der GeoSN-WFS (wfs_geosn_verwaltungsgrenzen) stand hier bis 09/2026 als
+  # eigener Eintrag. Er liefert inzwischen fuer jede Anfrage HTTP 403
+  # ("Fehlende Berechtigung"), auch fuer GetCapabilities, waehrend andere
+  # Dienste desselben Hosts normal antworten - der Dienst ist also nicht
+  # mehr oeffentlich zugaenglich. Fuer saechsische Verwaltungsgrenzen ist
+  # bkg_vg250 (oben) der Ersatz: bundesweit, offen, gleiche Geometrieebenen.
+  # Amtliche saechsische Daten ausserhalb von VG250 gibt es als Shapefile
+  # unter https://www.geodaten.sachsen.de/downloadbereich-verwaltungsgrenzen-4344.html
+  # (ZIP-in-ZIP, EPSG:25833) - manuell entpackt als file-Layer nutzbar.
+
+  - id: nrw_alkis
+    label: ALKIS Flurstuecke NRW (Geobasis NRW)
+    provider: Bezirksregierung Koeln, Geobasis NRW
+    protocol: wfs
+    base_url: https://www.wfs.nrw.de/geobasis/wfs_nw_alkis_vereinfacht
+    spec_url: https://www.wfs.nrw.de/geobasis/wfs_nw_alkis_vereinfacht?REQUEST=GetCapabilities&SERVICE=WFS&VERSION=2.0.0
+    spec_type: wfs_capabilities
+    license: Datenlizenz Deutschland Zero 2.0
+    documentation_url: https://www.bezreg-koeln.nrw.de/geobasis-nrw
+    verified: 2026-10
+    description: >-
+      Vereinfachtes ALKIS (Amtliches Liegenschaftskatasterinformations-
+      system) fuer Nordrhein-Westfalen - Flurstuecke, Gebaeude und
+      tatsaechliche Nutzung. Eines der wenigen vollstaendig offen
+      lizenzierten ALKIS-Angebote (dl-zero); die meisten Laender geben
+      ALKIS nur eingeschraenkt oder kostenpflichtig heraus.
+    endpoints:
+      - name: ave:Flurstueck
+        title: Flurstuecke mit amtlicher Kennzeichnung
+        geometry: polygon
+        attributes: [flstkennz, gemarkung, flur, flstnrzae, flstnrnen, gemeinde, flaeche, lagebeztxt]
+        attribute_notes:
+          flstkennz: Flurstueckskennzeichen
+          flstnrzae: Flurstuecksnummer, Zaehler
+          flstnrnen: Flurstuecksnummer, Nenner
+          flaeche: Amtliche Flaeche in m²
+      - name: ave:GebaeudeBauwerk
+        title: Gebaeude und Bauwerke
+        geometry: polygon
+        attributes: [gebnutzbez, funktion, anzahlgs, name, lagebeztxt]
+        attribute_notes:
+          funktion: Gebaeudefunktion im Klartext
+          anzahlgs: Anzahl der oberirdischen Geschosse
+    notes: >-
+      Grosse Ergebnismengen - ohne enge Szenario-Region laeuft die
+      Abfrage in das Groessenlimit (GEOFACT_OPENDATA_MAX_MB, FA16).
+      Der Dienst kennt kein outputFormat=application/json und antwortet
+      darauf mit ows:ExceptionReport ("InvalidParameterValue"); der
+      Konnektor faellt automatisch auf GML zurueck (FA16), der Layer
+      funktioniert also - nur eine Anfrage je Seite mehr.
+
+  - id: bkg_dlm250
+    label: Digitales Landschaftsmodell 1:250.000 (BKG, WFS)
+    provider: Bundesamt fuer Kartographie und Geodaesie (BKG)
+    protocol: wfs
+    base_url: https://sgx.geodatenzentrum.de/wfs_dlm250
+    spec_url: https://sgx.geodatenzentrum.de/wfs_dlm250?REQUEST=GetCapabilities&SERVICE=WFS&VERSION=2.0.0
+    spec_type: wfs_capabilities
+    license: Datenlizenz Deutschland Namensnennung 2.0
+    documentation_url: https://gdz.bkg.bund.de/index.php/default/digitale-geodaten/digitale-landschaftsmodelle.html
+    verified: 2026-09
+    description: >-
+      Amtliches Landschaftsmodell (ATKIS) Deutschlands: Verkehrsnetz,
+      Gewaesser, Siedlungs- und Vegetationsflaechen. Die amtliche
+      Alternative zu OSM, wenn Nachvollziehbarkeit und definierte
+      Erfassungskriterien wichtiger sind als Aktualitaet.
+
+      WICHTIG - die Feature-Typen heissen hier "dlm250:objart_<code>_<g>"
+      und sind aus dem Namen heraus NICHT zu erraten (<code> ist der
+      ATKIS-Objektartenschluessel, <g> die Geometrie: _l Linie, _f
+      Flaeche, _p Punkt). Nur die unten aufgefuehrten, gegen den echten
+      Dienst geprueften Namen verwenden - kein eigenes Schema ableiten.
+      Jedes Objekt traegt die Klartextbezeichnung im Attribut objart_txt.
+    endpoints:
+      - name: dlm250:objart_57003_l
+        title: Fliessgewaesser / Wasserlaeufe (AX_Gewaesserstationierungsachse, Linien)
+        geometry: line
+        attributes: [objart_txt, nam, gwk]
+        notes: >-
+          Die Achsen von Fluessen und Baechen - der richtige Layer fuer
+          "Fluesse". Sachsen: ca. 790 Objekte. nam = Gewaessername,
+          gwk = Gewaesserkennzahl.
+      - name: dlm250:objart_44006_f
+        title: Stehende Gewaesser - Seen, Teiche (AX_StehendesGewaesser, Flaechen)
+        geometry: polygon
+        attributes: [objart_txt, nam, gwk]
+      - name: dlm250:objart_44001_f
+        title: Fliessgewaesser als Flaeche (AX_Fliessgewaesser)
+        geometry: polygon
+        attributes: [objart_txt, gwk]
+        notes: Nur breite Gewaesser sind flaechenhaft erfasst - fuer "alle Fluesse" objart_57003_l nehmen.
+      - name: dlm250:objart_42003_l
+        title: Strassennetz (AX_Strassenachse, Linien)
+        geometry: line
+        attributes: [objart_txt, bez, brf, fsz, wdm, znm]
+        notes: >-
+          Grosse Ergebnismenge (Sachsen ca. 28.000 Objekte) - Region eng
+          waehlen. bez = Strassenbezeichnung (z. B. "A 4"), brf =
+          Fahrbahnbreite, fsz = Fahrstreifenzahl.
+      - name: dlm250:objart_42014_l
+        title: Bahnstrecken (AX_Bahnstrecke, Linien)
+        geometry: line
+        attributes: [objart_txt, nam, bkt, elk, gls, spw]
+      - name: dlm250:objart_41010_f
+        title: Siedlungsflaechen (AX_Siedlungsflaeche)
+        geometry: polygon
+        attributes: [objart_txt, nam]
+      - name: dlm250:objart_43002_f
+        title: Wald (AX_Wald, Flaechen)
+        geometry: polygon
+        attributes: [objart_txt, nam]
+    example_layer:
+      id: fluesse
+      source: wfs
+      url: https://sgx.geodatenzentrum.de/wfs_dlm250
+      typename: dlm250:objart_57003_l
+      data_type: vector
+
+  # =====================================================================
+  # Kommunale Open-Data-Portale (CKAN)
+  # =====================================================================
+  - id: leipzig_opendata
+    label: Open Data Portal Leipzig (CKAN)
+    provider: Stadt Leipzig
+    protocol: ckan
+    base_url: https://opendata.leipzig.de
+    spec_url: https://opendata.leipzig.de/api/3/action/package_list
+    spec_type: ckan_api
+    license: je Datensatz unterschiedlich (meist CC-BY oder dl-de/by-2-0)
+    documentation_url: https://docs.ckan.org/en/latest/api/
+    verified: 2026-09
+    description: >-
+      Kommunale Fachdaten der Stadt Leipzig (Baumkataster, Spielplaetze,
+      Schulen, Ortsteilgrenzen, Kleinraeumige Statistik). Aufloesung von
+      Dataset/Resource zu Download-URL uebernimmt der CKAN-Konnektor
+      (FA16). Die CKAN-API ist selbstbeschreibend: package_list nennt
+      alle Datensaetze, package_show deren Ressourcen.
+    endpoints:
+      - name: /api/3/action/package_list
+        title: Alle Datensatz-Namen
+        method: GET
+      - name: /api/3/action/package_show
+        title: Datensatz-Details inkl. Ressourcen (Parameter id=<name>)
+        method: GET
+      - name: /api/3/action/resource_search
+        title: Ressourcensuche (Parameter query=<feld:wert>)
+        method: GET
+    example_layer:
+      id: leipzig_ortsteile
+      source: ckan
+      base_url: https://opendata.leipzig.de
+      dataset: ortsteile-leipzig
+      format: geojson
+      data_type: vector
+
+  - id: govdata
+    label: GovData - Datenportal fuer Deutschland (CKAN)
+    provider: Bundesministerium des Innern / Laender
+    protocol: ckan
+    base_url: https://www.govdata.de
+    spec_url: https://www.govdata.de/ckan/api/3/action/package_list
+    spec_type: ckan_api
+    license: je Datensatz unterschiedlich
+    documentation_url: https://www.govdata.de/api
+    verified: 2026-09
+    description: >-
+      Metadaten-Portal ueber Bund, Laender und Kommunen hinweg - der
+      Einstieg, um ueberhaupt zu finden, welche Behoerde einen
+      gesuchten Datensatz veroeffentlicht. Liefert selbst keine
+      Fachdaten, sondern verweist auf die Quellportale.
+    endpoints:
+      - name: /ckan/api/3/action/package_search
+        title: Volltextsuche ueber alle Datensaetze (Parameter q=<begriff>)
+        method: GET
+
+  # =====================================================================
+  # Umwelt und Klima
+  # =====================================================================
+  - id: uba_luftqualitaet
+    label: Luftqualitaet (Umweltbundesamt)
+    provider: Umweltbundesamt (UBA)
+    protocol: rest
+    base_url: https://luftdaten.umweltbundesamt.de/api/air-data/v3
+    spec_url: https://luftdaten.umweltbundesamt.de/api/air-data/v3/doc
+    spec_type: documentation
+    license: Datenlizenz Deutschland Namensnennung 2.0
+    documentation_url: https://www.umweltbundesamt.de/daten/luft/luftdaten
+    verified: 2026-10
+    data_type: table
+    description: >-
+      Messwerte und Messstationen des deutschen Luftmessnetzes (NO2, PM10,
+      Ozon). Die Stationsliste traegt Koordinaten, ist also per
+      Tabellen-Konnektor (FA14, x/y-Spalten) direkt als Punkt-Layer
+      nutzbar - Messwerte kommen per attribute_join (FA34) an die
+      Stationen.
+    endpoints:
+      - name: /stations/json
+        title: Messstationen inkl. Koordinaten
+        method: GET
+        attributes: [station id, station code, station name, station longitude, station latitude, network code, station setting name]
+        notes: >-
+          JSON mit 'indices' (Spaltennamen, oben) und 'data' (je Station
+          ein Array in dieser Reihenfolge) - kein flaches Tabellenformat.
+      - name: /measures/json
+        title: Messwerte je Station und Zeitraum
+        method: GET
+        attributes: [station, component, scope, date_from, date_to]
+
+  - id: dwd_opendata
+    label: DWD Open Data (Wetter und Klima)
+    provider: Deutscher Wetterdienst (DWD)
+    protocol: rest
+    base_url: https://opendata.dwd.de
+    spec_url: https://opendata.dwd.de/climate_environment/CDC/Readme_intro_CDC_ftp.pdf
+    spec_type: documentation
+    license: GeoNutzV (Namensnennung)
+    documentation_url: https://www.dwd.de/DE/leistungen/opendata/opendata.html
+    verified: 2026-09
+    data_type: table
+    description: >-
+      Klima- und Wetterdaten als offener Dateibaum (kein klassisches
+      REST-API, sondern ein durchsuchbares Verzeichnis).
+
+      Die Stationsbeschreibung unten ist eine Datei mit FESTER
+      SPALTENBREITE (Spalten durch Ausrichtung getrennt; ein Trennzeichen
+      gibt es NICHT - Kopfzeile einfach-, Datenzeilen
+      mehrfach-leerzeichengetrennt, dazu eine '---'-Linealzeile, deren
+      Breiten nicht zu den Datenzeilen passen). Sie wird daher mit
+      'format: fwf' und expliziten Spaltengrenzen eingebunden (FA39), die
+      URL direkt als 'path' (FA38). Das example_layer unten ist genau so
+      gegen die echte Datei geprueft (09/2026: 1386 Stationen). Niemals
+      ein delimiter dafuer konstruieren - Stationsnamen enthalten
+      Leerzeichen.
+    endpoints:
+      - name: /climate_environment/CDC/observations_germany/climate/daily/kl/recent/
+        title: Taegliche Klimawerte (Stationsdateien)
+        method: GET
+      - name: /climate_environment/CDC/help/KL_Tageswerte_Beschreibung_Stationen.txt
+        title: Stationsbeschreibung inkl. Koordinaten (feste Spaltenbreite)
+        method: GET
+        attributes: [Stations_id, von_datum, bis_datum, Stationshoehe, geoBreite, geoLaenge, Stationsname, Bundesland]
+        notes: >-
+          Feste Spaltenbreite, kein Trennzeichen. Die Spaltengrenzen im
+          example_layer unten sind gegen die echte Datei geprueft
+          (1386 Stationen, Stand 09/2026) - unveraendert uebernehmen.
+    example_layer:
+      id: dwd_stationen
+      source: table
+      path: https://opendata.dwd.de/climate_environment/CDC/help/KL_Tageswerte_Beschreibung_Stationen.txt
+      format: fwf
+      encoding: latin-1
+      skiprows: 2
+      colspecs: [[0, 5], [6, 14], [15, 23], [24, 38], [38, 50], [50, 60], [61, 101], [102, 142]]
+      names: [Stations_id, von_datum, bis_datum, Stationshoehe, geoBreite, geoLaenge, Stationsname, Bundesland]
+      geometry:
+        x_column: geoLaenge
+        y_column: geoBreite
+        crs: EPSG:4326
+      data_type: vector
+
+  - id: esa_worldcover
+    label: Landbedeckung 10 m (ESA WorldCover 2021)
+    provider: Europaeische Weltraumorganisation (ESA)
+    protocol: rest
+    base_url: https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map
+    license: CC BY 4.0 (Quellenangabe "© ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium")
+    documentation_url: https://esa-worldcover.org/en/data-access
+    verified: 2026-10
+    data_type: raster
+    description: >-
+      Weltweite Landbedeckung in 10-m-Zellen als Klassenraster (ein Band,
+      EPSG:4326), ohne Anmeldung. KEINE Tabelle: die Kachel-URL kommt als
+      'path' in einen file-Layer mit data_type: raster. Gelesen wird nur
+      das Fenster der Szenario-Region, nicht die ganze Kachel (rund 76 MB).
+      Klassenwerte: 10 = Baeume, 20 = Strauecher, 30 = Grasland, 40 =
+      Ackerland, 50 = bebaut, 60 = vegetationsarm, 80 = Wasser, 90 =
+      Feuchtgebiet. Der Anteil einer Klasse je Flaeche ist zonal_stats mit
+      stat: share und class_value: <Klassenwert>.
+    endpoints:
+      - name: /ESA_WorldCover_10m_2021_v200_N51E012_Map.tif
+        title: Kachel 51-54 Grad Nord, 12-15 Grad Ost (Leipzig, Nordsachsen, Berlin, Brandenburg)
+        method: GET
+      - name: /ESA_WorldCover_10m_2021_v200_N48E012_Map.tif
+        title: Kachel 48-51 Grad Nord, 12-15 Grad Ost (Chemnitz, Dresden bis 51 Grad Nord, Erzgebirge, Ostbayern)
+        method: GET
+      - name: /ESA_WorldCover_10m_2021_v200_N51E009_Map.tif
+        title: Kachel 51-54 Grad Nord, 9-12 Grad Ost (Niedersachsen, Sachsen-Anhalt, Hamburg)
+        method: GET
+      - name: /ESA_WorldCover_10m_2021_v200_N48E009_Map.tif
+        title: Kachel 48-51 Grad Nord, 9-12 Grad Ost (Thueringen Sued, Franken, Stuttgart)
+        method: GET
+    notes: >-
+      Kacheln sind 3 x 3 Grad gross und nach ihrer SUEDWESTLICHEN Ecke
+      benannt (N48E012 = 48-51 Grad Nord, 12-15 Grad Ost; Breite und Laenge
+      in Dreierschritten). Eine Region, die ueber eine Kachelgrenze reicht
+      (der 51. Breitengrad verlaeuft durch Sachsen, Dresden liegt knapp
+      noerdlich davon), braucht je Kachel einen eigenen Layer; Zonen
+      ausserhalb der gewaehlten Kachel bekommen keinen Wert und werden als
+      Warnung gemeldet.
+    example_layer:
+      id: landbedeckung
+      source: file
+      path: https://esa-worldcover.s3.eu-central-1.amazonaws.com/v200/2021/map/ESA_WorldCover_10m_2021_v200_N51E012_Map.tif
+      format: tif
+      data_type: raster
+      license:
+        name: CC-BY-4.0
+        attribution: "© ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium"
+        url: "https://creativecommons.org/licenses/by/4.0/"

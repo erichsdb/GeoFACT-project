@@ -1,0 +1,18 @@
+# Absichtlich ungueltig: Schritt 'catchment' referenziert unbekannte Quelle.
+scenario:
+  name: "Kaputtes Szenario"
+  region: "Sachsen, Deutschland"
+layers:
+  - id: substations
+    source: osm
+    tags: { power: substation }
+steps:
+  - id: catchment
+    op: buffer
+    inputs:
+      geometry: does_not_exist
+    params:
+      radius_km: 10
+output:
+  - type: map
+    source: catchment

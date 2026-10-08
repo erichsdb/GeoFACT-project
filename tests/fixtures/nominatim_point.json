@@ -1,0 +1,19 @@
+[
+  {
+    "place_id": 654321,
+    "licence": "Data (c) OpenStreetMap contributors, ODbL 1.0",
+    "osm_type": "node",
+    "osm_id": 240109189,
+    "boundingbox": ["51.0533", "51.0535", "13.7408", "13.7410"],
+    "lat": "51.0534",
+    "lon": "13.7409",
+    "display_name": "Altmarkt, Innere Altstadt, Dresden, Sachsen, Deutschland",
+    "class": "highway",
+    "type": "bus_stop",
+    "importance": 0.21,
+    "geojson": {
+      "type": "Point",
+      "coordinates": [13.7409, 51.0534]
+    }
+  }
+]

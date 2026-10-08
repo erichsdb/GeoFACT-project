@@ -1,0 +1,5 @@
+Stations_id von_datum bis_datum Stationshoehe geoBreite geoLaenge Stationsname                             Bundesland
+----------- --------- --------- ------------- --------- --------- ---------------------------------------- ----------
+00853 19510101 20260101           141     51.3400   12.3700 Leipzig (Stadt)                          Sachsen
+02932 19340101 20260101           149     51.3200   12.4200 Leipzig-Holzhausen                       Sachsen
+01001 18910101 20110331           202     50.7827    6.0941 Aachen                                   Nordrhein-Westfalen

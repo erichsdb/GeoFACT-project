@@ -1,0 +1,97 @@
+scenario:
+  name: "Resilienz von Energieinfrastruktur"
+  description: "Kritikalitätsanalyse des Hochspannungsnetzes in Sachsen"
+  region: "Sachsen, Deutschland"
+
+layers:
+  - id: substations
+    source: osm
+    tags: { power: substation }
+    validation:
+      required_fields: [voltage]
+      field_types: { voltage: integer }
+      constraints:
+        voltage: { min: 10000 }
+      on_violation: drop
+
+  - id: power_lines
+    source: osm
+    tags: { power: line }
+
+  - id: population
+    source: file
+    path: "data/GHS_POP_E2025_GLOBE_R2023A_54009_100_V1_0.tif"
+    data_type: raster
+    format: tif
+
+steps:
+  - id: grid_graph
+    op: build_network
+    inputs:
+      lines: power_lines
+      nodes: substations
+    params:
+      tolerance_m: 50
+
+  - id: scored_graph
+    op: centrality
+    inputs:
+      graph: grid_graph
+    params:
+      method: betweenness
+
+  - id: scored_nodes
+    op: graph_to_vector
+    inputs:
+      graph: scored_graph
+
+  - id: catchment
+    op: buffer
+    inputs:
+      geometry: substations
+    params:
+      radius_km: 20
+
+  - id: affected
+    op: zonal_stats
+    inputs:
+      zones: catchment
+      values: population
+    params:
+      stat: sum
+
+  - id: nodes_with_population
+    op: spatial_join
+    inputs:
+      left: scored_nodes
+      right: affected
+    params:
+      predicate: within
+
+  - id: ranked
+    op: ranking
+    inputs:
+      features: nodes_with_population
+    params:
+      by: [betweenness, sum_value]
+      weights: [0.5, 0.5]
+      output_field: risk_score
+
+  - id: critical
+    op: filter
+    inputs:
+      features: ranked
+    params:
+      condition: "risk_score >= 0.5"
+
+output:
+  - type: map
+    source: critical
+    color_field: risk_score
+  - type: geojson
+    source: critical
+    path: "output/kritische_knoten.geojson"
+  - type: rdf
+    source: critical
+    vocabulary: geosparql
+    path: "output/kritische_knoten.ttl"

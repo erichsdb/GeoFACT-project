@@ -1,0 +1,47 @@
+[
+  {
+    "place_id": 654321,
+    "licence": "Data (c) OpenStreetMap contributors, ODbL 1.0",
+    "osm_type": "relation",
+    "osm_id": 62649,
+    "boundingbox": [
+      "51.15",
+      "51.40",
+      "12.15",
+      "12.50"
+    ],
+    "lat": "51.3397",
+    "lon": "12.3731",
+    "display_name": "Leipzig, Sachsen, Deutschland",
+    "class": "boundary",
+    "type": "administrative",
+    "importance": 0.78,
+    "geojson": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            12.15,
+            51.15
+          ],
+          [
+            12.5,
+            51.15
+          ],
+          [
+            12.5,
+            51.4
+          ],
+          [
+            12.15,
+            51.4
+          ],
+          [
+            12.15,
+            51.15
+          ]
+        ]
+      ]
+    }
+  }
+]

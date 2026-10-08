@@ -1,0 +1,80 @@
+scenario:
+  name: BIP je Einwohner der saechsischen Kreise
+  description: >-
+    Amtliche Kreisgrenzen (BKG VG250) verbunden mit dem
+    Bruttoinlandsprodukt je Kreis 2023; Karte aller 13 Kreise und die
+    drei staerksten als Tabelle.
+  region: 11.8,50.1,15.1,51.7
+
+layers:
+  - id: kreise
+    source: wfs
+    url: https://sgx.geodatenzentrum.de/wfs_vg250
+    typename: vg250:vg250_krs
+    data_type: vector
+    license:
+      name: DL-DE-BY-2.0
+      attribution: "© GeoBasis-DE / BKG 2026"
+      url: "https://www.govdata.de/dl-de/by-2-0"
+
+  - id: bip
+    source: table
+    path: tabellen/bip_kreise_2023.csv
+    license:
+      name: CC-BY-4.0
+      attribution: "© Europäische Union, Eurostat (nama_10r_3gdp)"
+      url: "https://creativecommons.org/licenses/by/4.0/"
+    format: csv
+    delimiter: ";"
+    columns:
+      nuts:
+        type: string
+      bip_mio_eur:
+        type: float
+      bip_eur_je_einwohner:
+        type: float
+
+steps:
+  - id: sachsen
+    op: filter
+    inputs:
+      features: kreise
+    params:
+      condition: sn_l == '14'
+      types:
+        sn_l: string
+
+  - id: kreise_sachsen
+    op: deduplicate
+    inputs:
+      features: sachsen
+    params:
+      by: [nuts]
+      keep: largest_geometry
+
+  - id: mit_bip
+    op: attribute_join
+    inputs:
+      left: kreise_sachsen
+      right: bip
+    params:
+      left_on: nuts
+      columns: [bip_mio_eur, bip_eur_je_einwohner]
+
+  - id: top3
+    op: top_n
+    inputs:
+      features: mit_bip
+    params:
+      by: bip_eur_je_einwohner
+      n: 3
+      order: desc
+      rank_field: rang
+
+output:
+  - type: map
+    source: mit_bip
+    color_field: bip_eur_je_einwohner
+  - type: csv
+    source: top3
+    path: top3_bip_je_einwohner.csv

@@ -1,0 +1,12 @@
+{
+"type": "FeatureCollection",
+"name": "substations",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": "s1", "voltage": 110000.0 }, "geometry": { "type": "Point", "coordinates": [ 13.72, 51.04 ] } },
+{ "type": "Feature", "properties": { "id": "s2", "voltage": 220000.0 }, "geometry": { "type": "Point", "coordinates": [ 13.74, 51.045 ] } },
+{ "type": "Feature", "properties": { "id": "s3", "voltage": 380000.0 }, "geometry": { "type": "Point", "coordinates": [ 13.73, 51.055 ] } },
+{ "type": "Feature", "properties": { "id": "s4", "voltage": 5000.0 }, "geometry": { "type": "Point", "coordinates": [ 13.75, 51.05 ] } },
+{ "type": "Feature", "properties": { "id": "s5", "voltage": null }, "geometry": { "type": "Point", "coordinates": [ 13.76, 51.06 ] } }
+]
+}

@@ -1,0 +1,65 @@
+scenario:
+  name: "Busnetz- und Bevölkerungsdichte im Hexraster (GTFS ohne OSM)"
+  description: "Bus-Liniennetzdichte je Hexrasterzelle, der Bevölkerungsdichte gegenübergestellt"
+  region: "12.2292,51.2378,12.5467,51.4501"
+
+layers:
+  - id: bus_liniennetz
+    source: gtfs
+    url: "https://opendata.leipzig.de/dataset/8803f612-2ce1-4643-82d1-213434889200/resource/b38955c4-431c-4e8b-a4ef-9964a3a2c95d/download/gtfsmdvlvb.zip"
+    route_types: [3]
+
+  - id: gebiet
+    source: region
+
+  - id: bevoelkerung
+    source: file
+    path: "../data/GHS_POP_E2025_GLOBE_R2023A_54009_100_V1_0.tif"
+    data_type: raster
+    format: tif
+
+steps:
+  - id: raster
+    op: hex_grid
+    inputs:
+      region: gebiet
+    params:
+      cell_km: 1.0
+
+  - id: kanten_je_zelle
+    op: aggregate
+    inputs:
+      features: bus_liniennetz
+      zones: raster
+    params:
+      statistic: count
+      predicate: intersects
+
+  - id: dichteklassen
+    op: classify
+    inputs:
+      features: kanten_je_zelle
+    params:
+      field: count
+      breaks: [1, 5]
+      labels: ["unversorgt", "gering", "dicht"]
+
+  - id: einwohner_je_zelle
+    op: zonal_stats
+    inputs:
+      zones: dichteklassen
+      values: bevoelkerung
+    params:
+      stat: sum
+      decimals: 0
+
+output:
+  - type: map
+    source: dichteklassen
+    color_field: count
+  - type: map
+    source: einwohner_je_zelle
+    color_field: sum_value
+  - type: geojson
+    source: einwohner_je_zelle
+    path: "output/leipzig13_busnetz_dichte.geojson"

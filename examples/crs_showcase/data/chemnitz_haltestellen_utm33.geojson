@@ -1,0 +1,342 @@
+{
+ "type": "FeatureCollection",
+ "name": "chemnitz_haltestellen_utm33",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h01",
+    "name": "Haltestelle 1"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     353626.84,
+     5631031.97
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h02",
+    "name": "Haltestelle 2"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     353658.11,
+     5632143.82
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h03",
+    "name": "Haltestelle 3"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     353689.38,
+     5633255.68
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h04",
+    "name": "Haltestelle 4"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     353720.65,
+     5634367.54
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h05",
+    "name": "Haltestelle 5"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     353924.21,
+     5631579.98
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h06",
+    "name": "Haltestelle 6"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     353955.42,
+     5632691.84
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h07",
+    "name": "Haltestelle 7"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     353986.64,
+     5633803.7
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h08",
+    "name": "Haltestelle 8"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354190.38,
+     5631016.15
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h09",
+    "name": "Haltestelle 9"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354221.53,
+     5632128.01
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h10",
+    "name": "Haltestelle 10"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354252.68,
+     5633239.87
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h11",
+    "name": "Haltestelle 11"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354283.83,
+     5634351.73
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h12",
+    "name": "Haltestelle 12"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354487.7,
+     5631564.2
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h13",
+    "name": "Haltestelle 13"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354518.78,
+     5632676.05
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h14",
+    "name": "Haltestelle 14"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354549.88,
+     5633787.91
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h15",
+    "name": "Haltestelle 15"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354753.92,
+     5631000.4
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h16",
+    "name": "Haltestelle 16"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354784.95,
+     5632112.26
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h17",
+    "name": "Haltestelle 17"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354815.98,
+     5633224.12
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h18",
+    "name": "Haltestelle 18"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354847.02,
+     5634335.98
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h19",
+    "name": "Haltestelle 19 (abseits)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     353748.0,
+     5631028.56
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h20",
+    "name": "Haltestelle 20 (abseits)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354060.95,
+     5632132.51
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h21",
+    "name": "Haltestelle 21 (abseits)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354373.79,
+     5633236.48
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h22",
+    "name": "Haltestelle 22 (abseits)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354686.51,
+     5634340.46
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h23",
+    "name": "Haltestelle 23 (abseits)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     353826.11,
+     5633808.21
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": "h24",
+    "name": "Haltestelle 24 (abseits)"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     354608.84,
+     5631560.81
+    ]
+   }
+  }
+ ]
+}

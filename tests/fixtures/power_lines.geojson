@@ -1,0 +1,11 @@
+{
+"type": "FeatureCollection",
+"name": "power_lines",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": "line_s1_s2" }, "geometry": { "type": "LineString", "coordinates": [ [ 13.72, 51.04 ], [ 13.74, 51.045 ] ] } },
+{ "type": "Feature", "properties": { "id": "line_s2_s3" }, "geometry": { "type": "LineString", "coordinates": [ [ 13.74, 51.045 ], [ 13.73, 51.055 ] ] } },
+{ "type": "Feature", "properties": { "id": "line_s3_s4" }, "geometry": { "type": "LineString", "coordinates": [ [ 13.73, 51.055 ], [ 13.75, 51.05 ] ] } },
+{ "type": "Feature", "properties": { "id": "line_s4_s1" }, "geometry": { "type": "LineString", "coordinates": [ [ 13.75, 51.05 ], [ 13.72, 51.04 ] ] } }
+]
+}

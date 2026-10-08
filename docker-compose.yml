@@ -1,0 +1,116 @@
+# Deployment für 2-3 Nutzer via Coolify auf dem Hetzner-Server.
+#
+# Architektur:
+#   Browser -> Coolify/Traefik (Domain+TLS) -> frontend:3000 -> backend:8000
+#   backend (mit eingebautem tailscaled) -> Tailnet -> NAS-Tailscale-IP:15432 (osm-postgis)
+#
+# Tailscale läuft ALS ZWEITER PROZESS IM backend-Container (siehe
+# Dockerfile.backend/docker/backend-entrypoint.sh), nicht als separater
+# Sidecar-Service - der Container behält dadurch seinen eigenen
+# Netzwerk-Namespace/Servicenamen, Coolifys automatisches Traefik-Routing
+# bleibt unverändert einfach. Nur dieser eine Container tritt dem Tailnet
+# bei, nicht der Coolify-Host.
+#
+# Setzt voraus:
+#   - Coolify auf dem Hetzner-Server, dieses Repo als "Docker Compose"-
+#     Ressource eingebunden
+#   - Ein Tailscale-Auth-Key (Settings -> Keys in der Tailscale-Admin-
+#     Konsole), als TS_AUTHKEY-Secret in Coolify hinterlegt
+#   - Bestehender PostGIS-Container mit OSM-Import auf dem NAS (Stack
+#     "osm-stack", Container "osm-postgis"), NAS selbst im selben Tailnet
+#     (die NAS-Tailscale-IP/MagicDNS-Name wird in GEOFACT_PG_DSN
+#     referenziert, nicht der lokale Host-Port 15432 - der Coolify-Server
+#     hat kein gemeinsames Heimnetz mit dem NAS)
+#
+# Coolify setzt Umgebungsvariablen über seine UI (Environment Variables
+# der Ressource), NICHT über eine .env-Datei im Repo - siehe
+# .env.production.example für die vollständige Liste.
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: geofact-backend
+    restart: unless-stopped
+    # Für tailscaled (siehe Dockerfile.backend-Kommentar zur Abwägung
+    # userspace-networking vs. echtes TUN-Device).
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      GEOFACT_WEB_HOST: 0.0.0.0
+      GEOFACT_WEB_DATA_DIR: /data
+      GEOFACT_WEB_UPLOADS_DIR: /data/uploads
+      # examples/data/*.tif (~8.4 GB, u.a. weltweite GHS-POP-Bevölkerungs-
+      # daten) werden bewusst NICHT ins Image gebacken (siehe .dockerignore-
+      # Kommentar) - dieses Bind-Mount liefert sie stattdessen vom Host.
+      # Ohne befüllten Mount bleibt der Copernicus-Katalog leer (siehe
+      # /api/health, Feld copernicus.exists) - Szenarien ohne lokalen
+      # Raster-Layer (OSM/WFS-basiert) sind davon unberührt.
+      GEOFACT_COPERNICUS_DIR: /data/copernicus
+      GEOFACT_OSM_BACKEND: postgis
+      GEOFACT_PG_DSN: ${GEOFACT_PG_DSN}
+      GEOFACT_PG_QUERY_TIMEOUT_S: ${GEOFACT_PG_QUERY_TIMEOUT_S:-120}
+      GEOFACT_WEB_CORS: ${GEOFACT_PUBLIC_ORIGIN}
+      GEOFACT_WEB_USERS: ${GEOFACT_WEB_USERS}
+      GEOFACT_WEB_SECRET_KEY: ${GEOFACT_WEB_SECRET_KEY}
+      GEOFACT_WEB_TOKEN_TTL_S: ${GEOFACT_WEB_TOKEN_TTL_S:-43200}
+      GEOFACT_WEB_MAX_CONCURRENT_RUNS_PER_USER: ${GEOFACT_WEB_MAX_CONCURRENT_RUNS_PER_USER:-2}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://openrouter.ai/api/v1}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      GEOFACT_LLM_MODEL: ${GEOFACT_LLM_MODEL:-anthropic/claude-3.5-sonnet}
+      TS_AUTHKEY: ${TS_AUTHKEY}
+    volumes:
+      - geofact_data:/data
+      - tailscale_state:/var/lib/tailscale
+      # Host-Verzeichnis mit den großen Rasterdateien (einmalig manuell
+      # auf den Server bringen, z. B. per scp/rsync). Pfad bewusst HARTKODIERT, keine
+      # ${GEOFACT_COPERNICUS_HOST_DIR}-Variable mehr: Coolifys eigener
+      # Compose-Parser behandelt jeden ${VAR}-Ausdruck in volumes:-Zeilen
+      # (mit oder ohne Fallback) als Kandidaten für ein automatisch
+      # generiertes Named Volume und wandelt ihn IMMER dorthin um, statt
+      # ihn dem tatsächlichen .env-Wert entsprechend als Bind-Mount
+      # aufzulösen - ein aktives, seit Ende 2024 ungelöstes Coolify-
+      # Problem (coollabsio/coolify#3954, weiterhin offen; bestätigt auch
+      # in Versionen nahe unserer, z. B. #8107 vom 01.02.2026), kein alter,
+      # längst gefixter Bug. Kein bekannter zuverlässiger Workaround
+      # dafür in Docker-Compose-Ressourcen. Andere Rasterdaten-
+      # Pfade als /srv/geofact/copernicus (lokal wie auf einem anderen
+      # Coolify-Server) erfordern daher, diese beiden Zeilen direkt
+      # anzupassen statt nur eine Env-Variable zu setzen.
+      - /srv/geofact/copernicus:/data/copernicus:ro
+      # Dasselbe Host-Verzeichnis zusätzlich nach /app/examples/data
+      # gemountet: examples/leipzig/leipzig13_busnetz_dichte.yaml (FA8)
+      # referenziert die GHS-POP-Datei mit source: file und einem festen,
+      # relativ zur YAML-Datei aufgelösten Pfad ("../data/GHS_POP_...tif",
+      # also /app/examples/data/...; FA4/FA44), NICHT über GEOFACT_COPERNICUS_DIR
+      # - ein Layer-Pfad ist kein Katalog-Lookup, das Copernicus-Volume
+      # allein füllt daher nur den Quellen-Katalog der Web-Demo, aber
+      # nicht diesen Pfad. Ohne diesen zweiten Mount bricht leipzig13 im
+      # Container mit FileNotFoundError.
+      - /srv/geofact/copernicus:/app/examples/data:ro
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        # Browser ruft das Backend über die öffentliche Coolify/Traefik-
+        # Route auf, nicht den Container direkt.
+        NEXT_PUBLIC_API_BASE: ${GEOFACT_PUBLIC_API_BASE}
+    container_name: geofact-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      PORT: 3000
+    ports:
+      # Coolify erkennt exponierte Ports automatisch und legt darauf die
+      # Traefik-Route/Domain-Zuweisung in der UI an.
+      - "3000"
+
+volumes:
+  geofact_data:
+  tailscale_state:

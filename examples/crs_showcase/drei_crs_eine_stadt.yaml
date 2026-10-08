@@ -1,0 +1,69 @@
+scenario:
+  name: "Drei CRS, eine Stadt"
+  description: "Haltestellen höchstens 100 m neben einer Straße, gezählt je Stadtteil – mit Straßen in WGS 84, Haltestellen in UTM 33 (CRS erzwungen) und Stadtteilen in Gauß-Krüger Zone 4; crs_plot zeigt Rohkoordinaten und Harmonisierung."
+  region: "12.915,50.805,12.945,50.85"
+
+layers:
+  - id: wgs
+    source: file
+    data_type: vector
+    path: "data/chemnitz_strassen_wgs84.geojson"
+
+  - id: utm
+    source: file
+    data_type: vector
+    path: "data/chemnitz_haltestellen_utm33.geojson"
+    # Die Datei meldet EPSG:4326, enthält aber UTM-Meter: das Quell-CRS wird erzwungen.
+    crs: "EPSG:25833"
+    crs_override: true
+
+  - id: gk4
+    source: file
+    data_type: vector
+    path: "data/chemnitz_stadtteile_gk4.shp"
+
+steps:
+  - id: puffer
+    op: buffer
+    inputs:
+      geometry: wgs
+    params:
+      radius_km: 0.1
+
+  - id: treffer
+    op: clip
+    inputs:
+      features: utm
+      mask: puffer
+
+  - id: je_stadtteil
+    op: aggregate
+    inputs:
+      features: treffer
+      zones: gk4
+    params:
+      statistic: count
+      predicate: within
+
+output:
+  - type: map
+    source: je_stadtteil
+    path: "drei_crs_eine_stadt.html"
+  - type: geojson
+    source: je_stadtteil
+    path: "drei_crs_eine_stadt_utm33.geojson"
+    crs: "EPSG:25833"
+  - type: csv
+    source: je_stadtteil
+    path: "drei_crs_eine_stadt.csv"
+  - type: crs_plot
+    source: je_stadtteil
+    path: "drei_crs_eine_stadt_crs_plot.html"
+    layers: [gk4, utm, wgs]
+    title: "Drei CRS, eine Stadt: Rohkoordinaten und Arbeits-CRS"
+  - type: crs_plot
+    source: je_stadtteil
+    path: "drei_crs_eine_stadt_crs_plot.svg"
+    format: svg
+    layers: [gk4, utm, wgs]
+    title: "Drei CRS, eine Stadt: Rohkoordinaten und Arbeits-CRS"

@@ -1,0 +1,92 @@
+parameters:
+  definitionen:
+    type: list
+    items: mapping
+    description: "Definitionen von Grünfläche als OSM-Tag-Sets (nach Kabisch et al. 2016)"
+    default:
+      - id: parks_wald
+        tags:
+          - { leisure: park }
+          - { landuse: forest }
+          - { natural: wood }
+      - id: mit_friedhof_kleingarten
+        tags:
+          - { leisure: park }
+          - { landuse: forest }
+          - { natural: wood }
+          - { landuse: cemetery }
+          - { landuse: allotments }
+  min_area_ha:
+    type: float
+    default: 2.0
+    description: "Mindestgröße einer zusammenhängenden Grünfläche in Hektar"
+  resampling:
+    type: string
+    default: sum
+    description: "Resampling des Bevölkerungsrasters (sum erhält die Einwohnersumme)"
+
+modules:
+  erreichbarkeit:
+    description: "Einwohner in 300 und 500 m Luftlinie um Grünflächen einer Definition"
+    args:
+      tags: { type: list, items: mapping, description: "OSM-Tag-Sets der Grünflächen" }
+    layers:
+      - id: gruen
+        source: osm
+        tags: "${tags}"
+        geometry: polygon
+    steps:
+      - { id: flaechen, op: dissolve, inputs: { features: gruen } }
+      - { id: flaechen_ha, op: area, inputs: { features: flaechen }, params: { unit: ha } }
+      - { id: gross, op: filter, inputs: { features: flaechen_ha }, params: { condition: "area_ha >= ${min_area_ha}" } }
+      - { id: buf_300, op: buffer, inputs: { geometry: gross }, params: { radius_km: 0.3 } }
+      - { id: buf_500, op: buffer, inputs: { geometry: gross }, params: { radius_km: 0.5 } }
+      - { id: reach_300, op: dissolve, inputs: { features: buf_300 } }
+      - { id: reach_500, op: dissolve, inputs: { features: buf_500 } }
+      - { id: in_city_300, op: clip, inputs: { features: reach_300, mask: city } }
+      - { id: in_city_500, op: clip, inputs: { features: reach_500, mask: city } }
+      - { id: ring_500, op: overlay, inputs: { left: in_city_500, right: in_city_300 }, params: { method: difference } }
+      - { id: pop_300, op: zonal_stats, inputs: { zones: in_city_300, values: population }, params: { output_field: ew_300 } }
+      - { id: pop_500, op: zonal_stats, inputs: { zones: ring_500, values: population }, params: { output_field: ew_300_500 } }
+      - { id: sum_300, op: aggregate, inputs: { zones: pop_city, features: pop_300 }, params: { statistic: sum, value_field: ew_300 } }
+      - { id: sum_500, op: aggregate, inputs: { zones: sum_300, features: pop_500 }, params: { statistic: sum, value_field: ew_300_500 } }
+      - { id: anteil_300, op: calculate_field, inputs: { features: sum_500 }, params: { expression: "100 * sum_ew_300 / einwohner", output_field: anteil_300, decimals: 1 } }
+      - { id: ergebnis, op: calculate_field, inputs: { features: anteil_300 }, params: { expression: "100 * (sum_ew_300 + sum_ew_300_500) / einwohner", output_field: anteil_500, decimals: 1 } }
+    exports: [ergebnis, gross, pop_300, pop_500]
+
+scenario:
+  name: "Erreichbarkeit von Grünflächen in Berlin"
+  description: "Anteil der Bevölkerung in 300 und 500 m Luftlinie um Grünflächen ab 2 ha, je Definition von Grünfläche"
+  region: "Berlin, Deutschland"
+
+layers:
+  - id: city
+    source: region
+  - id: population
+    source: file
+    path: "data/GHS_POP_E2025_GLOBE_R2023A_54009_100_V1_0.tif"
+    data_type: raster
+    resampling: "${resampling}"
+    license:
+      name: CC-BY-4.0
+      attribution: "© Europäische Union 2023, GHS-POP R2023A (Joint Research Centre)"
+      url: "https://human-settlement.emergency.copernicus.eu/download.php?ds=pop"
+
+instances:
+  - id: def
+    module: erreichbarkeit
+    foreach: { var: d, in: "${definitionen}" }
+    key: "${d.id}"
+    with: { tags: "${d.tags}" }
+
+steps:
+  - { id: pop_city, op: zonal_stats, inputs: { zones: city, values: population }, params: { output_field: einwohner } }
+  - { id: vergleich, op: collect, inputs: "def[*].ergebnis", params: { source_field: definition } }
+
+output:
+  - { type: csv, source: vergleich, path: "berlin_erreichbarkeit.csv" }
+  - { type: geojson, source: vergleich, path: "berlin_erreichbarkeit.geojson" }
+  - { type: map, source: "def[parks_wald].gross", path: "berlin_gruenflaechen.html" }
+  - { type: geojson, source: "def[parks_wald].pop_300", path: "berlin_bis_300m.geojson" }
+  - { type: geojson, source: "def[parks_wald].pop_500", path: "berlin_300_bis_500m.geojson" }
+  - { type: geojson, source: pop_city, path: "berlin_stadt.geojson" }

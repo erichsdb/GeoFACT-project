@@ -1,0 +1,60 @@
+scenario:
+  name: "Resilienz von Energieinfrastruktur"
+  description: "Kritische Umspannwerke des Hochspannungsnetzes in Sachsen"
+  region: "Sachsen, Deutschland"
+
+layers:
+  - id: substations
+    source: osm
+    tags: { power: substation }
+    validation: { required_fields: [voltage], on_violation: drop }
+  - id: power_lines
+    source: osm
+    tags: { power: line }
+  - id: population
+    source: file
+    path: "data/GHS_POP_E2025_GLOBE_R2023A_54009_100_V1_0.tif"
+    resampling: sum
+    margin_km: 20
+    data_type: raster
+    license:
+      name: CC-BY-4.0
+      attribution: "© Europäische Union 2023, GHS-POP R2023A (Joint Research Centre)"
+      url: "https://human-settlement.emergency.copernicus.eu/download.php?ds=pop"
+
+steps:
+  - id: grid
+    op: power_grid_osm
+    inputs: { substations: substations, power_lines: power_lines }
+    params: { min_voltage: 110000, tolerance_m: 50 }
+  - id: scored_grid
+    op: centrality
+    inputs: { graph: grid }
+  - id: all_nodes
+    op: graph_to_vector
+    inputs: { graph: scored_grid }
+  - id: nodes
+    op: filter
+    inputs: { features: all_nodes }
+    params: { condition: "kind != 'junction'" }
+  - id: catchment
+    op: buffer
+    inputs: { geometry: nodes }
+    params: { radius_km: 20 }
+  - id: exposed
+    op: zonal_stats
+    inputs: { zones: catchment, values: population }
+    params: { stat: sum }
+  - id: ranked
+    op: ranking
+    inputs: { features: exposed }
+    params: { by: [betweenness, sum_value], weights: [0.5, 0.5], output_field: risk_score }
+  - id: critical
+    op: top_n
+    inputs: { features: ranked }
+    params: { by: risk_score, n: 10, rank_field: rang }
+
+output:
+  - { type: map, source: critical, color_field: risk_score }
+  - { type: geojson, source: critical, path: "kritische_umspannwerke.geojson" }
+  - { type: rdf, source: critical, path: "kritische_umspannwerke.ttl" }

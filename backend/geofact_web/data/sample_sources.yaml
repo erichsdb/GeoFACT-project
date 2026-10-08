@@ -1,0 +1,275 @@
+# Mitgelieferte Beispieldaten (FA90)
+#
+# Kleine, eingecheckte Auszüge offener Daten unter examples/. Jeder Eintrag
+# erscheint ohne Upload in der Quellenliste der Web-Demo (/api/catalog,
+# Gruppe "samples") und im Grounding der Erzeugung.
+#
+# - `layer` ist das einbaufertige Layer-Fragment. `path` ist relativ zum
+#   Beispielordner (examples/); der Server setzt daraus den absoluten Pfad.
+# - Eine Tabelle ohne `geometry` ist reine Statistik (FA37) und wird per
+#   attribute_join an eine Geometriequelle gehängt; `join_hint` sagt, woran.
+# - Beschreibung der Dateien und Spalten: examples/tabellen/README.md.
+
+samples:
+  # ---------------------------------------------------------------------
+  # Statistik ohne Koordinaten
+  # ---------------------------------------------------------------------
+  - id: bip_bundeslaender_2025
+    label: BIP je Bundesland 2025
+    description: Bruttoinlandsprodukt in Mio. Euro, 16 Länder (Destatis VGRdL).
+    join_hint: Schlüssel 'land' = Attribut 'gen' der BKG-Ländergrenzen (bkg_vg250, vg250:vg250_lan).
+    layer:
+      id: bip_bundeslaender
+      source: table
+      path: tabellen/bip_bundeslaender_2025.csv
+      format: csv
+      delimiter: ";"
+      columns:
+        land: {type: string}
+        bip_mio_eur: {type: float}
+      license:
+        name: DL-DE-BY-2.0
+        attribution: "© Statistisches Bundesamt (Destatis), VGRdL"
+        url: "https://www.govdata.de/dl-de/by-2-0"
+
+  - id: bip_kreise_2023
+    label: BIP je Kreis 2023
+    description: Bruttoinlandsprodukt gesamt (Mio. Euro) und je Einwohner (Euro), alle 400 Kreise (Eurostat).
+    join_hint: Schlüssel 'nuts' = Attribut 'nuts' der BKG-Kreisgrenzen (bkg_vg250, vg250:vg250_krs).
+    layer:
+      id: bip_kreise
+      source: table
+      path: tabellen/bip_kreise_2023.csv
+      format: csv
+      delimiter: ";"
+      columns:
+        nuts: {type: string}
+        bip_mio_eur: {type: float}
+        bip_eur_je_einwohner: {type: float}
+      license:
+        name: CC-BY-4.0
+        attribution: "© Europäische Union, Eurostat (nama_10r_3gdp)"
+        url: "https://creativecommons.org/licenses/by/4.0/"
+
+  - id: einkommen_bundeslaender_2023
+    label: Verfügbares Einkommen je Bundesland 2023
+    description: Verfügbares Einkommen der privaten Haushalte in Euro je Einwohner, 16 Länder (Eurostat).
+    join_hint: Schlüssel 'nuts' = Attribut 'nuts' der BKG-Ländergrenzen (bkg_vg250, vg250:vg250_lan).
+    layer:
+      id: einkommen
+      source: table
+      path: tabellen/einkommen_bundeslaender_2023.csv
+      format: csv
+      delimiter: ";"
+      columns:
+        nuts: {type: string}
+        einkommen_eur_je_einwohner: {type: float}
+      license:
+        name: CC-BY-4.0
+        attribution: "© Europäische Union, Eurostat (nama_10r_2hhinc)"
+        url: "https://creativecommons.org/licenses/by/4.0/"
+
+  - id: erwerbslosenquote_bundeslaender_2025
+    label: Erwerbslosenquote je Bundesland 2025
+    description: >-
+      Erwerbslosenquote der 15- bis 74-Jährigen in Prozent, 16 Länder (Eurostat,
+      Arbeitskräfteerhebung - nicht die Arbeitslosenquote der Bundesagentur).
+    join_hint: Schlüssel 'nuts' = Attribut 'nuts' der BKG-Ländergrenzen (bkg_vg250, vg250:vg250_lan).
+    layer:
+      id: erwerbslosigkeit
+      source: table
+      path: tabellen/erwerbslosenquote_bundeslaender_2025.csv
+      format: csv
+      delimiter: ";"
+      columns:
+        nuts: {type: string}
+        erwerbslosenquote_prozent: {type: float}
+      license:
+        name: CC-BY-4.0
+        attribution: "© Europäische Union, Eurostat (lfst_r_lfu3rt)"
+        url: "https://creativecommons.org/licenses/by/4.0/"
+
+  - id: bundestagswahl_2025_bundeslaender
+    label: Bundestagswahl 2025 je Bundesland
+    description: >-
+      Wahlbeteiligung und Zweitstimmenanteile in Prozent (Union = CDU + CSU, AfD,
+      SPD, Grüne, Linke, BSW, FDP), 16 Länder, endgültiges Ergebnis.
+    join_hint: Schlüssel 'nuts' = Attribut 'nuts' der BKG-Ländergrenzen (bkg_vg250, vg250:vg250_lan).
+    layer:
+      id: wahl_laender
+      source: table
+      path: tabellen/bundestagswahl_2025_bundeslaender.csv
+      format: csv
+      delimiter: ";"
+      columns:
+        nuts: {type: string}
+        wahlbeteiligung_prozent: {type: float}
+        union_prozent: {type: float}
+        afd_prozent: {type: float}
+        spd_prozent: {type: float}
+        gruene_prozent: {type: float}
+        linke_prozent: {type: float}
+        bsw_prozent: {type: float}
+        fdp_prozent: {type: float}
+      license:
+        name: DL-DE-BY-2.0
+        attribution: "© Die Bundeswahlleiterin, Wiesbaden 2025"
+        url: "https://www.govdata.de/dl-de/by-2-0"
+
+  - id: inkar_kreise_2025
+    label: INKAR-Indikatoren je Kreis (BBSR)
+    description: >-
+      20 Indikatoren der Raumbeobachtung für alle 400 Kreise, je der jüngste Wert
+      (das Jahr steht im Spaltennamen): Angebotsmiete, Baulandpreis, Wohnfläche,
+      Arbeitslosenquote, SGB-II-Quote, Kinderarmut, Kaufkraft, Hausärzte,
+      Krankenhausbetten, Schulabgänger ohne Abschluss, Pendlersaldo, Pkw-Dichte,
+      Gigabit-Versorgung, Fahrzeit zu Oberzentrum und Autobahn sowie der Anteil der
+      Einwohner mit höchstens 1000 m zu Supermarkt, Apotheke, Hausarzt, Grundschule
+      und Haltestelle.
+    join_hint: Schlüssel 'ags' (fünfstellig) = Attribut 'ags' der BKG-Kreisgrenzen (bkg_vg250, vg250:vg250_krs).
+    layer:
+      id: inkar
+      source: table
+      path: tabellen/inkar_kreise_2025.csv
+      format: csv
+      delimiter: ";"
+      columns:
+        ags: {type: string}
+        kreis: {type: string}
+        angebotsmiete_eur_je_m2_2024: {type: float}
+        baulandpreis_eur_je_m2_2022: {type: float}
+        wohnflaeche_m2_je_einwohner_2023: {type: float}
+        arbeitslosenquote_prozent_2023: {type: float}
+        sgb2_quote_prozent_2023: {type: float}
+        kinderarmut_je_100_unter_15_2023: {type: float}
+        kaufkraft_eur_je_einwohner_2023: {type: float}
+        hausaerzte_je_10000_einwohner_2022: {type: float}
+        krankenhausbetten_je_1000_einwohner_2022: {type: float}
+        schulabgaenger_ohne_abschluss_prozent_2023: {type: float}
+        pendlersaldo_je_100_beschaeftigte_2023: {type: float}
+        pkw_je_1000_einwohner_2023: {type: float}
+        gigabit_haushalte_prozent_2023: {type: float}
+        fahrzeit_oberzentrum_min_2021: {type: float}
+        fahrzeit_autobahn_min_2024: {type: float}
+        nah_supermarkt_prozent_2023: {type: float}
+        nah_apotheke_prozent_2023: {type: float}
+        nah_hausarzt_prozent_2023: {type: float}
+        nah_grundschule_prozent_2023: {type: float}
+        nah_haltestelle_prozent_2022: {type: float}
+      license:
+        name: DL-DE-BY-2.0
+        attribution: "© BBSR Bonn 2025, INKAR"
+        url: "https://www.govdata.de/dl-de/by-2-0"
+
+  # ---------------------------------------------------------------------
+  # Flächen
+  # ---------------------------------------------------------------------
+  - id: bundestagswahl_2025_wahlkreise
+    label: Bundestagswahl 2025 je Wahlkreis (Flächen)
+    description: >-
+      Die 299 Wahlkreise als Flächen, je mit Wahlbeteiligung, Zweitstimmenanteilen
+      in Prozent und stärkster Partei. Geometrie vereinfacht, bundesweit.
+    layer:
+      id: wahlkreise
+      source: file
+      path: geodaten/bundestagswahl_2025_wahlkreise.geojson
+      format: geojson
+      data_type: vector
+      license:
+        name: DL-DE-BY-2.0
+        attribution: "© Die Bundeswahlleiterin, Wiesbaden 2025; Geometrie © GeoBasis-DE / BKG"
+        url: "https://www.govdata.de/dl-de/by-2-0"
+
+  # ---------------------------------------------------------------------
+  # Punktdaten mit Koordinaten
+  # ---------------------------------------------------------------------
+  - id: unfaelle_sachsen_2024
+    label: Verkehrsunfälle Sachsen 2024 (Punkte)
+    description: >-
+      12 847 Unfälle mit Personenschaden. kategorie 1 = Getötete, 2 = Schwerverletzte,
+      3 = Leichtverletzte; rad/pkw/fuss/krad = 1, wenn beteiligt; wochentag 1 = Sonntag.
+    layer:
+      id: unfaelle
+      source: table
+      path: tabellen/unfaelle_sachsen_2024.csv
+      format: csv
+      geometry: {x_column: lon, y_column: lat, crs: "EPSG:4326"}
+      columns:
+        monat: {type: integer}
+        stunde: {type: integer}
+        wochentag: {type: integer}
+        kategorie: {type: integer}
+        rad: {type: integer}
+        pkw: {type: integer}
+        fuss: {type: integer}
+        krad: {type: integer}
+      license:
+        name: DL-DE-BY-2.0
+        attribution: "© Statistische Ämter des Bundes und der Länder, Unfallatlas 2024"
+        url: "https://www.govdata.de/dl-de/by-2-0"
+
+  - id: ladesaeulen_sachsen_2026
+    label: Ladesäulen Sachsen 2026 (Punkte)
+    description: >-
+      3 819 öffentliche Ladeeinrichtungen in Betrieb (Stand 01.09.2026). art = normal
+      oder schnell; ladepunkte = Anzahl; leistung_kw = Nennleistung.
+    layer:
+      id: ladesaeulen
+      source: table
+      path: tabellen/ladesaeulen_sachsen_2026.csv
+      format: csv
+      geometry: {x_column: lon, y_column: lat, crs: "EPSG:4326"}
+      columns:
+        art: {type: string}
+        ladepunkte: {type: integer}
+        leistung_kw: {type: float}
+        jahr_inbetriebnahme: {type: integer}
+        ort: {type: string}
+        kreis: {type: string}
+      license:
+        name: CC-BY-4.0
+        attribution: "© Bundesnetzagentur, Ladesäulenregister"
+        url: "https://creativecommons.org/licenses/by/4.0/"
+
+  - id: zensus2022_gitter_1km_sachsen
+    label: Zensus 2022, 1-km-Gitter Sachsen (Punkte)
+    description: >-
+      11 499 bewohnte Gitterzellen als Mittelpunkte: Einwohner, Durchschnittsalter,
+      durchschnittliche Nettokaltmiete in Euro je m² und Zahl der vermieteten
+      Wohnungen. Miete fehlt in Zellen mit zu wenigen Mietwohnungen.
+    layer:
+      id: zensus_gitter
+      source: table
+      path: tabellen/zensus2022_gitter_1km_sachsen.csv
+      format: csv
+      geometry: {x_column: lon, y_column: lat, crs: "EPSG:4326"}
+      columns:
+        einwohner: {type: integer}
+        durchschnittsalter: {type: float}
+        miete_eur_je_m2: {type: float}
+        wohnungen_vermietet: {type: float}
+      license:
+        name: DL-DE-BY-2.0
+        attribution: "© Statistische Ämter des Bundes und der Länder, Zensus 2022"
+        url: "https://www.govdata.de/dl-de/by-2-0"
+
+  - id: pegelstationen_2026
+    label: Pegelstationen der Bundeswasserstraßen (Punkte)
+    description: >-
+      729 Pegel mit Name, Gewässer und Flusskilometer, bundesweit (Pegelonline,
+      Stand 08.10.2026). Nur die Standorte, keine Wasserstände.
+    layer:
+      id: pegel
+      source: table
+      path: tabellen/pegelstationen_2026.csv
+      format: csv
+      geometry: {x_column: lon, y_column: lat, crs: "EPSG:4326"}
+      columns:
+        name: {type: string}
+        gewaesser: {type: string}
+        fluss_km: {type: float}
+        nummer: {type: string}
+      license:
+        name: DL-DE-Zero-2.0
+        attribution: "Wasserstraßen- und Schifffahrtsverwaltung des Bundes (WSV), Pegelonline"
+        url: "https://www.govdata.de/dl-de/zero-2-0"

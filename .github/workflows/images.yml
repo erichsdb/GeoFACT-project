@@ -1,0 +1,206 @@
+name: Demo-Images
+
+# Baut die Images der lokalen Demo (docker-compose.demo.yml, docs/schnellstart.md)
+# und legt sie in der GitHub Container Registry ab:
+#   ghcr.io/<owner>/<repo>-backend    Dockerfile.backend, Ziel "demo"
+#   ghcr.io/<owner>/<repo>-frontend   Dockerfile.frontend
+#
+# Auslöser: ein Tag v* (z. B. v1.0-abgabe) oder von Hand. Das Datenpaket
+# (scripts/build_demo_data.py) kommt als Anhang des Releases "demo-data";
+# fehlt es, entstehen die Images ohne Daten (die Szenarien brauchen dann Netz).
+#
+# Plattformen: linux/amd64 (Intel und AMD, 64 Bit: Windows, Linux, Intel-Macs)
+# und linux/arm64 (Apple Silicon, ARM-Rechner). Docker Desktop führt auf
+# Windows und macOS Linux-Images aus, eigene Windows- oder macOS-Images gibt
+# es nicht. 32 Bit (linux/386, linux/arm/v7) fehlt bewusst: rasterio und
+# pyogrio liefern dafür keine Wheels.
+#
+# Jede Architektur baut auf einem eigenen Runner mit passendem Prozessor
+# (Job "build") - unter QEMU-Emulation dauerte allein `npm ci` für arm64 ein
+# Vielfaches. Jeder Runner prüft sein Backend-Image (Offline-Szenario,
+# Health-Check), lädt beide Images ohne Tag hoch und hängt sie bei einem Tag
+# als Archiv für `docker load` an das Release. Der Job "manifest" fasst die
+# Architekturen danach unter einem Tag zusammen; Docker wählt beim Pull selbst.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+
+env:
+  DEMO_DATA_RELEASE: demo-data
+  DEMO_DATA_ASSET: geofact-demo-data.tar.gz
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
+    outputs:
+      backend: ${{ steps.names.outputs.backend }}
+      frontend: ${{ steps.names.outputs.frontend }}
+      version: ${{ steps.names.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Image-Namen ableiten
+        id: names
+        run: |
+          prefix="ghcr.io/${GITHUB_REPOSITORY,,}"
+          echo "backend=${prefix}-backend" >> "$GITHUB_OUTPUT"
+          echo "frontend=${prefix}-frontend" >> "$GITHUB_OUTPUT"
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            echo "version=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Datenpaket holen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release download "$DEMO_DATA_RELEASE" --pattern "$DEMO_DATA_ASSET" --dir /tmp; then
+            tar -xzf "/tmp/$DEMO_DATA_ASSET" -C demo-data
+            du -sh demo-data/snapshots demo-data/examples-data
+          else
+            echo "::warning::Release '$DEMO_DATA_RELEASE' ohne $DEMO_DATA_ASSET - die Images entstehen ohne Datenpaket."
+          fi
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Backend bauen
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.backend
+          target: demo
+          load: true
+          tags: ${{ steps.names.outputs.backend }}:${{ steps.names.outputs.version }}
+          cache-from: type=gha,scope=backend-${{ matrix.arch }}
+          cache-to: type=gha,scope=backend-${{ matrix.arch }},mode=max
+
+      - name: Smoke-Test (Offline-Szenario und Health-Check)
+        env:
+          IMAGE: ${{ steps.names.outputs.backend }}:${{ steps.names.outputs.version }}
+        run: |
+          test "$(docker image inspect --format '{{.Architecture}}' "$IMAGE")" = "${{ matrix.arch }}"
+          docker run --rm --network none "$IMAGE" \
+            geofact run examples/crs_showcase/drei_crs_eine_stadt.yaml --out /tmp/out
+          docker run -d --name smoke -p 8000:8000 "$IMAGE"
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8000/api/health && break
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:8000/api/health
+          docker rm -f smoke
+
+      - name: Frontend bauen
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.frontend
+          build-args: NEXT_PUBLIC_API_BASE=http://localhost:8000
+          load: true
+          tags: ${{ steps.names.outputs.frontend }}:${{ steps.names.outputs.version }}
+          cache-from: type=gha,scope=frontend-${{ matrix.arch }}
+          cache-to: type=gha,scope=frontend-${{ matrix.arch }},mode=max
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      # Hochladen ohne Tag (nur per Digest); der Job "manifest" vergibt die Tags.
+      # Beide Builds kommen vollständig aus dem Cache der Schritte oben.
+      - name: Backend hochladen
+        id: push_backend
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.backend
+          target: demo
+          outputs: type=image,name=${{ steps.names.outputs.backend }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=backend-${{ matrix.arch }}
+
+      - name: Frontend hochladen
+        id: push_frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.frontend
+          build-args: NEXT_PUBLIC_API_BASE=http://localhost:8000
+          outputs: type=image,name=${{ steps.names.outputs.frontend }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=frontend-${{ matrix.arch }}
+
+      - name: Digests merken
+        run: |
+          mkdir -p digests
+          echo "${{ steps.push_backend.outputs.digest }}" > "digests/backend-${{ matrix.arch }}"
+          echo "${{ steps.push_frontend.outputs.digest }}" > "digests/frontend-${{ matrix.arch }}"
+          cat digests/*
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: digests-${{ matrix.arch }}
+          path: digests/
+          retention-days: 1
+
+      - name: Images als Archiv an das Release haengen
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BACKEND: ${{ steps.names.outputs.backend }}:${{ steps.names.outputs.version }}
+          FRONTEND: ${{ steps.names.outputs.frontend }}:${{ steps.names.outputs.version }}
+          ARCHIVE: geofact-demo-images-${{ matrix.arch }}.tar.gz
+        run: |
+          docker save "$BACKEND" "$FRONTEND" | gzip > "$ARCHIVE"
+          ls -lh "$ARCHIVE"
+          # Beide Architekturen laufen parallel: wer zuerst kommt, legt das Release an.
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 \
+            || gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes "Demo-Images: siehe docs/schnellstart.md" \
+            || gh release view "$GITHUB_REF_NAME" >/dev/null
+          gh release upload "$GITHUB_REF_NAME" "$ARCHIVE" --clobber
+
+  manifest:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: digests-*
+          path: digests
+          merge-multiple: true
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
+      - name: Architekturen unter einem Tag zusammenfassen
+        env:
+          BACKEND: ${{ needs.build.outputs.backend }}
+          FRONTEND: ${{ needs.build.outputs.frontend }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          ls digests
+          for part in backend frontend; do
+            if [ "$part" = backend ]; then image="$BACKEND"; else image="$FRONTEND"; fi
+            docker buildx imagetools create \
+              -t "$image:$VERSION" -t "$image:latest" \
+              "$image@$(cat digests/$part-amd64)" "$image@$(cat digests/$part-arm64)"
+            docker buildx imagetools inspect "$image:$VERSION"
+          done

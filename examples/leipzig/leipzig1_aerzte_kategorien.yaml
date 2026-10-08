@@ -1,0 +1,40 @@
+scenario:
+  name: "Ärzte nach Kategorien je Ortsteil"
+  description: "Anzahl Ärzte je Fachrichtung und Ortsteil in Leipzig"
+  region: "Leipzig, Deutschland"
+
+layers:
+  - id: aerzte
+    source: osm
+    tags:
+      amenity: doctors
+
+  - id: ortsteile
+    source: osm
+    tags:
+      boundary: administrative
+      admin_level: "10"
+
+steps:
+  - id: aerzte_punkte
+    op: to_points
+    inputs:
+      features: aerzte
+
+  - id: aerzte_je_ortsteil
+    op: aggregate
+    inputs:
+      features: aerzte_punkte
+      zones: ortsteile
+    params:
+      statistic: count
+      group_by: "healthcare:speciality"
+      predicate: within
+
+output:
+  - type: map
+    source: aerzte_je_ortsteil
+    color_field: count
+  - type: geojson
+    source: aerzte_je_ortsteil
+    path: "output/leipzig1_aerzte_kategorien.geojson"

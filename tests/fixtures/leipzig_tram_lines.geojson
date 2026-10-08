@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "leipzig_tram_lines",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": "gleis_hbf_markt", "railway": "tram" }, "geometry": { "type": "LineString", "coordinates": [ [ 12.382, 51.345 ], [ 12.376, 51.34 ] ] } },
+{ "type": "Feature", "properties": { "id": "gleis_markt_wilhelm", "railway": "tram" }, "geometry": { "type": "LineString", "coordinates": [ [ 12.376, 51.34 ], [ 12.37, 51.335 ] ] } },
+{ "type": "Feature", "properties": { "id": "gleis_wilhelm_connewitz", "railway": "tram" }, "geometry": { "type": "LineString", "coordinates": [ [ 12.37, 51.335 ], [ 12.364, 51.33 ] ] } }
+]
+}

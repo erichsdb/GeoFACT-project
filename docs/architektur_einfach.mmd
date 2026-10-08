@@ -1,0 +1,39 @@
+%% GeoFACT-Architektur, vereinfachte Übersicht (Stand 01.10.2026, nach dem Umbau Architektur B)
+%% Anschauen: Inhalt auf https://mermaid.live einfügen
+%% Die ausführliche Fassung mit Schichtenregel (Ringe, Pakete), Registry, Erkennung und
+%% "Baustein hinzufügen" steht in docs/architektur.md; die Web-Demo in docs/web_demo.md.
+flowchart LR
+
+    YAML["Szenario-YAML"]
+    SRC["Datenquellen<br/>OSM (Overpass/PostGIS) · WFS · CKAN · GTFS · REST<br/>Dateien · Tabellen · Raster · STAC (Sentinel-2) · Orte"]
+    CLI["Kommandozeile<br/>geofact validate · run · plugins"]
+    WEB["Web-Demo<br/>FastAPI + Next.js"]
+
+    subgraph API["geofact.api: ein Anwendungsfall (FA44)"]
+        direction LR
+        LOAD["load_scenario<br/>YAML prüfen, DAG bilden<br/>(FA1, FA2)"]
+        PLAN["plan<br/>Reihenfolge + Ladeplan<br/>(FA9)"]
+        RUN["run: Executor<br/>Layer erst bei Bedarf laden,<br/>harmonisieren, validieren,<br/>Schritte ausführen<br/>(FA3-FA7, FA9)"]
+        WRITE["Ausgaben schreiben<br/>(FA12, FA13, FA49, FA53)"]
+    end
+
+    REG[("Registry (FA40)<br/>sechs Arten, eingefroren")]
+    BLOCKS["Bausteine: geofact.builtin + Plugins<br/>Quellarten · Formate · Transformationen<br/>Operationen (Vektor, Raster, Graph, Route) · Ausgabeformate<br/>(FA8, FA10, FA11, FA15, FA46-FA53)"]
+    OUT["Ausgaben<br/>Karte · GeoJSON · CSV · GeoTIFF · RDF"]
+
+    YAML --> LOAD
+    CLI --> LOAD
+    WEB --> LOAD
+    LOAD --> PLAN --> RUN --> WRITE --> OUT
+    SRC -->|"Layer bei Bedarf"| RUN
+    BLOCKS -->|"Erkennung beim Start"| REG
+    REG -.->|"Bausteine nachschlagen"| LOAD
+    REG -.-> RUN
+    REG -.-> WRITE
+
+    classDef ext fill:#f4f4f4,stroke:#999,color:#333
+    classDef step fill:#e8f0fe,stroke:#4a7ab5,color:#1a3a5c
+    classDef ops fill:#e6f4ea,stroke:#4a9b5c,color:#1e4620
+    class YAML,SRC,CLI,WEB,OUT ext
+    class LOAD,PLAN,RUN,WRITE step
+    class REG,BLOCKS ops

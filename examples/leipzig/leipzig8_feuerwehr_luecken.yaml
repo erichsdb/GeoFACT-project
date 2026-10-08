@@ -1,0 +1,45 @@
+scenario:
+  name: "Ortsteile ohne Feuerwache"
+  description: "Welche Leipziger Ortsteile haben keine Feuerwache im Gebiet?"
+  region: "Leipzig, Deutschland"
+
+layers:
+  - id: feuerwachen
+    source: osm
+    tags:
+      amenity: fire_station
+
+  - id: ortsteile
+    source: osm
+    tags:
+      boundary: administrative
+      admin_level: "10"
+
+steps:
+  - id: wachen_punkte
+    op: to_points
+    inputs:
+      features: feuerwachen
+
+  - id: wachen_je_ortsteil
+    op: aggregate
+    inputs:
+      features: wachen_punkte
+      zones: ortsteile
+    params:
+      statistic: count
+      predicate: within
+
+  - id: ohne_wache
+    op: filter
+    inputs:
+      features: wachen_je_ortsteil
+    params:
+      condition: "count == 0"
+
+output:
+  - type: map
+    source: ohne_wache
+  - type: geojson
+    source: ohne_wache
+    path: "output/leipzig8_ohne_feuerwache.geojson"

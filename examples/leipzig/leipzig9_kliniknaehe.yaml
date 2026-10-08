@@ -1,0 +1,50 @@
+scenario:
+  name: "Kliniknähe der Ortsteil-Zentren"
+  description: "Distanz jedes Leipziger Ortsteil-Zentrums zur nächsten Klinik"
+  region: "Leipzig, Deutschland"
+
+layers:
+  - id: ortsteile
+    source: osm
+    tags:
+      boundary: administrative
+      admin_level: "10"
+
+  - id: kliniken
+    source: osm
+    tags:
+      amenity: hospital
+
+steps:
+  - id: zentren
+    op: to_points
+    inputs:
+      features: ortsteile
+
+  - id: klinik_punkte
+    op: to_points
+    inputs:
+      features: kliniken
+
+  - id: distanz
+    op: nearest_distance
+    inputs:
+      from: zentren
+      to: klinik_punkte
+
+  - id: stufen
+    op: classify
+    inputs:
+      features: distanz
+    params:
+      field: distance
+      breaks: [2000, 5000]
+      labels: ["nah (<2 km)", "mittel (2-5 km)", "fern (>5 km)"]
+
+output:
+  - type: map
+    source: stufen
+    color_field: distance
+  - type: geojson
+    source: stufen
+    path: "output/leipzig9_kliniknaehe.geojson"

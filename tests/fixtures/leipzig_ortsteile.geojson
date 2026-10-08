@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "leipzig_ortsteile",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": "ortsteil_zentrum" }, "geometry": { "type": "Point", "coordinates": [ 12.363, 51.3295 ] } },
+{ "type": "Feature", "properties": { "id": "ortsteil_abseits" }, "geometry": { "type": "Point", "coordinates": [ 12.2, 51.2 ] } }
+]
+}

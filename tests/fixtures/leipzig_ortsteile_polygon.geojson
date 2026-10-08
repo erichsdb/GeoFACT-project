@@ -1,0 +1,8 @@
+{
+"type": "FeatureCollection",
+"name": "leipzig_ortsteile_polygon",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": "ortsteil_zentrum_sued" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 12.34, 51.31 ], [ 12.4, 51.31 ], [ 12.4, 51.36 ], [ 12.34, 51.36 ], [ 12.34, 51.31 ] ] ] } }
+]
+}

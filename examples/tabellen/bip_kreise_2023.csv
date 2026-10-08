@@ -1,0 +1,401 @@
+nuts;kreis;bip_mio_eur;bip_eur_je_einwohner;jahr;quelle
+DE111;Stuttgart, Stadtkreis;72331.04;118100;2023;Eurostat nama_10r_3gdp
+DE112;Böblingen;34135.15;86900;2023;Eurostat nama_10r_3gdp
+DE113;Esslingen;28345.16;53000;2023;Eurostat nama_10r_3gdp
+DE114;Göppingen;9720.77;37600;2023;Eurostat nama_10r_3gdp
+DE115;Ludwigsburg;31768.29;59600;2023;Eurostat nama_10r_3gdp
+DE116;Rems-Murr-Kreis;17781.93;40500;2023;Eurostat nama_10r_3gdp
+DE117;Heilbronn, Stadtkreis;8787.23;67200;2023;Eurostat nama_10r_3gdp
+DE118;Heilbronn, Landkreis;27286.38;77400;2023;Eurostat nama_10r_3gdp
+DE119;Hohenlohekreis;7523.72;65500;2023;Eurostat nama_10r_3gdp
+DE11A;Schwäbisch Hall;11354.33;56900;2023;Eurostat nama_10r_3gdp
+DE11B;Main-Tauber-Kreis;6602.66;49600;2023;Eurostat nama_10r_3gdp
+DE11C;Heidenheim;5946.11;44000;2023;Eurostat nama_10r_3gdp
+DE11D;Ostalbkreis;17879.26;56400;2023;Eurostat nama_10r_3gdp
+DE121;Baden-Baden, Stadtkreis;3973.27;70600;2023;Eurostat nama_10r_3gdp
+DE122;Karlsruhe, Stadtkreis;25609.35;83300;2023;Eurostat nama_10r_3gdp
+DE123;Karlsruhe, Landkreis;19511.4;42900;2023;Eurostat nama_10r_3gdp
+DE124;Rastatt;11729.85;50800;2023;Eurostat nama_10r_3gdp
+DE125;Heidelberg, Stadtkreis;10967.98;70800;2023;Eurostat nama_10r_3gdp
+DE126;Mannheim, Stadtkreis;25323.39;80200;2023;Eurostat nama_10r_3gdp
+DE127;Neckar-Odenwald-Kreis;5391.59;37100;2023;Eurostat nama_10r_3gdp
+DE128;Rhein-Neckar-Kreis;25714.56;46200;2023;Eurostat nama_10r_3gdp
+DE129;Pforzheim, Stadtkreis;6508.4;48400;2023;Eurostat nama_10r_3gdp
+DE12A;Calw;5735.79;35700;2023;Eurostat nama_10r_3gdp
+DE12B;Enzkreis;7555.58;37900;2023;Eurostat nama_10r_3gdp
+DE12C;Freudenstadt;5647.66;46400;2023;Eurostat nama_10r_3gdp
+DE131;Freiburg im Breisgau, Stadtkreis;14845.12;63000;2023;Eurostat nama_10r_3gdp
+DE132;Breisgau-Hochschwarzwald;9578.67;35400;2023;Eurostat nama_10r_3gdp
+DE133;Emmendingen;6809.47;40400;2023;Eurostat nama_10r_3gdp
+DE134;Ortenaukreis;21143.21;47800;2023;Eurostat nama_10r_3gdp
+DE135;Rottweil;7329.94;52300;2023;Eurostat nama_10r_3gdp
+DE136;Schwarzwald-Baar-Kreis;10000.06;46900;2023;Eurostat nama_10r_3gdp
+DE137;Tuttlingen;8527.66;59100;2023;Eurostat nama_10r_3gdp
+DE138;Konstanz;12419.36;42800;2023;Eurostat nama_10r_3gdp
+DE139;Lörrach;9147.97;38700;2023;Eurostat nama_10r_3gdp
+DE13A;Waldshut;6345.05;37000;2023;Eurostat nama_10r_3gdp
+DE141;Reutlingen;14643.57;50100;2023;Eurostat nama_10r_3gdp
+DE142;Tübingen, Landkreis;9995.46;43100;2023;Eurostat nama_10r_3gdp
+DE143;Zollernalbkreis;8190.13;42400;2023;Eurostat nama_10r_3gdp
+DE144;Ulm, Stadtkreis;12947.06;100800;2023;Eurostat nama_10r_3gdp
+DE145;Alb-Donau-Kreis;7868.8;39100;2023;Eurostat nama_10r_3gdp
+DE146;Biberach;13001.03;63100;2023;Eurostat nama_10r_3gdp
+DE147;Bodenseekreis;13478.91;61100;2023;Eurostat nama_10r_3gdp
+DE148;Ravensburg;15172.25;52600;2023;Eurostat nama_10r_3gdp
+DE149;Sigmaringen;6006.21;45300;2023;Eurostat nama_10r_3gdp
+DE211;Ingolstadt, Kreisfreie Stadt;22803.15;164200;2023;Eurostat nama_10r_3gdp
+DE212;München, Kreisfreie Stadt;150229.49;100900;2023;Eurostat nama_10r_3gdp
+DE213;Rosenheim, Kreisfreie Stadt;3946.23;61600;2023;Eurostat nama_10r_3gdp
+DE214;Altötting;6910.52;61300;2023;Eurostat nama_10r_3gdp
+DE215;Berchtesgadener Land;4558.11;43500;2023;Eurostat nama_10r_3gdp
+DE216;Bad Tölz-Wolfratshausen;4711.82;36400;2023;Eurostat nama_10r_3gdp
+DE217;Dachau;5724.63;37800;2023;Eurostat nama_10r_3gdp
+DE218;Ebersberg;6227.03;43700;2023;Eurostat nama_10r_3gdp
+DE219;Eichstätt;5981.03;44400;2023;Eurostat nama_10r_3gdp
+DE21A;Erding;5486.83;39400;2023;Eurostat nama_10r_3gdp
+DE21B;Freising;11140.19;61000;2023;Eurostat nama_10r_3gdp
+DE21C;Fürstenfeldbruck;7536.09;34900;2023;Eurostat nama_10r_3gdp
+DE21D;Garmisch-Partenkirchen;3570.93;40000;2023;Eurostat nama_10r_3gdp
+DE21E;Landsberg am Lech;5438.12;45200;2023;Eurostat nama_10r_3gdp
+DE21F;Miesbach;4863.23;50300;2023;Eurostat nama_10r_3gdp
+DE21G;Mühldorf a. Inn;5123.69;42400;2023;Eurostat nama_10r_3gdp
+DE21H;München, Landkreis;52413.25;149200;2023;Eurostat nama_10r_3gdp
+DE21I;Neuburg-Schrobenhausen;4303.57;43700;2023;Eurostat nama_10r_3gdp
+DE21J;Pfaffenhofen a. d. Ilm;7013.54;54400;2023;Eurostat nama_10r_3gdp
+DE21K;Rosenheim, Landkreis;10833.1;42300;2023;Eurostat nama_10r_3gdp
+DE21L;Starnberg;7516.28;54200;2023;Eurostat nama_10r_3gdp
+DE21M;Traunstein;9374.05;54700;2023;Eurostat nama_10r_3gdp
+DE21N;Weilheim-Schongau;6780.35;49300;2023;Eurostat nama_10r_3gdp
+DE221;Landshut, Kreisfreie Stadt;5007.2;72800;2023;Eurostat nama_10r_3gdp
+DE222;Passau, Kreisfreie Stadt;4230.22;80400;2023;Eurostat nama_10r_3gdp
+DE223;Straubing, Kreisfreie Stadt;3230.11;68400;2023;Eurostat nama_10r_3gdp
+DE224;Deggendorf;6377.24;52900;2023;Eurostat nama_10r_3gdp
+DE225;Freyung-Grafenau;3169.9;40500;2023;Eurostat nama_10r_3gdp
+DE226;Kelheim;5200.32;41600;2023;Eurostat nama_10r_3gdp
+DE227;Landshut, Landkreis;7643.93;47600;2023;Eurostat nama_10r_3gdp
+DE228;Passau, Landkreis;7503.47;38800;2023;Eurostat nama_10r_3gdp
+DE229;Regen;3254.86;42000;2023;Eurostat nama_10r_3gdp
+DE22A;Rottal-Inn;5376.26;44700;2023;Eurostat nama_10r_3gdp
+DE22B;Straubing-Bogen;3756.6;36400;2023;Eurostat nama_10r_3gdp
+DE22C;Dingolfing-Landau;7538.83;75300;2023;Eurostat nama_10r_3gdp
+DE231;Amberg, Kreisfreie Stadt;3323.28;78800;2023;Eurostat nama_10r_3gdp
+DE232;Regensburg, Kreisfreie Stadt;16298.8;109700;2023;Eurostat nama_10r_3gdp
+DE233;Weiden i. d. Opf, Kreisfreie Stadt;2921.6;69000;2023;Eurostat nama_10r_3gdp
+DE234;Amberg-Sulzbach;3623.59;34900;2023;Eurostat nama_10r_3gdp
+DE235;Cham;6366.07;49800;2023;Eurostat nama_10r_3gdp
+DE236;Neumarkt i. d. OPf.;6563.14;47700;2023;Eurostat nama_10r_3gdp
+DE237;Neustadt a. d. Waldnaab;3999.21;41700;2023;Eurostat nama_10r_3gdp
+DE238;Regensburg, Landkreis;6502.6;33700;2023;Eurostat nama_10r_3gdp
+DE239;Schwandorf;6923.33;46700;2023;Eurostat nama_10r_3gdp
+DE23A;Tirschenreuth;3789.89;52200;2023;Eurostat nama_10r_3gdp
+DE241;Bamberg, Kreisfreie Stadt;5849.32;78300;2023;Eurostat nama_10r_3gdp
+DE242;Bayreuth, Kreisfreie Stadt;5769.51;79200;2023;Eurostat nama_10r_3gdp
+DE243;Coburg, Kreisfreie Stadt;4991.33;122400;2023;Eurostat nama_10r_3gdp
+DE244;Hof, Kreisfreie Stadt;2440.21;52700;2023;Eurostat nama_10r_3gdp
+DE245;Bamberg, Landkreis;4651.06;31500;2023;Eurostat nama_10r_3gdp
+DE246;Bayreuth, Landkreis;2973.05;28800;2023;Eurostat nama_10r_3gdp
+DE247;Coburg, Landkreis;2882.29;34100;2023;Eurostat nama_10r_3gdp
+DE248;Forchheim;4640.77;40100;2023;Eurostat nama_10r_3gdp
+DE249;Hof, Landkreis;4229.45;45600;2023;Eurostat nama_10r_3gdp
+DE24A;Kronach;2731.32;42000;2023;Eurostat nama_10r_3gdp
+DE24B;Kulmbach;3296.68;46000;2023;Eurostat nama_10r_3gdp
+DE24C;Lichtenfels;2777.3;41100;2023;Eurostat nama_10r_3gdp
+DE24D;Wunsiedel i. Fichtelgebirge;3295.8;46400;2023;Eurostat nama_10r_3gdp
+DE251;Ansbach, Kreisfreie Stadt;3088.66;77900;2023;Eurostat nama_10r_3gdp
+DE252;Erlangen, Kreisfreie Stadt;13609.85;118700;2023;Eurostat nama_10r_3gdp
+DE253;Fürth, Kreisfreie Stadt;6212.91;47300;2023;Eurostat nama_10r_3gdp
+DE254;Nürnberg, Kreisfreie Stadt;38630.2;73600;2023;Eurostat nama_10r_3gdp
+DE255;Schwabach, Kreisfreie Stadt;1847.26;45200;2023;Eurostat nama_10r_3gdp
+DE256;Ansbach, Landkreis;7075.18;37900;2023;Eurostat nama_10r_3gdp
+DE257;Erlangen-Höchstadt;6158.83;44500;2023;Eurostat nama_10r_3gdp
+DE258;Fürth, Landkreis;3225.08;27400;2023;Eurostat nama_10r_3gdp
+DE259;Nürnberger Land;6692.11;39600;2023;Eurostat nama_10r_3gdp
+DE25A;Neustadt a. d. Aisch-Bad Windsheim;3901.67;38700;2023;Eurostat nama_10r_3gdp
+DE25B;Roth;4996.8;39100;2023;Eurostat nama_10r_3gdp
+DE25C;Weißenburg-Gunzenhausen;3742.15;39600;2023;Eurostat nama_10r_3gdp
+DE261;Aschaffenburg, Kreisfreie Stadt;6160.69;85200;2023;Eurostat nama_10r_3gdp
+DE262;Schweinfurt, Kreisfreie Stadt;6177.88;115000;2023;Eurostat nama_10r_3gdp
+DE263;Würzburg, Kreisfreie Stadt;10079.43;76600;2023;Eurostat nama_10r_3gdp
+DE264;Aschaffenburg, Landkreis;7703.49;45100;2023;Eurostat nama_10r_3gdp
+DE265;Bad Kissingen;4256.27;41200;2023;Eurostat nama_10r_3gdp
+DE266;Rhön-Grabfeld;4066.98;51300;2023;Eurostat nama_10r_3gdp
+DE267;Haßberge;3305.44;39600;2023;Eurostat nama_10r_3gdp
+DE268;Kitzingen;4408.12;48500;2023;Eurostat nama_10r_3gdp
+DE269;Miltenberg;5698.57;44900;2023;Eurostat nama_10r_3gdp
+DE26A;Main-Spessart;5843.74;46500;2023;Eurostat nama_10r_3gdp
+DE26B;Schweinfurt, Landkreis;3232.52;28200;2023;Eurostat nama_10r_3gdp
+DE26C;Würzburg, Landkreis;5729.66;35700;2023;Eurostat nama_10r_3gdp
+DE271;Augsburg, Kreisfreie Stadt;16693.92;56100;2023;Eurostat nama_10r_3gdp
+DE272;Kaufbeuren, Kreisfreie Stadt;2059.55;45000;2023;Eurostat nama_10r_3gdp
+DE273;Kempten (Allgäu), Kreisfreie Stadt;4419.51;67400;2023;Eurostat nama_10r_3gdp
+DE274;Memmingen, Kreisfreie Stadt;3182.82;72500;2023;Eurostat nama_10r_3gdp
+DE275;Aichach-Friedberg;4817.8;35500;2023;Eurostat nama_10r_3gdp
+DE276;Augsburg, Landkreis;9646;37000;2023;Eurostat nama_10r_3gdp
+DE277;Dillingen a.d. Donau;4271.93;43600;2023;Eurostat nama_10r_3gdp
+DE278;Günzburg;6629.05;51400;2023;Eurostat nama_10r_3gdp
+DE279;Neu-Ulm;7785.6;42900;2023;Eurostat nama_10r_3gdp
+DE27A;Lindau (Bodensee);3890.39;47400;2023;Eurostat nama_10r_3gdp
+DE27B;Ostallgäu;6697.03;47600;2023;Eurostat nama_10r_3gdp
+DE27C;Unterallgäu;7301.91;50600;2023;Eurostat nama_10r_3gdp
+DE27D;Donau-Ries;7982.88;59500;2023;Eurostat nama_10r_3gdp
+DE27E;Oberallgäu;6558.65;42900;2023;Eurostat nama_10r_3gdp
+DE300;Berlin;199564.58;54700;2023;Eurostat nama_10r_3gdp
+DE401;Brandenburg an der Havel, Kreisfreie Stadt;2951.7;40000;2023;Eurostat nama_10r_3gdp
+DE402;Cottbus, Kreisfreie Stadt;4430.24;46900;2023;Eurostat nama_10r_3gdp
+DE403;Frankfurt (Oder), Kreisfreie Stadt;2629.5;46300;2023;Eurostat nama_10r_3gdp
+DE404;Potsdam, Kreisfreie Stadt;9550.42;52000;2023;Eurostat nama_10r_3gdp
+DE405;Barnim;5224.85;27200;2023;Eurostat nama_10r_3gdp
+DE406;Dahme-Spreewald;8462.62;47800;2023;Eurostat nama_10r_3gdp
+DE407;Elbe-Elster;3261.1;32900;2023;Eurostat nama_10r_3gdp
+DE408;Havelland;4344.41;25700;2023;Eurostat nama_10r_3gdp
+DE409;Märkisch-Oderland;5423.56;27500;2023;Eurostat nama_10r_3gdp
+DE40A;Oberhavel;6777.06;31200;2023;Eurostat nama_10r_3gdp
+DE40B;Oberspreewald-Lausitz;3822.18;35100;2023;Eurostat nama_10r_3gdp
+DE40C;Oder-Spree;7475.44;41500;2023;Eurostat nama_10r_3gdp
+DE40D;Ostprignitz-Ruppin;3321.97;33400;2023;Eurostat nama_10r_3gdp
+DE40E;Potsdam-Mittelmark;7256.7;33000;2023;Eurostat nama_10r_3gdp
+DE40F;Prignitz;2744.35;36000;2023;Eurostat nama_10r_3gdp
+DE40G;Spree-Neiße;5690.36;51300;2023;Eurostat nama_10r_3gdp
+DE40H;Teltow-Fläming;7646.78;43300;2023;Eurostat nama_10r_3gdp
+DE40I;Uckermark;4571.58;38800;2023;Eurostat nama_10r_3gdp
+DE501;Bremen, Kreisfreie Stadt;35482.31;61100;2023;Eurostat nama_10r_3gdp
+DE502;Bremerhaven, Kreisfreie Stadt;5079.02;42800;2023;Eurostat nama_10r_3gdp
+DE600;Hamburg;155055.06;84200;2023;Eurostat nama_10r_3gdp
+DE711;Darmstadt, Kreisfreie Stadt;15417.26;94200;2023;Eurostat nama_10r_3gdp
+DE712;Frankfurt am Main, Kreisfreie Stadt;90525.28;120900;2023;Eurostat nama_10r_3gdp
+DE713;Offenbach am Main, Kreisfreie Stadt;6643.28;50600;2023;Eurostat nama_10r_3gdp
+DE714;Wiesbaden, Kreisfreie Stadt;21087.15;73700;2023;Eurostat nama_10r_3gdp
+DE715;Bergstraße;9761.61;35600;2023;Eurostat nama_10r_3gdp
+DE716;Darmstadt-Dieburg;10140.63;33600;2023;Eurostat nama_10r_3gdp
+DE717;Groß-Gerau;14911.03;55800;2023;Eurostat nama_10r_3gdp
+DE718;Hochtaunuskreis;17429.85;72800;2023;Eurostat nama_10r_3gdp
+DE719;Main-Kinzig-Kreis;16838.76;40300;2023;Eurostat nama_10r_3gdp
+DE71A;Main-Taunus-Kreis;17330;72800;2023;Eurostat nama_10r_3gdp
+DE71B;Odenwaldkreis;3041.15;32200;2023;Eurostat nama_10r_3gdp
+DE71C;Offenbach, Landkreis;17187.67;48400;2023;Eurostat nama_10r_3gdp
+DE71D;Rheingau-Taunus-Kreis;5485.52;29500;2023;Eurostat nama_10r_3gdp
+DE71E;Wetteraukreis;11307.48;36500;2023;Eurostat nama_10r_3gdp
+DE721;Gießen, Landkreis;12187.48;45600;2023;Eurostat nama_10r_3gdp
+DE722;Lahn-Dill-Kreis;10951.01;43100;2023;Eurostat nama_10r_3gdp
+DE723;Limburg-Weilburg;6451.03;37100;2023;Eurostat nama_10r_3gdp
+DE724;Marburg-Biedenkopf;11921.55;49100;2023;Eurostat nama_10r_3gdp
+DE725;Vogelsbergkreis;3599.94;35500;2023;Eurostat nama_10r_3gdp
+DE731;Kassel, Kreisfreie Stadt;13264.77;67400;2023;Eurostat nama_10r_3gdp
+DE732;Fulda;10561.04;47600;2023;Eurostat nama_10r_3gdp
+DE733;Hersfeld-Rotenburg;5223.97;44200;2023;Eurostat nama_10r_3gdp
+DE734;Kassel, Landkreis;9053.6;39300;2023;Eurostat nama_10r_3gdp
+DE735;Schwalm-Eder-Kreis;7108.57;39500;2023;Eurostat nama_10r_3gdp
+DE736;Waldeck-Frankenberg;7379.97;47600;2023;Eurostat nama_10r_3gdp
+DE737;Werra-Meißner-Kreis;3545.2;36200;2023;Eurostat nama_10r_3gdp
+DE803;Rostock, Kreisfreie Stadt;10339.23;50600;2023;Eurostat nama_10r_3gdp
+DE804;Schwerin, Kreisfreie Stadt;4938.45;50500;2023;Eurostat nama_10r_3gdp
+DE80J;Mecklenburgische Seenplatte;9368.03;37800;2023;Eurostat nama_10r_3gdp
+DE80K;Landkreis Rostock;7298.85;33400;2023;Eurostat nama_10r_3gdp
+DE80L;Vorpommern-Rügen;7440.3;34400;2023;Eurostat nama_10r_3gdp
+DE80M;Nordwestmecklenburg;5019.35;31900;2023;Eurostat nama_10r_3gdp
+DE80N;Vorpommern-Greifswald;7890.7;34900;2023;Eurostat nama_10r_3gdp
+DE80O;Ludwigslust-Parchim;6738.74;32200;2023;Eurostat nama_10r_3gdp
+DE911;Braunschweig, Kreisfreie Stadt;21673.09;85500;2023;Eurostat nama_10r_3gdp
+DE912;Salzgitter, Kreisfreie Stadt;5870.13;56000;2023;Eurostat nama_10r_3gdp
+DE913;Wolfsburg, Kreisfreie Stadt;23817.16;185100;2023;Eurostat nama_10r_3gdp
+DE914;Gifhorn;4915.46;28000;2023;Eurostat nama_10r_3gdp
+DE916;Goslar;4681.39;36600;2023;Eurostat nama_10r_3gdp
+DE917;Helmstedt;2516.3;27700;2023;Eurostat nama_10r_3gdp
+DE918;Northeim;4446.88;35200;2023;Eurostat nama_10r_3gdp
+DE91A;Peine;3637.49;26600;2023;Eurostat nama_10r_3gdp
+DE91B;Wolfenbüttel;3112.53;26300;2023;Eurostat nama_10r_3gdp
+DE91C;Göttingen;14242.43;43400;2023;Eurostat nama_10r_3gdp
+DE922;Diepholz;8641.73;39200;2023;Eurostat nama_10r_3gdp
+DE923;Hameln-Pyrmont;5905.38;39200;2023;Eurostat nama_10r_3gdp
+DE925;Hildesheim;9792.16;36500;2023;Eurostat nama_10r_3gdp
+DE926;Holzminden;2800.73;42300;2023;Eurostat nama_10r_3gdp
+DE927;Nienburg (Weser);4668.47;38400;2023;Eurostat nama_10r_3gdp
+DE928;Schaumburg;4965.16;31600;2023;Eurostat nama_10r_3gdp
+DE929;Region Hannover;65696.85;57800;2023;Eurostat nama_10r_3gdp
+DE931;Celle;6911.61;40000;2023;Eurostat nama_10r_3gdp
+DE932;Cuxhaven;6362.35;31900;2023;Eurostat nama_10r_3gdp
+DE933;Harburg;7997.66;30300;2023;Eurostat nama_10r_3gdp
+DE934;Lüchow-Dannenberg;1605.42;34300;2023;Eurostat nama_10r_3gdp
+DE935;Lüneburg, Landkreis;6814.07;38100;2023;Eurostat nama_10r_3gdp
+DE936;Osterholz;3116.58;27400;2023;Eurostat nama_10r_3gdp
+DE937;Rotenburg (Wümme);7081.31;42900;2023;Eurostat nama_10r_3gdp
+DE938;Heidekreis;6056.57;42400;2023;Eurostat nama_10r_3gdp
+DE939;Stade;7997.88;38600;2023;Eurostat nama_10r_3gdp
+DE93A;Uelzen;3452.14;37800;2023;Eurostat nama_10r_3gdp
+DE93B;Verden;5339.04;38700;2023;Eurostat nama_10r_3gdp
+DE941;Delmenhorst, Kreisfreie Stadt;2322.41;28500;2023;Eurostat nama_10r_3gdp
+DE942;Emden, Kreisfreie Stadt;4105.63;82700;2023;Eurostat nama_10r_3gdp
+DE943;Oldenburg (Oldenburg), Kreisfreie Stadt;9938.42;56700;2023;Eurostat nama_10r_3gdp
+DE944;Osnabrück, Kreisfreie Stadt;10248.47;61800;2023;Eurostat nama_10r_3gdp
+DE945;Wilhelmshaven, Kreisfreie Stadt;3708.87;48800;2023;Eurostat nama_10r_3gdp
+DE946;Ammerland;5264.48;41500;2023;Eurostat nama_10r_3gdp
+DE947;Aurich;6582.08;34900;2023;Eurostat nama_10r_3gdp
+DE948;Cloppenburg;8296.98;47100;2023;Eurostat nama_10r_3gdp
+DE949;Emsland;18083.01;54300;2023;Eurostat nama_10r_3gdp
+DE94A;Friesland (DE);3340.03;33300;2023;Eurostat nama_10r_3gdp
+DE94B;Grafschaft Bentheim;5995.15;41700;2023;Eurostat nama_10r_3gdp
+DE94C;Leer;5895.42;34800;2023;Eurostat nama_10r_3gdp
+DE94D;Oldenburg, Landkreis;4622.05;35100;2023;Eurostat nama_10r_3gdp
+DE94E;Osnabrück, Landkreis;14278.12;40100;2023;Eurostat nama_10r_3gdp
+DE94F;Vechta;8611.52;59000;2023;Eurostat nama_10r_3gdp
+DE94G;Wesermarsch;3844.41;43100;2023;Eurostat nama_10r_3gdp
+DE94H;Wittmund;1983.13;35400;2023;Eurostat nama_10r_3gdp
+DEA11;Düsseldorf, Kreisfreie Stadt;64081.57;104100;2023;Eurostat nama_10r_3gdp
+DEA12;Duisburg, Kreisfreie Stadt;20262.32;40300;2023;Eurostat nama_10r_3gdp
+DEA13;Essen, Kreisfreie Stadt;31287.56;54600;2023;Eurostat nama_10r_3gdp
+DEA14;Krefeld, Kreisfreie Stadt;11076.69;48100;2023;Eurostat nama_10r_3gdp
+DEA15;Mönchengladbach, Kreisfreie Stadt;10956.7;41000;2023;Eurostat nama_10r_3gdp
+DEA16;Mülheim an der Ruhr, Kreisfreie Stadt;8007.51;46400;2023;Eurostat nama_10r_3gdp
+DEA17;Oberhausen, Kreisfreie Stadt;7477.63;35000;2023;Eurostat nama_10r_3gdp
+DEA18;Remscheid, Kreisfreie Stadt;4899.25;43000;2023;Eurostat nama_10r_3gdp
+DEA19;Solingen, Kreisfreie Stadt;5554.6;33500;2023;Eurostat nama_10r_3gdp
+DEA1A;Wuppertal, Kreisfreie Stadt;14548.76;40600;2023;Eurostat nama_10r_3gdp
+DEA1B;Kleve;11994.69;37600;2023;Eurostat nama_10r_3gdp
+DEA1C;Mettmann;27192.99;55600;2023;Eurostat nama_10r_3gdp
+DEA1D;Rhein-Kreis Neuss;21447.12;47000;2023;Eurostat nama_10r_3gdp
+DEA1E;Viersen;10467.87;35300;2023;Eurostat nama_10r_3gdp
+DEA1F;Wesel;16044.37;35100;2023;Eurostat nama_10r_3gdp
+DEA22;Bonn, Kreisfreie Stadt;28501.5;88500;2023;Eurostat nama_10r_3gdp
+DEA23;Köln, Kreisfreie Stadt;80305.27;78500;2023;Eurostat nama_10r_3gdp
+DEA24;Leverkusen, Kreisfreie Stadt;9211.8;55000;2023;Eurostat nama_10r_3gdp
+DEA26;Düren;9793.91;35300;2023;Eurostat nama_10r_3gdp
+DEA27;Rhein-Erft-Kreis;20203.42;42500;2023;Eurostat nama_10r_3gdp
+DEA28;Euskirchen;6774;33800;2023;Eurostat nama_10r_3gdp
+DEA29;Heinsberg;8372.74;32000;2023;Eurostat nama_10r_3gdp
+DEA2A;Oberbergischer Kreis;11712.33;42800;2023;Eurostat nama_10r_3gdp
+DEA2B;Rheinisch-Bergischer Kreis;9155.09;32300;2023;Eurostat nama_10r_3gdp
+DEA2C;Rhein-Sieg-Kreis;20515.33;34000;2023;Eurostat nama_10r_3gdp
+DEA2D;Städteregion Aachen;26080.78;44900;2023;Eurostat nama_10r_3gdp
+DEA31;Bottrop, Kreisfreie Stadt;3446.34;29100;2023;Eurostat nama_10r_3gdp
+DEA32;Gelsenkirchen, Kreisfreie Stadt;10279.45;38600;2023;Eurostat nama_10r_3gdp
+DEA33;Münster, Kreisfreie Stadt;21784.21;71200;2023;Eurostat nama_10r_3gdp
+DEA34;Borken;17870.07;47200;2023;Eurostat nama_10r_3gdp
+DEA35;Coesfeld;8253.3;36600;2023;Eurostat nama_10r_3gdp
+DEA36;Recklinghausen;19026.18;30600;2023;Eurostat nama_10r_3gdp
+DEA37;Steinfurt;18457.76;41100;2023;Eurostat nama_10r_3gdp
+DEA38;Warendorf;11163.29;39600;2023;Eurostat nama_10r_3gdp
+DEA41;Bielefeld, Kreisfreie Stadt;18053.67;54500;2023;Eurostat nama_10r_3gdp
+DEA42;Gütersloh;21463.33;59200;2023;Eurostat nama_10r_3gdp
+DEA43;Herford;10155.19;39900;2023;Eurostat nama_10r_3gdp
+DEA44;Höxter;4697.48;33800;2023;Eurostat nama_10r_3gdp
+DEA45;Lippe;12891.11;37000;2023;Eurostat nama_10r_3gdp
+DEA46;Minden-Lübbecke;14853.99;46300;2023;Eurostat nama_10r_3gdp
+DEA47;Paderborn;14127.04;44900;2023;Eurostat nama_10r_3gdp
+DEA51;Bochum, Kreisfreie Stadt;15966.75;44800;2023;Eurostat nama_10r_3gdp
+DEA52;Dortmund, Kreisfreie Stadt;29577.58;49300;2023;Eurostat nama_10r_3gdp
+DEA53;Hagen, Kreisfreie Stadt;7510.25;39500;2023;Eurostat nama_10r_3gdp
+DEA54;Hamm, Kreisfreie Stadt;6603.1;36800;2023;Eurostat nama_10r_3gdp
+DEA55;Herne, Kreisfreie Stadt;5227.48;33500;2023;Eurostat nama_10r_3gdp
+DEA56;Ennepe-Ruhr-Kreis;11341.63;36000;2023;Eurostat nama_10r_3gdp
+DEA57;Hochsauerlandkreis;11716.06;44900;2023;Eurostat nama_10r_3gdp
+DEA58;Märkischer Kreis;17193.59;42000;2023;Eurostat nama_10r_3gdp
+DEA59;Olpe;7393.44;55800;2023;Eurostat nama_10r_3gdp
+DEA5A;Siegen-Wittgenstein;12639.42;46000;2023;Eurostat nama_10r_3gdp
+DEA5B;Soest;13447.49;44800;2023;Eurostat nama_10r_3gdp
+DEA5C;Unna;14639.73;37000;2023;Eurostat nama_10r_3gdp
+DEB11;Koblenz, Kreisfreie Stadt;10245.41;90400;2023;Eurostat nama_10r_3gdp
+DEB12;Ahrweiler;4316.82;33700;2023;Eurostat nama_10r_3gdp
+DEB13;Altenkirchen (Westerwald);4310.58;32700;2023;Eurostat nama_10r_3gdp
+DEB14;Bad Kreuznach;5972.49;36400;2023;Eurostat nama_10r_3gdp
+DEB15;Birkenfeld;2891.6;35100;2023;Eurostat nama_10r_3gdp
+DEB17;Mayen-Koblenz;8333.99;38500;2023;Eurostat nama_10r_3gdp
+DEB18;Neuwied;7634.08;40500;2023;Eurostat nama_10r_3gdp
+DEB1A;Rhein-Lahn-Kreis;4074.21;32600;2023;Eurostat nama_10r_3gdp
+DEB1B;Westerwaldkreis;9020.65;43500;2023;Eurostat nama_10r_3gdp
+DEB1C;Cochem-Zell;2480.39;40300;2023;Eurostat nama_10r_3gdp
+DEB1D;Rhein-Hunsrück-Kreis;4682.04;44100;2023;Eurostat nama_10r_3gdp
+DEB21;Trier, Kreisfreie Stadt;5906.04;57000;2023;Eurostat nama_10r_3gdp
+DEB22;Bernkastel-Wittlich;4528.11;40000;2023;Eurostat nama_10r_3gdp
+DEB23;Eifelkreis Bitburg-Prüm;3699.13;36900;2023;Eurostat nama_10r_3gdp
+DEB24;Vulkaneifel;2480.28;41700;2023;Eurostat nama_10r_3gdp
+DEB25;Trier-Saarburg;3703.4;24800;2023;Eurostat nama_10r_3gdp
+DEB31;Frankenthal (Pfalz), Kreisfreie Stadt;2201.43;45800;2023;Eurostat nama_10r_3gdp
+DEB32;Kaiserslautern, Kreisfreie Stadt;6048.03;60200;2023;Eurostat nama_10r_3gdp
+DEB33;Landau in der Pfalz, Kreisfreie Stadt;2618.34;54700;2023;Eurostat nama_10r_3gdp
+DEB34;Ludwigshafen am Rhein, Kreisfreie Stadt;14066.71;80500;2023;Eurostat nama_10r_3gdp
+DEB35;Mainz, Kreisfreie Stadt;19682.63;88400;2023;Eurostat nama_10r_3gdp
+DEB36;Neustadt an der Weinstraße, Kreisfreie Stadt;2030.1;38500;2023;Eurostat nama_10r_3gdp
+DEB37;Pirmasens, Kreisfreie Stadt;1871.57;47400;2023;Eurostat nama_10r_3gdp
+DEB38;Speyer, Kreisfreie Stadt;3304.78;66300;2023;Eurostat nama_10r_3gdp
+DEB39;Worms, Kreisfreie Stadt;3795.36;44200;2023;Eurostat nama_10r_3gdp
+DEB3A;Zweibrücken, Kreisfreie Stadt;2173.41;65200;2023;Eurostat nama_10r_3gdp
+DEB3B;Alzey-Worms;4171.21;32000;2023;Eurostat nama_10r_3gdp
+DEB3C;Bad Dürkheim;3618;27000;2023;Eurostat nama_10r_3gdp
+DEB3D;Donnersbergkreis;2480.28;33200;2023;Eurostat nama_10r_3gdp
+DEB3E;Germersheim;5777.62;44000;2023;Eurostat nama_10r_3gdp
+DEB3F;Kaiserslautern, Landkreis;2893.46;27300;2023;Eurostat nama_10r_3gdp
+DEB3G;Kusel;1588.34;22700;2023;Eurostat nama_10r_3gdp
+DEB3H;Südliche Weinstraße;3659.28;32400;2023;Eurostat nama_10r_3gdp
+DEB3I;Rhein-Pfalz-Kreis;3673.18;23700;2023;Eurostat nama_10r_3gdp
+DEB3J;Mainz-Bingen;10276.06;49900;2023;Eurostat nama_10r_3gdp
+DEB3K;Südwestpfalz;1871.24;20800;2023;Eurostat nama_10r_3gdp
+DEC01;Regionalverband Saarbrücken;17113.99;51600;2023;Eurostat nama_10r_3gdp
+DEC02;Merzig-Wadern;3395.1;31000;2023;Eurostat nama_10r_3gdp
+DEC03;Neunkirchen;3969;29700;2023;Eurostat nama_10r_3gdp
+DEC04;Saarlouis;7896.61;38300;2023;Eurostat nama_10r_3gdp
+DEC05;Saarpfalz-Kreis;6853.26;47400;2023;Eurostat nama_10r_3gdp
+DEC06;St. Wendel;3132.78;35600;2023;Eurostat nama_10r_3gdp
+DED21;Dresden, Kreisfreie Stadt;28833.01;51300;2023;Eurostat nama_10r_3gdp
+DED2C;Bautzen;10209.71;34600;2023;Eurostat nama_10r_3gdp
+DED2D;Görlitz;9153.88;37100;2023;Eurostat nama_10r_3gdp
+DED2E;Meißen;8195.93;34100;2023;Eurostat nama_10r_3gdp
+DED2F;Sächsische Schweiz-Osterzgebirge;6986.17;28500;2023;Eurostat nama_10r_3gdp
+DED41;Chemnitz, Kreisfreie Stadt;10795.87;44200;2023;Eurostat nama_10r_3gdp
+DED42;Erzgebirgskreis;9551.19;29600;2023;Eurostat nama_10r_3gdp
+DED43;Mittelsachsen;10032.36;33700;2023;Eurostat nama_10r_3gdp
+DED44;Vogtlandkreis;7019.01;31700;2023;Eurostat nama_10r_3gdp
+DED45;Zwickau;12205.33;39300;2023;Eurostat nama_10r_3gdp
+DED51;Leipzig, Kreisfreie Stadt;29212.79;48200;2023;Eurostat nama_10r_3gdp
+DED52;Leipzig;8481.78;32600;2023;Eurostat nama_10r_3gdp
+DED53;Nordsachsen;7482.12;37300;2023;Eurostat nama_10r_3gdp
+DEE01;Dessau-Roßlau, Kreisfreie Stadt;2945.14;38700;2023;Eurostat nama_10r_3gdp
+DEE02;Halle (Saale), Kreisfreie Stadt;9178.85;40300;2023;Eurostat nama_10r_3gdp
+DEE03;Magdeburg, Kreisfreie Stadt;10340.22;42700;2023;Eurostat nama_10r_3gdp
+DEE04;Altmarkkreis Salzwedel;2598.08;32000;2023;Eurostat nama_10r_3gdp
+DEE05;Anhalt-Bitterfeld;5955.41;38700;2023;Eurostat nama_10r_3gdp
+DEE06;Jerichower Land;2886.45;32500;2023;Eurostat nama_10r_3gdp
+DEE07;Börde;6156.64;36500;2023;Eurostat nama_10r_3gdp
+DEE08;Burgenlandkreis;5984.42;34200;2023;Eurostat nama_10r_3gdp
+DEE09;Harz;6395.74;30800;2023;Eurostat nama_10r_3gdp
+DEE0A;Mansfeld-Südharz;3733.5;28600;2023;Eurostat nama_10r_3gdp
+DEE0B;Saalekreis;7997.11;43800;2023;Eurostat nama_10r_3gdp
+DEE0C;Salzlandkreis;6288.78;34400;2023;Eurostat nama_10r_3gdp
+DEE0D;Stendal;3961.55;37000;2023;Eurostat nama_10r_3gdp
+DEE0E;Wittenberg;3818.57;31200;2023;Eurostat nama_10r_3gdp
+DEF01;Flensburg, Kreisfreie Stadt;4948.08;51400;2023;Eurostat nama_10r_3gdp
+DEF02;Kiel, Kreisfreie Stadt;14647.18;58400;2023;Eurostat nama_10r_3gdp
+DEF03;Lübeck, Kreisfreie Stadt;12545.04;57900;2023;Eurostat nama_10r_3gdp
+DEF04;Neumünster, Kreisfreie Stadt;4464.83;56400;2023;Eurostat nama_10r_3gdp
+DEF05;Dithmarschen;6086.02;45700;2023;Eurostat nama_10r_3gdp
+DEF06;Herzogtum Lauenburg;5820.42;28400;2023;Eurostat nama_10r_3gdp
+DEF07;Nordfriesland;7814.17;46100;2023;Eurostat nama_10r_3gdp
+DEF08;Ostholstein;7108.79;35300;2023;Eurostat nama_10r_3gdp
+DEF09;Pinneberg;11269.05;34900;2023;Eurostat nama_10r_3gdp
+DEF0A;Plön;3418.31;26200;2023;Eurostat nama_10r_3gdp
+DEF0B;Rendsburg-Eckernförde;10435.24;37600;2023;Eurostat nama_10r_3gdp
+DEF0C;Schleswig-Flensburg;7406.14;36200;2023;Eurostat nama_10r_3gdp
+DEF0D;Segeberg;11154.2;39700;2023;Eurostat nama_10r_3gdp
+DEF0E;Steinburg;4786.16;36200;2023;Eurostat nama_10r_3gdp
+DEF0F;Stormarn;10456.7;42500;2023;Eurostat nama_10r_3gdp
+DEG01;Erfurt, Kreisfreie Stadt;10859.15;49500;2023;Eurostat nama_10r_3gdp
+DEG02;Gera, Kreisfreie Stadt;3466.81;36500;2023;Eurostat nama_10r_3gdp
+DEG03;Jena, Kreisfreie Stadt;6418.62;58200;2023;Eurostat nama_10r_3gdp
+DEG05;Weimar, Kreisfreie Stadt;2435.94;37200;2023;Eurostat nama_10r_3gdp
+DEG06;Eichsfeld;3168.37;32000;2023;Eurostat nama_10r_3gdp
+DEG07;Nordhausen;2637.06;32300;2023;Eurostat nama_10r_3gdp
+DEG09;Unstrut-Hainich-Kreis;3238.65;32300;2023;Eurostat nama_10r_3gdp
+DEG0A;Kyffhäuserkreis;2088.67;28700;2023;Eurostat nama_10r_3gdp
+DEG0C;Gotha;4698.58;34300;2023;Eurostat nama_10r_3gdp
+DEG0D;Sömmerda;2246.32;32900;2023;Eurostat nama_10r_3gdp
+DEG0E;Hildburghausen;1689.72;27700;2023;Eurostat nama_10r_3gdp
+DEG0G;Weimarer Land;3136.29;37800;2023;Eurostat nama_10r_3gdp
+DEG0J;Saale-Holzland-Kreis;2601.15;31000;2023;Eurostat nama_10r_3gdp
+DEG0K;Saale-Orla-Kreis;2830.4;36200;2023;Eurostat nama_10r_3gdp
+DEG0L;Greiz;2722.89;28700;2023;Eurostat nama_10r_3gdp
+DEG0M;Altenburger Land;2443.82;27800;2023;Eurostat nama_10r_3gdp
+DEG0Q;Schmalkalden-Meiningen;4089.1;33700;2023;Eurostat nama_10r_3gdp
+DEG0R;Wartburgkreis;5962.42;38100;2023;Eurostat nama_10r_3gdp
+DEG0S;Suhl, Kreisfreie Stadt;1329.2;36600;2023;Eurostat nama_10r_3gdp
+DEG0T;Ilm-Kreis;3944.8;36900;2023;Eurostat nama_10r_3gdp
+DEG0U;Saalfeld-Rudolstadt;3311.79;32700;2023;Eurostat nama_10r_3gdp
+DEG0V;Sonneberg;1716.98;30600;2023;Eurostat nama_10r_3gdp

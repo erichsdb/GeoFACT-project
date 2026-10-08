@@ -1,0 +1,145 @@
+scenario:
+  name: "Resilienz des europäischen Übertragungsnetzes"
+  description: "Kritische Höchstspannungsknoten (220–750 kV) in Europa: Netzlage (Betweenness) und Bevölkerung im 20-km-Umkreis"
+  region: "-10.5,35.5,40.5,71.0"
+  crs: equal_area_europe
+
+layers:
+  - id: sammelschienen
+    source: table
+    path: "../data/europa/buses.csv"
+    quotechar: "'"
+    geometry: { wkt_column: geometry, crs: "EPSG:4326" }
+    license: &pypsa
+      name: ODbL-1.0
+      attribution: "© OpenStreetMap contributors; PyPSA-Eur-Netz v0.7 (Xiong et al. 2025, Zenodo 18619025)"
+      url: "https://zenodo.org/records/18619025"
+
+  - id: leitungen
+    source: table
+    path: "../data/europa/lines.csv"
+    quotechar: "'"
+    geometry: { wkt_column: geometry, crs: "EPSG:4326" }
+    license: *pypsa
+
+  - id: transformatoren
+    source: table
+    path: "../data/europa/transformers.csv"
+    quotechar: "'"
+    geometry: { wkt_column: geometry, crs: "EPSG:4326" }
+    license: *pypsa
+
+  - id: hgue_verbindungen
+    source: table
+    path: "../data/europa/links.csv"
+    quotechar: "'"
+    geometry: { wkt_column: geometry, crs: "EPSG:4326" }
+    license: *pypsa
+
+  - id: umrichter
+    source: table
+    path: "../data/europa/converters.csv"
+    quotechar: "'"
+    geometry: { wkt_column: geometry, crs: "EPSG:4326" }
+    license: *pypsa
+
+  - id: bevoelkerung
+    source: file
+    path: "../data/GHS_POP_E2025_GLOBE_R2023A_54009_100_V1_0.tif"
+    data_type: raster
+    format: tif
+    resolution_m: 1000
+    aggregation: sum
+    resampling: sum
+    license:
+      name: CC-BY-4.0
+      attribution: "© Europäische Union 2023, GHS-POP R2023A (Joint Research Centre)"
+      url: "https://human-settlement.emergency.copernicus.eu/download.php?ds=pop"
+
+steps:
+  - id: kanten
+    op: collect
+    inputs:
+      leitung: leitungen
+      transformator: transformatoren
+      hgue: hgue_verbindungen
+      umrichter: umrichter
+    params: { source_field: kantenart }
+
+  - id: netz
+    op: edge_list_network
+    inputs: { nodes: sammelschienen, edges: kanten }
+    params:
+      node_key: bus_id
+      from_column: bus0
+      to_column: bus1
+      length_column: length
+      length_unit: m
+
+  - id: netz_bewertet
+    op: centrality
+    inputs: { graph: netz }
+
+  - id: knoten
+    op: graph_to_vector
+    inputs: { graph: netz_bewertet }
+
+  - id: einzugsgebiet
+    op: buffer
+    inputs: { geometry: knoten }
+    params: { radius_km: 20 }
+
+  - id: betroffen
+    op: zonal_stats
+    inputs: { zones: einzugsgebiet, values: bevoelkerung }
+    params: { stat: sum, output_field: einwohner_20km }
+
+  - id: einwohner_log
+    op: calculate_field
+    inputs: { features: betroffen }
+    params: { expression: "log(einwohner_20km + 1)", output_field: einwohner_log, decimals: 3 }
+
+  - id: bewertet
+    op: ranking
+    inputs: { features: einwohner_log }
+    params:
+      by: [betweenness, einwohner_log]
+      weights: [0.5, 0.5]
+      output_field: risiko
+
+  - id: vorauswahl
+    op: top_n
+    inputs: { features: bewertet }
+    params: { by: risiko, n: 200 }
+
+  - id: je_umspannwerk
+    op: deduplicate
+    inputs: { features: vorauswahl }
+    params: { by: [tags], keep: first }
+
+  - id: kritisch
+    op: top_n
+    inputs: { features: je_umspannwerk }
+    params: { by: risiko, n: 25, rank_field: rang }
+
+  - id: ergebnis
+    op: select_columns
+    inputs: { features: kritisch }
+    params:
+      keep: [rang, id, tags, country, voltage, betweenness, is_articulation_point, einwohner_20km, einwohner_log, risiko]
+
+output:
+  - type: map
+    source: ergebnis
+    path: "europa_kritische_knoten.html"
+    color_field: risiko
+  - type: geojson
+    source: ergebnis
+    path: "europa_kritische_knoten.geojson"
+  - type: csv
+    source: ergebnis
+    path: "europa_kritische_knoten.csv"
+  - type: rdf
+    source: ergebnis
+    vocabulary: geosparql
+    path: "europa_kritische_knoten.ttl"

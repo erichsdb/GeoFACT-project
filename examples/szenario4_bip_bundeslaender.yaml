@@ -1,0 +1,61 @@
+scenario:
+  name: Die 5 größten Bundesländer nach BIP 2025
+  description: >-
+    Amtliche Ländergrenzen (BKG VG250) verbunden mit dem
+    Bruttoinlandsprodukt je Bundesland, begrenzt auf die fünf größten.
+  region: 5.8,47.2,15.1,55.1
+
+layers:
+  - id: bundeslaender
+    source: wfs
+    url: https://sgx.geodatenzentrum.de/wfs_vg250
+    typename: vg250:vg250_lan
+    data_type: vector
+
+  - id: bip
+    source: table
+    path: tabellen/bip_bundeslaender_2025.csv
+    format: csv
+    delimiter: ";"
+    columns:
+      land:
+        type: string
+      bip_mio_eur:
+        type: float
+
+steps:
+  - id: laender
+    # Der WFS liefert manche Länder als mehrere Flächen (Land- und Gewässerteile getrennt).
+    op: deduplicate
+    inputs:
+      features: bundeslaender
+    params:
+      by: [gen]
+      keep: largest_geometry
+
+  - id: mit_bip
+    op: attribute_join
+    inputs:
+      left: laender
+      right: bip
+    params:
+      left_on: gen
+      right_on: land
+
+  - id: top5
+    op: top_n
+    inputs:
+      features: mit_bip
+    params:
+      by: bip_mio_eur
+      n: 5
+      order: desc
+      rank_field: rang
+
+output:
+  - type: map
+    source: top5
+    color_field: bip_mio_eur
+  - type: csv
+    source: top5
+    path: top5_bip.csv

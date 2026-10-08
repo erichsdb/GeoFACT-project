@@ -1,0 +1,45 @@
+scenario:
+  name: "Ortsteile ohne Apotheke"
+  description: "Welche Leipziger Ortsteile haben keine einzige Apotheke?"
+  region: "Leipzig, Deutschland"
+
+layers:
+  - id: apotheken
+    source: osm
+    tags:
+      amenity: pharmacy
+
+  - id: ortsteile
+    source: osm
+    tags:
+      boundary: administrative
+      admin_level: "10"
+
+steps:
+  - id: apotheken_punkte
+    op: to_points
+    inputs:
+      features: apotheken
+
+  - id: apotheken_je_ortsteil
+    op: aggregate
+    inputs:
+      features: apotheken_punkte
+      zones: ortsteile
+    params:
+      statistic: count
+      predicate: within
+
+  - id: ohne_apotheke
+    op: filter
+    inputs:
+      features: apotheken_je_ortsteil
+    params:
+      condition: "count == 0"
+
+output:
+  - type: map
+    source: ohne_apotheke
+  - type: geojson
+    source: ohne_apotheke
+    path: "output/leipzig2_ohne_apotheke.geojson"

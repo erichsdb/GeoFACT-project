@@ -1,0 +1,26 @@
+scenario:
+  name: "Ladesäulen-Dichte"
+  description: "Wabenraster der E-Ladesäulen-Dichte in Leipzig (1 km Zellen)"
+  region: "Leipzig, Deutschland"
+
+layers:
+  - id: ladesaeulen
+    source: osm
+    tags:
+      amenity: charging_station
+
+steps:
+  - id: dichte
+    op: hexbin
+    inputs:
+      features: ladesaeulen
+    params:
+      cell_km: 1.0
+
+output:
+  - type: map
+    source: dichte
+    color_field: count
+  - type: geojson
+    source: dichte
+    path: "output/leipzig7_ladesaeulen_dichte.geojson"

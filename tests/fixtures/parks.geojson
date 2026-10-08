@@ -1,0 +1,9 @@
+{
+"type": "FeatureCollection",
+"name": "parks",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": "park_a" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 13.73, 51.05 ], [ 13.732, 51.05 ], [ 13.732, 51.0515 ], [ 13.73, 51.0515 ], [ 13.73, 51.05 ] ] ] } },
+{ "type": "Feature", "properties": { "id": "park_b" }, "geometry": { "type": "Polygon", "coordinates": [ [ [ 13.75, 51.06 ], [ 13.7515, 51.06 ], [ 13.7515, 51.0612 ], [ 13.75, 51.0612 ], [ 13.75, 51.06 ] ] ] } }
+]
+}

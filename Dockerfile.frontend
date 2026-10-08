@@ -1,0 +1,37 @@
+# GeoFACT Web-Frontend (Next.js) für Deployment auf 2-3 Nutzer (NAS-Hosting).
+# Multi-Stage-Build -> schlankes Runtime-Image via next.config.ts `output: "standalone"`.
+
+FROM node:20-slim AS deps
+WORKDIR /app
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+
+FROM node:20-slim AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY frontend/ ./
+# Dieses Frontend hat aktuell kein eigenes public/-Verzeichnis (kein
+# Favicon-Ordner o.ae. dort) - next.config.ts "output: standalone" kopiert
+# es trotzdem nicht automatisch (siehe Next.js-Doku), daher hier immer
+# sicherstellen, dass der Ordner existiert (auch leer), statt dass der
+# spätere COPY im runner-Stage bricht, sobald jemand doch mal public/
+# hinzufügt.
+RUN mkdir -p public
+# Backend-Basis-URL zur Build-Zeit fixieren (NEXT_PUBLIC_* wird eingebacken).
+ARG NEXT_PUBLIC_API_BASE=http://localhost:8000
+ENV NEXT_PUBLIC_API_BASE=$NEXT_PUBLIC_API_BASE
+RUN npm run build
+
+FROM node:20-slim AS runner
+WORKDIR /app
+ENV NODE_ENV=production \
+    HOSTNAME=0.0.0.0 \
+    PORT=3000
+
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]

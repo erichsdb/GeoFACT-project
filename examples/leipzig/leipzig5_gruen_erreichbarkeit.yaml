@@ -1,0 +1,46 @@
+scenario:
+  name: "Wohngebiete ohne Grünfläche in Laufnähe"
+  description: "Leipziger Wohnflächen außerhalb von 500 m um öffentliche Grünflächen"
+  region: "Leipzig, Deutschland"
+
+layers:
+  - id: gruenflaechen
+    source: osm
+    tags:
+      - { leisure: park }
+      - { leisure: garden }
+      - { landuse: village_green }
+      - { landuse: recreation_ground }
+
+  - id: wohnflaechen
+    source: osm
+    tags:
+      landuse: residential
+
+steps:
+  - id: einzugsbereiche
+    op: buffer
+    inputs:
+      geometry: gruenflaechen
+    params:
+      radius_km: 0.5
+
+  - id: abdeckung
+    op: dissolve
+    inputs:
+      features: einzugsbereiche
+
+  - id: unversorgt
+    op: overlay
+    inputs:
+      left: wohnflaechen
+      right: abdeckung
+    params:
+      method: difference
+
+output:
+  - type: map
+    source: unversorgt
+  - type: geojson
+    source: unversorgt
+    path: "output/leipzig5_gruen_unversorgt.geojson"
