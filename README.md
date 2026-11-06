@@ -17,7 +17,8 @@ Mit Docker, ohne Konto und ohne Datenbank; die mitgelieferten Szenarien laufen o
 docker compose -f docker-compose.demo.yml up
 ```
 
-Danach die Web-Demo unter <http://localhost:3000> öffnen, „Szenario laden“ wählen und ausführen.
+Danach die Web-Demo unter <http://localhost:3000> öffnen, „Szenario laden“ wählen und ausführen
+(vier Schritte: Szenario wählen, Konfiguration, Ausführung, Ergebnis).
 Die Kommandozeile steht im selben Container bereit:
 
 ```bash
@@ -142,7 +143,7 @@ LLM/OpenRouter) und Bedienung: **[`docs/web_demo.md`](docs/web_demo.md)**.
 ```bash
 # Backend
 uv sync --extra web
-uv run --extra web geofact-api            # http://127.0.0.1:8000
+uv run --extra web geofact-api            # http://127.0.0.1:8000, API-Dokumentation unter /api/docs
 
 # Frontend
 cd frontend && npm install && npm run dev  # http://localhost:3000

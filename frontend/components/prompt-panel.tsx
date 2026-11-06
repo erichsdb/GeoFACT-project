@@ -117,7 +117,6 @@ export default function PromptPanel({
   llmConfigured,
   options,
   onGenerated,
-  onBusyChange,
 }: {
   // FA86: Prompt und Region gehören der Seite (AppShell), nicht dem Panel: sie
   // überstehen Schrittwechsel und Neuladen.
@@ -131,8 +130,6 @@ export default function PromptPanel({
   options?: GenerationOptions;
   // `used` ist der Prompt samt Region, mit dem die Erzeugung gestartet wurde.
   onGenerated: (yaml: string, notes: string | null | undefined, used: { prompt: string; region: string }) => void;
-  // FA86: meldet, ob gerade erzeugt wird (die Seite füllt dann den Prompt nicht neu).
-  onBusyChange?: (busy: boolean) => void;
 }) {
   const [phase, setPhase] = useState<Phase>("idle");
   const [streamedYaml, setStreamedYaml] = useState("");
@@ -160,10 +157,6 @@ export default function PromptPanel({
     phase === "repairing" ||
     phase === "trial_run" ||
     phase === "reviewing";
-
-  useEffect(() => {
-    onBusyChange?.(busy);
-  }, [busy, onBusyChange]);
 
   useEffect(() => {
     return () => {

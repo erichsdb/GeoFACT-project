@@ -54,14 +54,17 @@ Die Links öffnen das jeweilige Szenario direkt. Jede Station nennt, worauf es d
 [Sterneschauen in Sachsen](http://localhost:3000/?scenario=example:sachsen_nachthimmel) sucht
 dunkle, hoch gelegene und mit dem Auto erreichbare Aussichtspunkte.
 
-1. **Konfiguration lesen.** Der Editor zeigt die YAML-Datei. Vier Layer (Aussichtspunkte und
+Der Stepper oben zeigt den Weg: beim Laden eines Szenarios vier Schritte (Szenario wählen, Konfiguration, Ausführung, Ergebnis).
+Beim Generieren aus einer Frage ist der erste Schritt „Frage stellen“, beim Selbstschreiben entfällt er.
+
+1. **Konfiguration lesen.** Der Editor (Schritt „Konfiguration“) zeigt die YAML-Datei. Das (?) neben dem Titel erklärt, wie man eine solche Datei schreibt. Vier Layer (Aussichtspunkte und
    Parkplätze aus OpenStreetMap, ein Nachtlicht- und ein Höhenraster) und acht Schritte genügen;
    Programmcode kommt nicht vor.
-2. **Graph ansehen.** Der Ausführungsgraph ist aus den Verweisen abgeleitet, die Reihenfolge der
+2. **Graph ansehen.** Schritt „Ausführung“: Der Ausführungsgraph ist aus den Verweisen abgeleitet, die Reihenfolge der
    Schritte in der Datei spielt keine Rolle.
 3. **Ausführen.** Die Knoten färben sich, während der Lauf fortschreitet. Jeder Layer wird erst
    geladen, wenn der erste Schritt ihn braucht.
-4. **Ergebnis ansehen.** Jeder Knoten, auch jedes Zwischenergebnis, lässt sich als Karte, Tabelle,
+4. **Ergebnis ansehen.** Schritt „Ergebnis“: Jeder Knoten, auch jedes Zwischenergebnis, lässt sich als Karte, Tabelle,
    Diagramm und Statistik öffnen. Die deklarierten Ausgaben stehen hinter dem Knopf „Ausgaben“ als Dateiliste, einzeln oder
    zusammen als ZIP herunterladbar, darunter die Datei `ATTRIBUTION.txt` mit den Quellen und
    Lizenzen dieses Laufs. „Läufe“ in der Kopfzeile führt zu den früheren Läufen und ihren Dateien,
@@ -187,4 +190,4 @@ Die konzeptionellen Grenzen stehen in
 | Welche Beispiele gibt es, und was brauchen sie? | [README, Abschnitt „Beispiele“](../README.md#beispiele) |
 | Wie schreibe ich eine eigene Konfiguration? | [`konfiguration_schreiben.md`](konfiguration_schreiben.md) |
 | Wie ist der Code aufgebaut, und wie kommt ein Baustein hinzu? | [`architektur.md`](architektur.md) |
-| Wie funktioniert die Web-Oberfläche, und welche Schnittstellen hat sie? | [`web_demo.md`](web_demo.md), <http://localhost:8000/docs> |
+| Wie funktioniert die Web-Oberfläche, und welche Schnittstellen hat sie? | [`web_demo.md`](web_demo.md), <http://localhost:8000/api/docs> (ohne Anmeldung erreichbar) |

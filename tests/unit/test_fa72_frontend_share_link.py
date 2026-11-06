@@ -59,8 +59,11 @@ def _between(src: str, start: str, end: str) -> str:
 def test_fa72_url_takes_precedence_over_local_storage() -> None:
     shell = _text(APP_SHELL)
     assert "parseScenarioParam(window.location.search)" in shell
-    # Vorrang nur für einen geöffneten Link ("open"), Schritt 1 erzwungen
-    assert 'if (linkMode === "open") return "prompt";' in shell
+    # Vorrang nur für einen geöffneten Link ("open"), Schritt 1 erzwungen (FA96: initialStep)
+    assert 'linkMode === "open"' in _between(
+        shell, "const [step, setStep] = useState<WizardStep>(", ");"
+    )
+    assert "initialStep(" in shell
     # die gemerkte runId wird beim Start NICHT mehr vom Parameter abhängig gemacht
     assert (
         "useState<string | null>(() => readLocalStorage(RUN_ID_STORAGE_KEY))" in shell
@@ -69,7 +72,7 @@ def test_fa72_url_takes_precedence_over_local_storage() -> None:
         shell, "const openLink = async", "useEffect(() => {\n    if (linkMode"
     )
     # erst nach erfolgreichem Laden wird der gemerkte Lauf verworfen
-    assert "setRunId(null)" in open_link and 'setStep("prompt")' in open_link
+    assert "setRunId(null)" in open_link and 'setStep("config")' in open_link
     assert open_link.index("api.loadScenario(") < open_link.index("setRunId(null)")
     mount = _between(
         shell, "useEffect(() => {\n    if (linkMode", "// FA72: nur solange"
@@ -160,7 +163,13 @@ def test_fa72_picker_preselects_url_entry() -> None:
     picker = _text(PICKER)
     assert "preselect" in picker
     assert "s.id === preselect.id && s.source === preselect.source" in picker
-    assert "preselect={shareRef}" in _text(APP_SHELL)
+    shell = _text(APP_SHELL)
+    assert "preselect={pickerPreselect}" in shell
+    # geladen: das geteilte Szenario; solange ein geöffneter Link noch lädt: sein Eintrag
+    assert (
+        'shareRef ?? (linkMode === "open" && urlScenario.kind === "ok" && !loadedScenario'
+        " ? urlScenario.ref : null);"
+    ) in shell
 
 
 # --- Logik der reinen Helfer, ausgeführt unter node (Typ-Stripping) ---------

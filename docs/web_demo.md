@@ -90,12 +90,18 @@ API-Spezifikation (FA85, OpenAPI 3.1) bei laufendem Backend:
 
 | Adresse | Inhalt |
 |---|---|
-| `http://127.0.0.1:8000/docs` | Swagger UI: jede Operation ausprobieren („Try it out“); bei aktivierter Anmeldung zuerst `POST /api/auth/login` aufrufen und das Token unter „Authorize“ eintragen |
-| `http://127.0.0.1:8000/redoc` | ReDoc: dieselbe Spezifikation zum Lesen |
-| `http://127.0.0.1:8000/openapi.json` | die Spezifikation als JSON (z. B. zum Import in Bruno oder Postman) |
+| `http://127.0.0.1:8000/api/docs` | Swagger UI: jede Operation ausprobieren („Try it out“); bei aktivierter Anmeldung zuerst `POST /api/auth/login` aufrufen und das Token unter „Authorize“ eintragen |
+| `http://127.0.0.1:8000/api/redoc` | ReDoc: dieselbe Spezifikation zum Lesen |
+| `http://127.0.0.1:8000/api/openapi.json` | die Spezifikation als JSON (z. B. zum Import in Bruno oder Postman) |
 
-`/docs` und `/redoc` laden ihre Oberfläche von einem CDN (Internet nötig), `/openapi.json` nicht. Alle
-drei sind ohne Token erreichbar. Dieselbe Spezifikation liegt eingecheckt in `docs/openapi.json` - sie
+`/api/docs` und `/api/redoc` laden ihre Oberfläche von einem CDN (Internet nötig), `/api/openapi.json` nicht. Die
+Seiten liegen im selben Ursprung wie die Oberfläche, die das Token im Browser hält; deshalb nennen sie Skript und
+Stylesheet in genau einer Fassung und mit Prüfsumme (`integrity`, `backend/geofact_web/docs_pages.py`): der Browser
+führt nur die Datei mit dieser Prüfsumme aus. Eine neue Fassung braucht dort eine neue Prüfsumme. Alle
+drei sind ohne Anmeldung erreichbar (FA95), auch wenn `GEOFACT_WEB_USERS` gesetzt ist: ein Browser-Aufruf kann kein
+Token mitschicken, und die Spezifikation enthält keine Geheimnisse. Sie liegen unter `/api/`, weil das gehostete
+Routing (Coolify/Traefik) nur dieses Präfix zum Backend leitet; die alten Pfade `/docs`, `/redoc` und
+`/openapi.json` leiten auf sie weiter, ebenso die Dokumentationspfade mit Schrägstrich am Ende. Alle übrigen `/api/`-Pfade verlangen weiter ein Token. Dieselbe Spezifikation liegt eingecheckt in `docs/openapi.json` - sie
 wird erzeugt, nicht von Hand bearbeitet. Nach jeder Änderung an einer Route oder einem Antwortmodell:
 
 ```bash
@@ -278,7 +284,24 @@ npm run dev                          # http://localhost:3000
 
 ## Bedienung
 
-1. **Einstieg wählen** (FA80): Schritt 1 „Szenario" bietet drei Wege und
+Der **Stepper** unter der Kopfzeile zeigt den Weg des gewählten Einstiegs (FA96):
+
+| Einstieg | Schritte |
+|---|---|
+| Szenario generieren | 1 Frage stellen → 2 Konfiguration → 3 Ausführung → 4 Ergebnis |
+| Szenario laden | 1 Szenario wählen → 2 Konfiguration → 3 Ausführung → 4 Ergebnis |
+| Szenario selbst schreiben | 1 Konfiguration → 2 Ausführung → 3 Ergebnis |
+
+Jeder Schritt zeigt nur seinen Inhalt und bietet eine Weiter-Aktion („Weiter zur Konfiguration“,
+„Weiter zur Ausführung“, „Ausführen“, „Ergebnis ansehen“) sowie „Zurück“ zum vorigen Schritt. Im Stepper
+ist ein Schritt anklickbar, sobald seine Voraussetzung erfüllt ist: die Konfiguration mit einem Text, die
+Ausführung mit gültiger Konfiguration, das Ergebnis mit einem Lauf; sonst nennt der Tooltip des Schritts den
+Grund. Schritt 1 ist von überall erreichbar, so geht es zur Frage oder zur Auswahl zurück. Endet ein Lauf,
+während Sie in der Ausführung stehen, wechselt die Ansicht ins Ergebnis; in einem anderen Schritt bleibt sie
+stehen und eine Meldung nennt den Schritt „Ergebnis“. Nach einem Neuladen holt die Oberfläche den Stand des
+gemerkten Laufs, sobald Sie Ausführung oder Ergebnis öffnen.
+
+1. **Einstieg wählen** (FA80): Die erste Wahl einer Sitzung bietet drei Wege und
    zeigt danach nur, was dazu gehört. Der Einstieg lässt sich über die drei Knöpfe in der Kopfzeile
    in jedem Schritt wechseln; der Editortext bleibt dabei erhalten.
    - **Szenario generieren**: Prompt eingeben und „Konfiguration
@@ -290,32 +313,38 @@ npm run dev                          # http://localhost:3000
      Ausgabe wird geprüft, einmal ohne Ausgaben auf den echten Daten
      ausgeführt und bei einer Prüfmeldung, einem Abbruch oder Warnungen
      bis zu dreimal repariert (FA78). Danach erscheint die Konfiguration im
-     Editor, mit dem Ergebnis des Probelaufs als Hinweis darüber (auch in
-     `trial_run` der Antwort); „Prompt anpassen" führt zurück.
+     Schritt „Konfiguration“, mit dem Ergebnis des Probelaufs als Hinweis darüber (auch in
+     `trial_run` der Antwort); „Zurück zur Frage“ führt zurück.
      Braucht die Frage einen Datensatz, den keine Quelle liefert, nennt
      das Modell ihn statt einer Konfiguration (FA87): der Hinweis steht
      unter dem Prompt, der Editor bleibt unverändert. Datensatz unter
      „Daten vormerken" hochladen, dann „Erneut generieren" - oder die Frage
      umformulieren und nennen, woran sie gemessen werden soll.
    - **Szenario laden**: Beispiel oder eigenes gespeichertes Szenario in
-     der Liste wählen (YAML-Vorschau rechts) und „Laden".
+     der Liste wählen (YAML-Vorschau rechts) und „Laden“; die Konfiguration erscheint
+     im Schritt „Konfiguration“, „Zurück zur Auswahl“ führt zur Liste zurück.
    - **Szenario selbst schreiben**: Editor mit dem Katalog daneben;
      „Vorlage“ füllt den leeren Editor mit allen Abschnitten und Platzhaltern (FA91,
      Anleitung: `docs/konfiguration_schreiben.md`), „+ Layer" bzw. eine Operation fügt
      einen Baustein in die YAML ein.
    **Herkunft (FA86):** Die Oberfläche merkt, woher die Konfiguration stammt
    (erzeugt aus einem Prompt, geladenes Szenario, selbst geschrieben; mit der
-   Marke „bearbeitet“, sobald der Text abweicht). Eine Leiste über Editor,
-   Ausführung und Ergebnis bietet den Sprung zurück: „Prompt anpassen“
-   (Prompt und Region wieder gefüllt), „Anderes Szenario wählen“,
-   „Konfiguration bearbeiten“. Der Einstieg wechselt über den Umschalter
-   in der Kopfzeile und zeigt dort die zuletzt gezeigte Ansicht. Prompt, Region und
+   Marke „bearbeitet“, sobald der Text abweicht). Eine Leiste über Konfiguration,
+   Ausführung und Ergebnis nennt die Herkunft; zurück geht es über den Stepper
+   (die Sprungknöpfe „Prompt anpassen“, „Anderes Szenario wählen“ und
+   „Konfiguration bearbeiten“ gibt es seit FA96 nicht mehr). Der Einstieg wechselt über den Umschalter
+   in der Kopfzeile und zeigt dort den zuletzt gezeigten Schritt. Prompt, Region und
    Gedankengang bleiben über Schrittwechsel und Neuladen erhalten; eine
    Erzeugung läuft im Hintergrund weiter und meldet sich per Hinweis.
-   Wird die Konfiguration nach einem Lauf geändert, bleibt der Lauf in
-   Schritt 3 einsehbar, trägt aber den Hinweis „Dieses Ergebnis gehört zu
+   Wird die Konfiguration nach einem Lauf geändert, bleibt der Lauf im
+   Ergebnis einsehbar, trägt aber den Hinweis „Dieses Ergebnis gehört zu
    einer früheren Fassung“ mit „Erneut ausführen“.
-2. **Editor**: YAML anpassen, Live-Validierung zeigt Fehler mit Position.
+2. **Konfiguration**: YAML ansehen und anpassen, Live-Validierung zeigt Fehler mit Position;
+   bei gültiger Konfiguration führt „Weiter zur Ausführung“ weiter. Das **(?)** neben dem Titel
+   des Editors (FA97) öffnet eine Hilfe zum Schreiben der YAML: Grundgerüst, Region, Layer, Schritte,
+   Ausgaben, Parameter, häufige Fehler und ein vollständiges Beispiel, jeweils mit einem Ausschnitt
+   zum Kopieren, dazu Verweise auf die Kataloge, die Vorlage, `docs/konfiguration_schreiben.md` und
+   die API-Dokumentation. Die Hilfe steht in allen drei Einstiegen zur Verfügung, wo der Editor steht.
 3. **Ausführen**: der DAG wird gezeichnet und färbt sich live
    (pending → running → done/error); Knoten mit Warnungen tragen ein ⚠.
    Ein laufender Lauf lässt sich **abbrechen**: er gilt sofort als abgebrochen (FA93);
@@ -346,7 +375,7 @@ npm run dev                          # http://localhost:3000
    erscheint in vier Ansichten: **Karte** (mit Legende), **Tabelle**
    (sortierbar), **Diagramm** (Histogramm + Top-N-Rangliste) und
    **Statistik** (Kennzahlen je numerischem Feld bzw. Rasterwerte).
-   Das **Ergebnis** (Schritt 3) steht in voller Breite; der **Ausführungsgraph**
+   Das **Ergebnis** (Schritt 4, beim Selbstschreiben Schritt 3) steht in voller Breite; der **Ausführungsgraph**
    ist ein Vollbild-Umschalter derselben Ansicht (Taste `g`). Ein Knotenklick im
    Vollbild-Graphen wählt den Knoten und kehrt zum Ergebnis zurück,
    „Endergebnis anzeigen“ führt aus jeder Ansicht zum Endknoten (FA67).
@@ -373,8 +402,8 @@ npm run dev                          # http://localhost:3000
    übersprungene Ausgaben mit Grund, die Begleitdateien und „Alle als ZIP“. Den Knopf „Ergebnisse“ in der Kopfzeile
    der Seite gibt es nicht mehr.
    **Läufe (FA89):** „Läufe“ in der Kopfzeile der Seite listet die Läufe, die das
-   Backend noch hält, je Lauf mit seinen Dateien. „Ansehen“ öffnet einen Lauf in
-   Schritt 3, ohne den Editor zu ändern; weicht dessen Text ab, steht dort der
+   Backend noch hält, je Lauf mit seinen Dateien. „Ansehen“ öffnet einen Lauf im
+   Schritt „Ergebnis“, ohne den Editor zu ändern; weicht dessen Text ab, steht dort der
    Hinweis „frühere Fassung“ mit „Konfiguration dieses Laufs übernehmen“.
 5. **Operationen-Referenz** (Einstieg „Szenario selbst schreiben", Tab „Operationen"): zeigt Ports
    und Parameter jeder Operation; „+ Schritt" fügt ein Skelett ein.
@@ -417,7 +446,7 @@ Sobald ein Szenario geladen ist (Einstieg „Szenario laden“ oder Link), steht
 
 „Link kopieren“ (neben „Speichern“) legt die absolute Adresse in die Zwischenablage.
 
-- **Öffnen:** Der Link lädt das Szenario in den Editor, zeigt Schritt 1, meldet den Erfolg mit dem Anzeigenamen des Szenarios (Rückfall: die ID) und hat Vorrang vor dem im
+- **Öffnen:** Der Link zeigt zunächst Schritt 1 „Szenario wählen“, lädt das Szenario in den Editor, wechselt zu Schritt 2 „Konfiguration“, meldet den Erfolg mit dem Anzeigenamen des Szenarios (Rückfall: die ID) und hat Vorrang vor dem im
   Browser gemerkten YAML, Schritt und Lauf (eine gemerkte `runId` wird nicht wiederverwendet). Ist
   die Anmeldung aktiv (FA24), erscheint zuerst der Login; der Parameter bleibt dabei erhalten.
 - **Fehler:** Eine unbekannte ID (404) oder ein Parameter ohne Präfix `example:`/`user:` meldet sich
@@ -437,7 +466,7 @@ Sobald ein Szenario geladen ist (Einstieg „Szenario laden“ oder Link), steht
 
 ## API-Überblick
 
-Maßgeblich ist die Spezifikation (`/docs` bzw. `docs/openapi.json`, FA85) mit Schemas, Medientypen und Fehlercodes; die Tabelle ordnet die Endpunkte den Anforderungen zu.
+Maßgeblich ist die Spezifikation (`/api/docs` bzw. `docs/openapi.json`, FA85) mit Schemas, Medientypen und Fehlercodes; die Tabelle ordnet die Endpunkte den Anforderungen zu.
 
 | Methode | Pfad | Zweck |
 |---|---|---|

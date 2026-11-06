@@ -1,0 +1,22 @@
+# OSM-Datenbank des Serverpakets (FA98, docker-compose.server.yml, docs/server_installation.md).
+#
+# EIN Image für zwei Dienste:
+#   postgis      PostgreSQL 17 mit PostGIS (Standard-Entrypoint des postgres-Images)
+#   osm-import   docker/osm/import.sh: lädt den Geofabrik-Extrakt und importiert ihn mit
+#                osm2pgsql flex (docker/osm/pipeline.lua) in das Schema "osm"
+#
+# Basis trixie: Debian 13 bringt osm2pgsql 2.x mit (bookworm nur 1.8), PostGIS kommt aus
+# dem PGDG-Repository, das das offizielle postgres-Image schon eingerichtet hat. Beides gibt
+# es für amd64 und arm64 - postgis/postgis selbst gibt es nur für amd64.
+FROM postgres:17-trixie
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    postgresql-17-postgis-3 \
+    osm2pgsql \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY docker/osm/pipeline.lua /styles/pipeline.lua
+COPY docker/osm/import.sh /usr/local/bin/geofact-osm-import
+RUN chmod +x /usr/local/bin/geofact-osm-import

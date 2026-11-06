@@ -15,18 +15,26 @@ import {
   canResume,
   forgetEntryMode,
   initialEntryMode,
-  initialEntryView,
-  showsEditor,
-  viewForMode,
   type EntryMode,
-  type EntryView,
 } from "@/lib/entryMode";
+import {
+  backLabel,
+  completedSteps,
+  firstStep,
+  initialStep,
+  needsRunStatus,
+  reachableSteps,
+  runEndOpensResult,
+  stepForMode,
+  stepsForMode,
+  unreachableReason,
+  type WizardStep,
+} from "@/lib/wizardSteps";
 import {
   CONFIG_ORIGIN_STORAGE_KEY,
   configGuideText,
   originNotes,
   parseOriginRecord,
-  promptValues,
   serializeOriginRecord,
   type OriginRecord,
 } from "@/lib/configOrigin";
@@ -81,7 +89,7 @@ import ConfigEditor from "@/components/config-editor";
 import LicenseCheckPanel, { licenseCheckKey } from "@/components/license-check";
 import RunGraph from "@/components/run-graph";
 import NodeInspector from "@/components/node-inspector";
-import Stepper, { type WizardStep } from "@/components/stepper";
+import Stepper from "@/components/stepper";
 import ParameterPanel from "@/components/parameter-panel";
 import OriginBar from "@/components/origin-bar";
 import { RunFilesButton, RunHistoryDialog, type RunDownloadHandler } from "@/components/run-outputs";
@@ -192,11 +200,6 @@ export default function AppShell() {
   const [runBasis, setRunBasis] = useState<RunBasis | null>(() =>
     parseRunBasis(readLocalStorage(RUN_BASIS_STORAGE_KEY))
   );
-  // FA86: läuft gerade eine Erzeugung? Dann überschreibt "Prompt anpassen" den Prompt nicht.
-  const generatingRef = useRef(false);
-  const onGeneratingChange = useCallback((busy: boolean) => {
-    generatingRef.current = busy;
-  }, []);
   const [validation, setValidation] = useState<ValidateResponse | null>(null);
   const [validating, setValidating] = useState(false);
   // FA59: Überschreibungen der Szenario-Parameter (Name -> Wert). Nur Namen,
@@ -243,54 +246,41 @@ export default function AppShell() {
     [generationOptions, settingsServer]
   );
 
-  // FA80: der gewählte Einstieg in Schritt 1 (null = die Frage ist offen) und,
-  // für "generate"/"load", ob die Eingabe oder die Konfiguration zu sehen ist.
-  // Nur ein geöffneter Link setzt ihn vorab; beim Neuladen des eigenen Tabs
-  // gilt die Wahl der Sitzung.
+  // FA80: der gewählte Einstieg (null = die Frage ist offen). Nur ein geöffneter
+  // Link setzt ihn vorab; beim Neuladen des eigenen Tabs gilt die Wahl der Sitzung.
   const [entryMode, setEntryMode] = useState<EntryMode | null>(() =>
     initialEntryMode(readSessionEntryMode(), linkMode === "open")
   );
-  const [entryView, setEntryView] = useState<EntryView>(() =>
-    // Ein geöffneter Link ersetzt den gemerkten Text; bis er geladen ist, zeigt
-    // die Auswahl den verlinkten Eintrag (openLink schaltet danach um).
-    linkMode === "open" ? "input" : initialEntryView(entryMode, readLocalStorage(CONFIG_YAML_STORAGE_KEY) ?? "")
+  // FA96: der Schritt des Einstiegs (Frage/Auswahl, Konfiguration, Ausführung,
+  // Ergebnis). Ein geöffneter Link ersetzt den gemerkten Text; bis er geladen ist,
+  // wählt die Auswahl den verlinkten Eintrag vor (openLink schaltet danach um).
+  const [step, setStep] = useState<WizardStep>(() =>
+    initialStep(entryMode, readLocalStorage(CONFIG_YAML_STORAGE_KEY) ?? "", readLocalStorage(STEP_STORAGE_KEY), linkMode === "open")
   );
-  const chooseEntryMode = useCallback((mode: EntryMode) => {
-    setEntryMode(mode);
-    setEntryView(mode === "write" ? "config" : "input");
-  }, []);
-  // FA86: Einstieg wechseln (Kopfzeile): es gilt die zuletzt gezeigte Ansicht
+  // FA86: Einstieg wechseln (Kopfzeile): es gilt der zuletzt gezeigte Schritt
   // dieses Einstiegs, der Editortext bleibt.
-  const lastViewsRef = useRef<Partial<Record<EntryMode, EntryView>>>({});
+  const lastStepsRef = useRef<Partial<Record<EntryMode, WizardStep>>>({});
   const originKindRef = useRef(originRecord?.origin.kind ?? null);
   useEffect(() => {
     originKindRef.current = originRecord?.origin.kind ?? null;
   }, [originRecord]);
   useEffect(() => {
-    if (entryMode) lastViewsRef.current[entryMode] = entryView;
-  }, [entryMode, entryView]);
+    if (entryMode) lastStepsRef.current[entryMode] = step;
+  }, [entryMode, step]);
+  const chooseEntryMode = useCallback((mode: EntryMode) => {
+    setEntryMode(mode);
+    setStep(firstStep(mode));
+  }, []);
   const changeEntryMode = useCallback((mode: EntryMode) => {
     setEntryMode(mode);
-    setEntryView(viewForMode(mode, lastViewsRef.current, configYamlRef.current, originKindRef.current));
+    setStep(stepForMode(mode, lastStepsRef.current, configYamlRef.current, originKindRef.current));
   }, []);
-
-  const [step, setStep] = useState<WizardStep>(() => {
-    if (linkMode === "open") return "prompt";
-    // FA80: ohne Einstieg (neue Sitzung, neue Anmeldung) steht die Frage vor allem anderen.
-    if (entryMode === null) return "prompt";
-    // FA86: ohne Konfiguration gibt es weder Ausführung noch Ergebnis.
-    if (!(readLocalStorage(CONFIG_YAML_STORAGE_KEY) ?? "").trim()) return "prompt";
-    const raw = readLocalStorage(STEP_STORAGE_KEY);
-    return raw === "execution" || raw === "result" ? raw : "prompt";
-  });
   // FA86: Spiegel für asynchrone Rückrufe (eine Erzeugung endet evtl. woanders).
   const stepRef = useRef(step);
   const entryModeRef = useRef(entryMode);
-  const entryViewRef = useRef(entryView);
   useEffect(() => {
     stepRef.current = step;
     entryModeRef.current = entryMode;
-    entryViewRef.current = entryView;
   });
 
   // FA72: Anzeigename für die Erfolgsmeldung nach dem Öffnen eines Links; die
@@ -369,8 +359,8 @@ export default function AppShell() {
     else window.localStorage.removeItem(RUN_ID_STORAGE_KEY);
   }, [runId]);
 
-  // FA86: eine Änderung wirft den Lauf nicht mehr weg - er bleibt in Schritt 3
-  // einsehbar und wird dort als "früherer Fassung" gekennzeichnet (staleRun).
+  // FA86: eine Änderung wirft den Lauf nicht mehr weg - er bleibt im Schritt
+  // „Ergebnis“ einsehbar und wird dort als "früherer Fassung" gekennzeichnet (staleRun).
   // Beginnt der Nutzer in einem leeren Editor, ist der Text "selbst geschrieben";
   // Erzeugen und Laden setzen ihre Herkunft danach selbst (letzter Aufruf gewinnt).
   const applyConfigYaml = useCallback((next: string | ((prev: string) => string)) => {
@@ -536,7 +526,7 @@ export default function AppShell() {
         origin: { kind: "load", id: scenario.id, source: scenario.source, name: scenario.name },
         yaml: config_yaml,
       });
-      setEntryView("config");
+      setStep("config");
       notify.success(`Szenario „${scenario.name}“ geladen.`);
       return true;
     } catch (e) {
@@ -589,9 +579,8 @@ export default function AppShell() {
       setGoneRunId(null);
       setStatus(null);
       setSelectedNode(null);
-      setStep("prompt");
       setEntryMode("load");
-      setEntryView("config");
+      setStep("config");
       notify.success(`Szenario „${displayName}“ geladen.`);
     } catch (e) {
       notify.error(e instanceof Error ? e.message : String(e));
@@ -619,6 +608,10 @@ export default function AppShell() {
   // Ebene/Operation, Handedit) entfernt den Parameter - Textvergleich statt
   // Aufzählung der Änderungswege.
   const shareRef = loadedScenario && loadedScenario.yaml === configYaml ? loadedScenario : null;
+  // Solange ein geöffneter Link noch lädt, gibt es kein geladenes Szenario: die
+  // Auswahl wählt dann den verlinkten Eintrag vor.
+  const pickerPreselect =
+    shareRef ?? (linkMode === "open" && urlScenario.kind === "ok" && !loadedScenario ? urlScenario.ref : null);
   useEffect(() => {
     if (shareRef) setUrlScenario(shareRef);
     else if (loadedScenario) setUrlScenario(null);
@@ -770,6 +763,13 @@ export default function AppShell() {
 
     es.addEventListener("end", () => {
       es.close();
+      // FA96: nur aus der Ausführung führt das Ende ins Ergebnis. Wer inzwischen in
+      // einem anderen Schritt arbeitet (Frage, Auswahl, Editor), bleibt dort und
+      // bekommt eine Meldung.
+      const opensResult = runEndOpensResult(stepRef.current);
+      if (!opensResult && stepRef.current !== "result") {
+        notify.info("Der Lauf ist beendet – das Ergebnis steht im Schritt „Ergebnis“.");
+      }
       setStatus((prev) => {
         if (prev) {
           // Bei Erfolg der letzte Knoten, sonst der letzte, der noch ein
@@ -780,8 +780,8 @@ export default function AppShell() {
           // Auch fehlgeschlagene/abgebrochene Läufe führen in die
           // Ergebnisansicht: die Zwischenergebnisse der fertigen Schritte
           // sind der Weg zur Fehlerursache (FA33). Vorher blieb der
-          // Nutzer auf Schritt 2 ohne Inspector zurück.
-          setStep("result");
+          // Nutzer in der Ausführung ohne Inspector zurück.
+          if (opensResult) setStep((cur) => (runEndOpensResult(cur) ? "result" : cur));
         }
         return prev;
       });
@@ -816,23 +816,30 @@ export default function AppShell() {
   // als persistierte `runId` weiter - der Lauf selbst liegt im
   // Backend-Prozessspeicher (siehe docs/web_demo.md) und muss aktiv
   // nachgeladen werden. Schlägt das fehl (Backend inzwischen neugestartet)
-  // oder gibt es gar keine `runId` (Reload auf Schritt 3 ohne je einen
-  // Lauf gestartet zu haben), zurück auf Schritt 1 statt auf einer leeren
+  // oder gibt es gar keine `runId` (Reload im Ergebnis ohne je einen
+  // Lauf gestartet zu haben), zurück zur Konfiguration statt auf einer leeren
   // Ansicht hängen zu bleiben.
+  // FA96: geholt wird beim Betreten von Ausführung oder Ergebnis, nicht nur beim
+  // Laden der Seite - sie kann auch in Frage, Auswahl oder Konfiguration geladen
+  // worden sein, und der Stepper bietet das Ergebnis des gemerkten Laufs trotzdem an.
+  const statusRequestedRef = useRef<string | null>(null);
   useEffect(() => {
-    if (step === "prompt") return;
+    if (step === "input" || step === "config") return;
     if (!runId) {
-      // Initialer Mount-Redirect (kein Lauf persistiert) - kein
-      // wiederholtes Rendern/Kaskadieren, läuft nur einmal beim Laden. Nur
-      // die Ergebnisansicht braucht einen Lauf; Schritt 2 zeigt den Plan aus
-      // der gemerkten YAML und bleibt (R15).
+      // Nur die Ergebnisansicht braucht einen Lauf; die Ausführung zeigt den Plan
+      // aus der gemerkten YAML und bleibt (R15).
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      if (step === "result") setStep("prompt");
+      if (step === "result") setStep("config");
       return;
     }
+    if (!needsRunStatus(step, true, status !== null, startingRef.current)) return;
+    // Je Lauf eine Anfrage (Schrittwechsel, während sie läuft; StrictMode).
+    if (statusRequestedRef.current === runId) return;
+    statusRequestedRef.current = runId;
     api
       .runStatus(runId)
       .then((s) => {
+        if (runIdRef.current !== runId) return; // inzwischen ein anderer Lauf
         setStatus(s);
         if (s.status === "running" || s.status === "pending") {
           // Neu laden während eines Laufs: wieder am Ereignisstrom anmelden,
@@ -842,24 +849,27 @@ export default function AppShell() {
         } else {
           // Auch nach einem Fehler/Abbruch gibt es etwas anzuzeigen: das
           // Backend hält die Ergebnisse aller fertigen Schritte weiter
-          // vor (FA33). Vorher landete der Nutzer hier auf Schritt 1 und
+          // vor (FA33). Vorher landete der Nutzer hier in der Eingabe und
           // kam an die Zwischenergebnisse gar nicht mehr heran.
           setSelectedNode((cur) => cur ?? lastInspectableNode(s));
         }
       })
       .catch((e) => {
+        if (runIdRef.current !== runId) return;
         if (isNotFoundError(e)) {
           // Das Backend kennt den gemerkten Lauf nicht mehr (Neustart): erklären
-          // statt still auf Schritt 1 zu springen (FA54).
+          // statt still zur Konfiguration zu springen (FA54).
           handleRunGone(runId);
           return;
         }
         setRunId(null);
         setStatus(null);
-        setStep("prompt");
+        setStep("config");
       });
+    // Der Stand selbst und `starting` lösen nichts aus: sie ändern sich nur zusammen
+    // mit dem Lauf (startRun, openRun) oder durch diese Anfrage.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [step, runId]);
 
   useEffect(() => () => esRef.current?.close(), []);
 
@@ -898,10 +908,10 @@ export default function AppShell() {
   };
   const downloadFromRun: RunDownloadHandler = (e, id, url) => void onDownloadClick(e, id, url);
 
-  // FA89: einen früheren Lauf in Schritt 3 öffnen. Der Editor bleibt: weicht sein
+  // FA89: einen früheren Lauf im Schritt „Ergebnis“ öffnen. Der Editor bleibt: weicht sein
   // Text von der Konfiguration des Laufs ab, gilt der Lauf als frühere Fassung
   // (staleRun) und der Hinweis bietet deren Übernahme an. Nur in einen leeren
-  // Editor wird sie sofort gesetzt - ohne Konfiguration ist Schritt 3 gesperrt (FA86).
+  // Editor wird sie sofort gesetzt - ohne Konfiguration ist das Ergebnis gesperrt (FA86).
   const openRun = async (run: RunSummary): Promise<boolean> => {
     if (startingRef.current) return false;
     const id = run.run_id;
@@ -920,6 +930,9 @@ export default function AppShell() {
         applyConfigYaml(yaml);
         setParamOverrides(params);
       }
+      // Ein Lauf aus der Kopfzeile, solange die Frage noch offen ist, braucht einen Weg:
+      // nur der Editor passt (er bekommt die Konfiguration des Laufs, FA89).
+      setEntryMode((m) => m ?? "write");
       if (s.status === "running" || s.status === "pending") {
         subscribe(id);
         setStep("execution");
@@ -945,26 +958,27 @@ export default function AppShell() {
     void startRun();
   };
 
-  const entryQuestionOpen = step === "prompt" && entryMode === null;
+  // FA80: solange kein Einstieg gewählt ist, steht die Frage allein auf der Seite.
+  const entryQuestionOpen = entryMode === null;
   // FA80: Wechsel des Einstiegs aus der Kopfzeile, von jedem Schritt aus. Der
-  // Editortext bleibt; der schon gewählte Einstieg führt nur zurück zu Schritt 1.
-  // FA86: ein anderer Einstieg zeigt seine zuletzt gezeigte Ansicht (changeEntryMode).
+  // Editortext bleibt. FA86: ein anderer Einstieg zeigt seinen zuletzt gezeigten
+  // Schritt (stepForMode); der schon gewählte führt zu seinem ersten Schritt zurück.
   const switchEntryMode = (mode: EntryMode) => {
     if (mode !== entryMode) changeEntryMode(mode);
-    setStep("prompt");
+    else setStep(firstStep(mode));
   };
 
   // FA86: gehört der gemerkte Lauf zu einer früheren Fassung der Konfiguration
   // (YAML oder wirksame Parameter)? Ohne bekannte Basis: nein (nichts behaupten).
   const staleRun = isStaleRun(runBasis, runId, configYaml, effectiveParams);
-  // Ein noch laufender Lauf zeigt weiter seinen Fortschritt; sonst zeigt Schritt 2
-  // den Plan der AKTUELLEN Konfiguration.
+  // Ein noch laufender Lauf zeigt weiter seinen Fortschritt; sonst zeigt die
+  // Ausführung den Plan der AKTUELLEN Konfiguration.
   const showRunInExecution = !staleRun || isRunning;
   const executionGraphStatus = showRunInExecution ? graphStatus : staticStatus;
 
-  // FA86: Ergebnis einer Erzeugung. Steht der Nutzer in der Eingabe der Erzeugung,
-  // geht es wie bisher zur Konfiguration; sonst (anderer Schritt, anderer Einstieg)
-  // wird nichts umgeschaltet, sondern gemeldet.
+  // FA86: Ergebnis einer Erzeugung. Steht der Nutzer in der Frage des Generierens, geht
+  // es zur Konfiguration desselben Wegs (FA96); sonst (anderer Schritt, anderer
+  // Einstieg) wird nichts umgeschaltet, sondern gemeldet.
   const handleGenerated = (
     yaml: string,
     genNotes: string | null | undefined,
@@ -975,50 +989,30 @@ export default function AppShell() {
       origin: { kind: "generate", prompt: used.prompt, region: used.region, notes: genNotes ?? null },
       yaml,
     });
-    if (stepRef.current === "prompt" && entryModeRef.current === "generate" && entryViewRef.current === "input") {
-      setEntryView("config");
+    if (stepRef.current === "input" && entryModeRef.current === "generate") {
+      setStep("config");
     } else {
-      notify.success("Konfiguration erzeugt – sie steht jetzt im Editor von Schritt 1 und ersetzt dort den bisherigen Text.");
+      notify.success("Konfiguration erzeugt – sie steht jetzt im Schritt „Konfiguration“ und ersetzt dort den bisherigen Text.");
     }
   };
 
-  // FA86: Direktsprünge zur Herkunft der Konfiguration (Herkunftsleiste).
-  const jumpAdjustPrompt = () => {
-    const values = promptValues(originRecord);
-    if (values && !generatingRef.current) {
-      setPrompt(values.prompt);
-      setRegion(values.region);
-    }
-    setEntryMode("generate");
-    setEntryView("input");
-    setStep("prompt");
-  };
-  const jumpPickScenario = () => {
-    setEntryMode("load");
-    setEntryView("input");
-    setStep("prompt");
-  };
-  const jumpEditConfig = () => {
-    // Der Einstieg bleibt, wie er ist; nur die Konfigurationsansicht wird geöffnet.
-    if (entryMode === null) setEntryMode("write");
-    setEntryView("config");
-    setStep("prompt");
-  };
-
-  // FA86: ohne Konfiguration (noch kein Szenario erzeugt, geladen oder geschrieben)
-  // ist auch das Ergebnis eines gemerkten Laufs nicht erreichbar - Schritt 2 und 3
-  // sind dann beide gesperrt. Mit Konfiguration bleibt ein Lauf einsehbar, auch
-  // wenn sie inzwischen geändert oder ungültig ist (staleRun).
+  // FA96: Fakten für den Stepper. FA86: ohne Konfiguration (noch kein Szenario erzeugt,
+  // geladen oder geschrieben) ist auch das Ergebnis eines gemerkten Laufs nicht
+  // erreichbar; mit Konfiguration bleibt ein Lauf einsehbar, auch wenn sie inzwischen
+  // geändert oder ungültig ist (staleRun).
   const hasConfig = configYaml.trim().length > 0;
-  const reachable: Record<WizardStep, boolean> = {
-    prompt: true,
-    execution: !!validation?.valid,
-    result: !!runId && hasConfig,
+  const facts = {
+    hasConfig,
+    valid: !!validation?.valid,
+    hasRun: !!runId,
+    runDone: !!isDone,
+    staleRun,
+    originKind: originRecord?.origin.kind ?? null,
   };
-  const completed: Partial<Record<WizardStep, boolean>> = {
-    prompt: !!validation?.valid,
-    execution: !!isDone && !staleRun,
-  };
+  // Ohne Einstieg steht die Frage allein (kein Stepper); "write" ist dann nur der Platzhalter.
+  const wizardMode = entryMode ?? "write";
+  const reachable = reachableSteps(wizardMode, facts);
+  const completed = completedSteps(wizardMode, facts);
 
   return (
     <div className="flex min-h-screen flex-1 flex-col">
@@ -1048,7 +1042,7 @@ export default function AppShell() {
               <span className="sm:hidden">Kein LLM</span>
             </Badge>
           )}
-          {/* FA88: die Dateien eines Laufs stehen in Schritt 3 (RunFilesButton), nicht mehr
+          {/* FA88: die Dateien eines Laufs stehen im Schritt „Ergebnis“ (RunFilesButton), nicht mehr
               als Knopf hier; FA89: die Läufe, die das Backend noch hält. */}
           <RunHistoryDialog currentRunId={runId} onOpenRun={openRun} onDownload={downloadFromRun} />
           <GenerationSettings
@@ -1077,11 +1071,22 @@ export default function AppShell() {
 
       {/* FA80: solange die Frage offen ist, lenkt nichts von ihr ab. */}
       {!entryQuestionOpen && (
-        <Stepper current={step} reachable={reachable} completed={completed} onSelect={setStep} />
+        <Stepper
+          steps={stepsForMode(wizardMode)}
+          current={step}
+          reachable={reachable}
+          completed={completed}
+          reasons={{
+            config: unreachableReason(wizardMode, "config"),
+            execution: unreachableReason(wizardMode, "execution"),
+            result: unreachableReason(wizardMode, "result"),
+          }}
+          onSelect={setStep}
+        />
       )}
 
       <div className="mx-auto w-full max-w-[1800px] flex-1 px-6 py-6 2xl:px-10">
-        {goneRunId && step !== "prompt" && (
+        {goneRunId && (step === "execution" || step === "result") && (
           <RunGoneNotice
             runId={goneRunId}
             canRerun={!!validation?.valid}
@@ -1090,19 +1095,12 @@ export default function AppShell() {
           />
         )}
 
-        {/* FA86: Schritt 1 bleibt eingehängt (nur ausgeblendet), damit Prompt,
+        {/* FA86: Eingabe und Konfiguration bleiben eingehängt (nur ausgeblendet), damit Prompt,
             Gedankengang und eine laufende Erzeugung einen Schrittwechsel
             überstehen. Ausführung und Ergebnis nicht: Karte und Graph
             messen sich falsch, solange sie verborgen sind. */}
-        {step !== "prompt" && (
-          <OriginBar
-            record={originRecord}
-            yaml={configYaml}
-            onAdjustPrompt={jumpAdjustPrompt}
-            onPickScenario={jumpPickScenario}
-            onEditConfig={jumpEditConfig}
-            className="mb-4"
-          />
+        {(step === "execution" || step === "result") && (
+          <OriginBar record={originRecord} yaml={configYaml} className="mb-4" />
         )}
         {step === "result" && staleRun && (
           <StaleResultNotice
@@ -1113,7 +1111,7 @@ export default function AppShell() {
           />
         )}
 
-        <div className={cn(step !== "prompt" && "hidden")}>
+        <div className={cn(step !== "input" && step !== "config" && "hidden")}>
           <PromptStep
             catalog={catalog}
             selected={selected}
@@ -1127,19 +1125,15 @@ export default function AppShell() {
             }}
             onDeleted={refreshCatalog}
             entryMode={entryMode}
-            entryView={entryView}
+            step={step}
             onChooseEntryMode={chooseEntryMode}
             prompt={prompt}
             setPrompt={setPrompt}
             region={region}
             setRegion={setRegion}
-            onGeneratingChange={onGeneratingChange}
             originRecord={originRecord}
-            onAdjustPrompt={jumpAdjustPrompt}
-            onPickScenario={jumpPickScenario}
             generationOptions={sentGenerationOptions}
             username={username}
-            setEntryView={setEntryView}
             sidebarTab={sidebarTab}
             setSidebarTab={setSidebarTab}
             meta={meta}
@@ -1153,8 +1147,11 @@ export default function AppShell() {
             saveScenario={() => setSaveModalOpen(true)}
             loadScenario={loadScenario}
             shareRef={shareRef}
+            pickerPreselect={pickerPreselect}
             copyShareLink={copyShareLink}
             linkOmitsParameters={Object.keys(effectiveParams).length > 0}
+            onShowConfig={() => setStep("config")}
+            onBack={() => setStep("input")}
             onContinue={() => setStep("execution")}
             parameters={declaredParameters}
             parameterValues={effectiveParams}
@@ -1179,7 +1176,8 @@ export default function AppShell() {
             cancelRun={cancelRun}
             status={showRunInExecution ? status : null}
             onViewResult={() => setStep("result")}
-            runId={runId}
+            onBack={() => setStep("config")}
+            backLabel={backLabel(wizardMode, "execution")}
             parameters={declaredParameters}
             parameterValues={effectiveParams}
             onParametersChange={setParamOverrides}
@@ -1196,6 +1194,7 @@ export default function AppShell() {
             graphStatus={graphStatus}
             onSelectNode={onSelectNode}
             onBackToExecution={() => setStep("execution")}
+            backLabel={backLabel(wizardMode, "result")}
             outputColorFields={outputColorFields}
             onRunGone={handleRunGone}
             onDownload={downloadFromRun}
@@ -1296,7 +1295,7 @@ function RunGoneNotice({
   );
 }
 
-// --- Step 1: Szenario (generieren, laden oder selbst schreiben; FA80) --------
+// --- Schritte Eingabe und Konfiguration (generieren, laden oder selbst schreiben; FA80) ---
 
 const ENTRY_MODE_ICON: Record<EntryMode, typeof Sparkles> = {
   generate: Sparkles,
@@ -1420,22 +1419,26 @@ function EntrySwitch({
   );
 }
 
-/** FA80: Kopf des gewählten Wegs - welcher Einstieg, welcher Schritt und was
- * als Nächstes zu tun ist. Der Wechsel des Einstiegs steht in der Kopfzeile. */
+/** FA80: Kopf des gewählten Wegs - welcher Einstieg und was als Nächstes zu tun
+ * ist. Die Zählung der Schritte trägt der Stepper (FA96); `back` führt zum
+ * vorigen Schritt, `extra` ist die Weiter-Aktion. Der Wechsel des Einstiegs steht
+ * in der Kopfzeile. */
 function EntryGuide({
   mode,
-  view,
+  step,
   text,
   extra,
+  back,
 }: {
   mode: EntryMode;
-  view: EntryView;
+  step: "input" | "config";
   // FA86: Anweisung, die der Herkunft des Textes folgt (ersetzt den Standardtext).
   text?: string;
   extra?: React.ReactNode;
+  back?: { label: string; onClick: () => void };
 }) {
   const Icon = ENTRY_MODE_ICON[mode];
-  const guide = ENTRY_GUIDE[mode][view];
+  const guide = ENTRY_GUIDE[mode][step] ?? ENTRY_GUIDE[mode].config!;
   const label = ENTRY_MODES.find((m) => m.id === mode)?.label ?? mode;
   return (
     <div data-slot="entry-guide" className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
@@ -1444,15 +1447,22 @@ function EntryGuide({
           <Icon className="size-5" />
         </span>
         <div className="min-w-0">
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            {label}
-            {guide.of > 1 && ` · Schritt ${guide.step} von ${guide.of}`}
-          </p>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
           <h2 className="text-lg font-semibold tracking-tight">{guide.title}</h2>
           <p className="text-sm text-muted-foreground">{text ?? guide.text}</p>
         </div>
       </div>
-      {extra && <div className="flex flex-wrap items-center gap-2">{extra}</div>}
+      {(back || extra) && (
+        <div className="flex flex-wrap items-center gap-2">
+          {back && (
+            <Button variant="outline" size="sm" data-action="back-to-input" onClick={back.onClick}>
+              <ArrowLeft className="size-4" />
+              {back.label}
+            </Button>
+          )}
+          {extra}
+        </div>
+      )}
     </div>
   );
 }
@@ -1467,19 +1477,15 @@ function PromptStep({
   onUploadedForPrompt,
   onDeleted,
   entryMode,
-  entryView,
+  step,
   onChooseEntryMode,
   prompt,
   setPrompt,
   region,
   setRegion,
-  onGeneratingChange,
   originRecord,
-  onAdjustPrompt,
-  onPickScenario,
   generationOptions,
   username,
-  setEntryView,
   sidebarTab,
   setSidebarTab,
   meta,
@@ -1493,8 +1499,11 @@ function PromptStep({
   saveScenario,
   loadScenario,
   shareRef,
+  pickerPreselect,
   copyShareLink,
   linkOmitsParameters,
+  onShowConfig,
+  onBack,
   onContinue,
   parameters,
   parameterValues,
@@ -1511,19 +1520,16 @@ function PromptStep({
   onUploadedForPrompt: (s: CatalogSource) => void;
   onDeleted?: () => void;
   entryMode: EntryMode | null;
-  entryView: EntryView;
+  // FA96: "input" (Frage bzw. Auswahl) oder "config" (Editor); andere Schritte blendet die Seite aus.
+  step: WizardStep;
   onChooseEntryMode: (mode: EntryMode) => void;
   prompt: string;
   setPrompt: (v: string) => void;
   region: string;
   setRegion: (v: string) => void;
-  onGeneratingChange: (busy: boolean) => void;
   originRecord: OriginRecord | null;
-  onAdjustPrompt: () => void;
-  onPickScenario: () => void;
   generationOptions: GenerationOptions;
   username: string | null;
-  setEntryView: (view: EntryView) => void;
   sidebarTab: SidebarTab;
   setSidebarTab: (t: SidebarTab) => void;
   meta: Meta | null;
@@ -1537,17 +1543,21 @@ function PromptStep({
   saveScenario: () => void;
   loadScenario: (scenario: SavedScenario) => void;
   shareRef: ScenarioRef | null;
+  // FA72: der Eintrag, den die Auswahl vorwählt (auch der eines noch ladenden Links).
+  pickerPreselect: ScenarioRef | null;
   copyShareLink: () => void;
   linkOmitsParameters: boolean;
+  onShowConfig: () => void;
+  onBack: () => void;
   onContinue: () => void;
   parameters: ParameterInfo[];
   parameterValues: Record<string, unknown>;
   onParametersChange: (next: Record<string, unknown>) => void;
 }) {
   const hasConfig = configYaml.trim().length > 0;
-  const promptVisible = entryMode === "generate" && entryView === "input";
-  const pickerVisible = entryMode === "load" && entryView === "input";
-  const editorVisible = showsEditor(entryMode, entryView);
+  const promptVisible = entryMode === "generate" && step === "input";
+  const pickerVisible = entryMode === "load" && step === "input";
+  const editorVisible = step === "config";
   // Im Einstieg "generate" dient der Katalog nur der Vorauswahl für den
   // Prompt; Operationen lassen sich dort nicht vormerken.
   const promptSidebarTab: SidebarTab = sidebarTab === "operations" ? "sources" : sidebarTab;
@@ -1560,9 +1570,10 @@ function PromptStep({
   const selectedSourceCount = selectedIds.filter((id) => catalogSourceIds.has(id)).length;
   const selectedApiCount = selectedIds.filter((id) => !/^(osm|copernicus|upload)\./.test(id)).length;
 
-  const showConfigButton = hasConfig && (
-    <Button variant="ghost" size="sm" onClick={() => setEntryView("config")}>
-      Aktuelle Konfiguration ansehen
+  // FA96: die Weiter-Aktion von Schritt 1, sobald es einen Text gibt.
+  const continueButton = (promptVisible || pickerVisible) && hasConfig && (
+    <Button variant="ghost" size="sm" data-action="continue-to-config" onClick={onShowConfig}>
+      Weiter zur Konfiguration
       <ChevronRight className="size-4" />
     </Button>
   );
@@ -1580,12 +1591,17 @@ function PromptStep({
       ) : (
         <EntryGuide
           mode={entryMode}
-          view={entryView}
-          // FA86: der Text der Konfigurationsansicht folgt der Herkunft des Textes.
+          step={step === "input" ? "input" : "config"}
+          // FA86: der Text des Konfigurationsschritts folgt der Herkunft des Textes.
           text={
-            entryView === "config" && entryMode !== "write" ? configGuideText(originRecord, configYaml) : undefined
+            step === "config" && entryMode !== "write" ? configGuideText(originRecord, configYaml) : undefined
           }
-          extra={(promptVisible || pickerVisible) && showConfigButton}
+          extra={continueButton}
+          back={
+            step === "config" && entryMode !== "write"
+              ? { label: backLabel(entryMode, "config")!, onClick: onBack }
+              : undefined
+          }
         />
       )}
 
@@ -1612,7 +1628,6 @@ function PromptStep({
             onPromptChange={setPrompt}
             region={region}
             onRegionChange={setRegion}
-            onBusyChange={onGeneratingChange}
             selectedIds={Array.from(selected)}
             llmConfigured={meta?.llm_configured ?? false}
             options={generationOptions}
@@ -1655,7 +1670,7 @@ function PromptStep({
 
       {pickerVisible && (
         <div data-entry="load" className="rounded-xl border bg-card p-6">
-          <ScenarioPicker scenarios={scenarios} onSelect={loadScenario} preselect={shareRef} />
+          <ScenarioPicker scenarios={scenarios} onSelect={loadScenario} preselect={pickerPreselect} />
         </div>
       )}
 
@@ -1665,18 +1680,9 @@ function PromptStep({
           className={cn("grid grid-cols-1 gap-6", entryMode === "write" && "lg:grid-cols-[1fr_22rem]")}
         >
           <div className="flex min-w-0 flex-col rounded-xl border bg-card p-6">
-            {/* FA86: Herkunft und Weg zurück dorthin (Prompt bzw. Szenarioauswahl);
-                die Anmerkungen des Modells gehören zur erzeugten Fassung. */}
-            <OriginBar
-              record={originRecord}
-              yaml={configYaml}
-              onAdjustPrompt={onAdjustPrompt}
-              onPickScenario={onPickScenario}
-              onEditConfig={() => setEntryView("config")}
-              hideEdit
-              mode={entryMode}
-              className="mb-3"
-            />
+            {/* FA86: Herkunft des Textes; den Weg zurück zeigen Stepper und "Zurück" (FA96).
+                Die Anmerkungen des Modells gehören zur erzeugten Fassung. */}
+            <OriginBar record={originRecord} yaml={configYaml} className="mb-3" />
             {originNotes(originRecord) && (
               <p className="mb-3 rounded-lg bg-muted px-3 py-2 text-sm text-foreground/80">
                 {originNotes(originRecord)}
@@ -1803,7 +1809,7 @@ function runInProgress(status: RunStatus | null, starting: boolean): boolean {
   return starting || status?.status === "pending" || status?.status === "running";
 }
 
-// --- Step 2: Ausführung -----------------------------------------------------
+// --- Schritt „Ausführung“ ---------------------------------------------------
 
 function ExecutionStep({
   validation,
@@ -1815,6 +1821,8 @@ function ExecutionStep({
   cancelRun,
   status,
   onViewResult,
+  onBack,
+  backLabel,
   parameters,
   parameterValues,
   onParametersChange,
@@ -1828,7 +1836,9 @@ function ExecutionStep({
   cancelRun: () => void;
   status: RunStatus | null;
   onViewResult: () => void;
-  runId: string | null;
+  // FA96: zurück zur Konfiguration; die Beschriftung kommt aus wizardSteps.backLabel.
+  onBack: () => void;
+  backLabel: string | null;
   // FA59: deklarierte Parameter und ihre Überschreibungen.
   parameters: ParameterInfo[];
   parameterValues: Record<string, unknown>;
@@ -1854,6 +1864,12 @@ function ExecutionStep({
 
   return (
     <div className="flex flex-col gap-6">
+      <div>
+        <Button variant="ghost" onClick={onBack} className="text-muted-foreground">
+          <ArrowLeft className="size-4" />
+          {backLabel}
+        </Button>
+      </div>
       <ParameterPanel parameters={parameters} values={parameterValues} onChange={onParametersChange} />
       <section className="flex flex-col rounded-xl border bg-card p-6">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
@@ -1924,7 +1940,7 @@ function ExecutionStep({
   );
 }
 
-// --- Step 3: Ergebnis ---------------------------------------------------
+// --- Schritt „Ergebnis“ -------------------------------------------------
 
 function ResultStep({
   runId,
@@ -1934,6 +1950,7 @@ function ResultStep({
   graphStatus,
   onSelectNode,
   onBackToExecution,
+  backLabel,
   outputColorFields,
   onRunGone,
   onDownload,
@@ -1945,6 +1962,8 @@ function ResultStep({
   graphStatus: RunStatus | null;
   onSelectNode: (id: string) => void;
   onBackToExecution: () => void;
+  // FA96: Beschriftung von "Zurück" (wizardSteps.backLabel).
+  backLabel: string | null;
   // Vom Szenario deklariertes output[].color_field je Knoten (nur
   // type: map) - siehe NodeInspector.configuredColorField.
   outputColorFields: Record<string, string>;
@@ -1998,7 +2017,7 @@ function ResultStep({
       <div className="flex flex-wrap items-center gap-3 rounded-xl border bg-card px-4 py-3">
         <Button variant="ghost" onClick={onBackToExecution} className="text-muted-foreground">
           <ArrowLeft className="size-4" />
-          Zurück zur Ausführung
+          {backLabel}
         </Button>
         {/* Lauf-Attribution (FA65/FA67): Region/Arbeits-CRS und die Lizenzen der Ausgabequellen */}
         <div data-slot="run-attribution" className="min-w-0 flex-1">

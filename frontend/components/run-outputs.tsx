@@ -295,7 +295,7 @@ export function RunHistoryDialog({
   onDownload,
 }: {
   currentRunId: string | null;
-  // Öffnet den Lauf in Schritt 3; false = nicht geöffnet (z. B. dem Backend nicht mehr bekannt).
+  // Öffnet den Lauf im Schritt „Ergebnis“; false = nicht geöffnet (z. B. dem Backend nicht mehr bekannt).
   onOpenRun: (run: RunSummary) => Promise<boolean>;
   onDownload: RunDownloadHandler;
 }) {
@@ -363,7 +363,7 @@ export function RunHistoryDialog({
           )}
           {!state.loading && !state.error && runs.length === 0 && (
             <p className="text-sm text-muted-foreground">
-              Noch kein Lauf. Ein Szenario in Schritt 2 ausführen – der Lauf erscheint dann hier.
+              Noch kein Lauf. Ein Szenario im Schritt „Ausführung“ ausführen – der Lauf erscheint dann hier.
             </p>
           )}
 
@@ -404,7 +404,7 @@ export function RunHistoryDialog({
                       variant="outline"
                       disabled={opening !== null}
                       onClick={() => void view(run)}
-                      title="Diesen Lauf in Schritt 3 ansehen – der Editor bleibt, wie er ist"
+                      title="Diesen Lauf im Schritt „Ergebnis“ ansehen – der Editor bleibt, wie er ist"
                     >
                       {opening === run.run_id && <Loader2 className="size-3.5 animate-spin" />}
                       Ansehen

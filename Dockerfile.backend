@@ -83,6 +83,12 @@ EXPOSE 8000
 # die Beispiel-YAMLs relativ verweisen.
 COPY demo-data/snapshots ./.geofact/snapshots
 COPY demo-data/examples-data ./examples/data
+# Serverpaket (FA98, docker-compose.server.yml): Dienst data-init füllt damit das
+# Beispieldaten-Volume aus examples/data und lädt die großen Dateien nach; wait_ready.py
+# startet das Backend erst, wenn Beispieldaten und OSM-Import vollständig sind.
+COPY docker/data_init.py docker/wait_ready.py ./docker/
+# Konten für GEOFACT_WEB_USERS im Container erzeugen (docs/server_installation.md).
+COPY scripts/add_web_user.py ./scripts/add_web_user.py
 
 CMD ["geofact-api"]
 

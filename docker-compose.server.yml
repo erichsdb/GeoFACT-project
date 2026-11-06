@@ -1,0 +1,203 @@
+# Serverpaket (FA98): GeoFACT mit OSM-Datenbank Deutschland und Beispieldaten, ein Befehl.
+#
+#   docker compose -f docker-compose.server.yml up -d
+#   -> http://<dieser Rechner>/          Web-Demo (auch aus dem LAN)
+#   -> http://<dieser Rechner>/api/docs  API-Dokumentation
+#
+# Der erste Start lädt rund 10 GB (Geofabrik-Extrakt Deutschland, globales GHS-POP-Raster)
+# und importiert Deutschland - je nach Rechner mehrere Stunden. Bis dahin zeigt die Adresse
+# eine Seite "wird eingerichtet" ("up -d" kehrt sofort zurück); Fortschritt: docker compose -f docker-compose.server.yml logs -f osm-import
+#
+# Daten aktualisieren (die Anwendung läuft weiter):
+#   docker compose -f docker-compose.server.yml run --rm osm-import update
+#   docker compose -f docker-compose.server.yml run --rm data-init update
+# Stand anzeigen: dieselben Befehle mit "status".
+# Werkzeug aktualisieren: GEOFACT_VERSION in .env ändern, dann "pull" und "up -d".
+#
+# Einstellungen (Adresse, Konten, Version): .env neben dieser Datei, Vorlage .env.server.example.
+# Anleitung: docs/server_installation.md.
+#
+# Alle Dienste hängen an EINEM Netz (geofact); nach außen offen ist nur der Proxy.
+
+name: geofact
+
+services:
+  postgis:
+    image: ${GEOFACT_IMAGE:-ghcr.io/erichsdb/geofact-project}-osm:${GEOFACT_VERSION:-latest}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: osm
+      POSTGRES_USER: geofact
+      POSTGRES_PASSWORD: ${GEOFACT_PG_PASSWORD:-geofact}
+    # Für den Import eingestellt (osm2pgsql-Empfehlung); WAL minimal, da es keine Replikate gibt.
+    command:
+      - postgres
+      - -c
+      - shared_buffers=${GEOFACT_PG_SHARED_BUFFERS:-2GB}
+      - -c
+      - maintenance_work_mem=${GEOFACT_PG_MAINTENANCE_WORK_MEM:-2GB}
+      - -c
+      - work_mem=64MB
+      - -c
+      - max_wal_size=16GB
+      - -c
+      - checkpoint_timeout=30min
+      - -c
+      - wal_level=minimal
+      - -c
+      - max_wal_senders=0
+      - -c
+      - random_page_cost=1.1
+    shm_size: 2g
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks: [geofact]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U geofact -d osm"]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+
+  osm-import:
+    image: ${GEOFACT_IMAGE:-ghcr.io/erichsdb/geofact-project}-osm:${GEOFACT_VERSION:-latest}
+    entrypoint: ["geofact-osm-import"]
+    command: ["ensure"]
+    restart: "no"
+    environment:
+      PGHOST: postgis
+      PGUSER: geofact
+      PGDATABASE: osm
+      PGPASSWORD: ${GEOFACT_PG_PASSWORD:-geofact}
+      GEOFACT_OSM_PBF_URL: ${GEOFACT_OSM_PBF_URL:-https://download.geofabrik.de/europe/germany-latest.osm.pbf}
+      GEOFACT_OSM_PBF_MD5_URL: ${GEOFACT_OSM_PBF_MD5_URL:-}
+      GEOFACT_OSM_CACHE_MB: ${GEOFACT_OSM_CACHE_MB:-4000}
+      GEOFACT_OSM_PROCESSES: ${GEOFACT_OSM_PROCESSES:-}
+    volumes:
+      - osm_work:/work
+    networks: [geofact]
+    depends_on:
+      postgis:
+        condition: service_healthy
+
+  data-init:
+    image: ${GEOFACT_IMAGE:-ghcr.io/erichsdb/geofact-project}-backend:${GEOFACT_VERSION:-latest}
+    entrypoint: ["python", "/app/docker/data_init.py"]
+    command: ["ensure"]
+    restart: "no"
+    environment:
+      GEOFACT_VERSION: ${GEOFACT_VERSION:-latest}
+      GEOFACT_DATA_TARGET_DIR: /target
+      # "none" lässt den Download bewusst aus (siehe .env.server.example)
+      GEOFACT_GHS_POP_URL: ${GEOFACT_GHS_POP_URL:-https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/GHSL/GHS_POP_GLOBE_R2023A/GHS_POP_E2025_GLOBE_R2023A_54009_100/V1-0/GHS_POP_E2025_GLOBE_R2023A_54009_100_V1_0.zip}
+      GEOFACT_EUROPA_DATA: ${GEOFACT_EUROPA_DATA:-zenodo}
+    volumes:
+      - examples_data:/target
+    networks: [geofact]
+
+  backend:
+    image: ${GEOFACT_IMAGE:-ghcr.io/erichsdb/geofact-project}-backend:${GEOFACT_VERSION:-latest}
+    restart: unless-stopped
+    environment:
+      GEOFACT_WEB_HOST: 0.0.0.0
+      GEOFACT_WEB_DATA_DIR: /data
+      GEOFACT_WEB_UPLOADS_DIR: /data/uploads
+      GEOFACT_COPERNICUS_DIR: /app/examples/data
+      GEOFACT_OSM_BACKEND: postgis
+      GEOFACT_PG_DSN: postgresql://geofact:${GEOFACT_PG_PASSWORD:-geofact}@postgis:5432/osm
+      GEOFACT_PG_QUERY_TIMEOUT_S: ${GEOFACT_PG_QUERY_TIMEOUT_S:-300}
+      GEOFACT_WEB_USERS: ${GEOFACT_WEB_USERS:-}
+      GEOFACT_WEB_SECRET_KEY: ${GEOFACT_WEB_SECRET_KEY:-}
+      GEOFACT_WEB_MAX_CONCURRENT_RUNS_PER_USER: ${GEOFACT_WEB_MAX_CONCURRENT_RUNS_PER_USER:-2}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://openrouter.ai/api/v1}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      GEOFACT_LLM_MODEL: ${GEOFACT_LLM_MODEL:-anthropic/claude-3.5-sonnet}
+    volumes:
+      - examples_data:/app/examples/data:ro
+      - web_data:/data
+    networks: [geofact]
+    # Wartet im Container auf Beispieldaten und OSM-Import (docker/wait_ready.py) statt über
+    # depends_on: service_completed_successfully - sonst blockierte "up -d" stundenlang.
+    command: ["python", "/app/docker/wait_ready.py", "geofact-api"]
+    depends_on:
+      - postgis
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=5)"]
+      interval: 10s
+      timeout: 6s
+      retries: 30
+      # Bis zum Ende des ersten Imports gilt der Dienst als "starting", nicht als ungesund.
+      start_period: 24h
+
+  frontend:
+    # Gebaut mit leerem NEXT_PUBLIC_API_BASE: ruft /api unter derselben Adresse auf und
+    # funktioniert so hinter dem Proxy unter jeder Adresse (localhost, LAN-IP, Domain).
+    image: ${GEOFACT_IMAGE:-ghcr.io/erichsdb/geofact-project}-frontend-proxy:${GEOFACT_VERSION:-latest}
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+    # Startet erst, wenn das Backend antwortet: bis dahin zeigt der Proxy die Seite
+    # "wird eingerichtet" statt einer Oberfläche ohne Backend.
+    command:
+      - node
+      - -e
+      - >-
+        (async () => { for (;;) { try { if ((await fetch("http://backend:8000/api/health")).ok) break; }
+        catch {} await new Promise((r) => setTimeout(r, 10000)); } require("/app/server.js"); })()
+    networks: [geofact]
+
+  proxy:
+    image: caddy:2.8
+    restart: unless-stopped
+    environment:
+      # leer: http auf Port 80, ein Domainname: https mit automatischem Zertifikat
+      GEOFACT_SITE_ADDRESS: ${GEOFACT_SITE_ADDRESS:-:80}
+    ports:
+      - "${GEOFACT_BIND:-0.0.0.0}:${GEOFACT_HTTP_PORT:-80}:80"
+      - "${GEOFACT_BIND:-0.0.0.0}:${GEOFACT_HTTPS_PORT:-443}:443"
+    configs:
+      - source: caddyfile
+        target: /etc/caddy/Caddyfile
+    volumes:
+      - caddy_data:/data
+    networks: [geofact]
+
+configs:
+  caddyfile:
+    content: |
+      {$$GEOFACT_SITE_ADDRESS} {
+        handle /api/* {
+          # flush_interval -1: Ereignisströme der Läufe ohne Pufferung
+          reverse_proxy backend:8000 {
+            flush_interval -1
+          }
+        }
+        handle {
+          encode gzip
+          reverse_proxy frontend:3000
+        }
+        handle_errors 502 503 504 {
+          header Content-Type "text/html; charset=utf-8"
+          respond <<HTML
+            <!doctype html><html lang="de"><meta charset="utf-8">
+            <meta http-equiv="refresh" content="30"><title>GeoFACT wird eingerichtet</title>
+            <body style="font-family:sans-serif;max-width:40rem;margin:4rem auto;padding:0 1rem">
+            <h1>GeoFACT wird eingerichtet</h1>
+            <p>Beim ersten Start werden die OSM-Daten für Deutschland und die Beispieldaten
+            geladen und importiert. Das dauert je nach Rechner mehrere Stunden.
+            Diese Seite lädt alle 30&nbsp;Sekunden neu.</p>
+            <p>Fortschritt:<br><code>docker compose -f docker-compose.server.yml logs -f osm-import data-init</code></p>
+            </body></html>
+            HTML 503
+        }
+      }
+
+networks:
+  geofact:
+    name: geofact
+
+volumes:
+  pg_data:
+  osm_work:
+  examples_data:
+  web_data:
+  caddy_data:

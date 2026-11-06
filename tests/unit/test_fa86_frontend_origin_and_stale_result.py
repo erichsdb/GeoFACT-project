@@ -1,11 +1,12 @@
-"""Implements: FA86 (Herkunft der Konfiguration, Direktsprünge, veraltetes Ergebnis) - Frontend.
+"""Implements: FA86 (Herkunft der Konfiguration, veraltetes Ergebnis) - Frontend.
 
 Es gibt kein Frontend-Testwerkzeug im Repo (siehe test_fa54_frontend_lost_run.py).
 Die Logik liegt deshalb in reinen Helfern (`frontend/lib/configOrigin.ts`,
-`frontend/lib/runBasis.ts`, `viewForMode` in `frontend/lib/entryMode.ts`), die hier
+`frontend/lib/runBasis.ts`, `stepForMode` in `frontend/lib/wizardSteps.ts`), die hier
 unter node ausgeführt werden; die Nachbedingungen an die Ansicht (Schritt 1 bleibt
-eingehängt, Herkunftsleiste mit Sprüngen, Umschalter, Hinweis auf ein veraltetes
-Ergebnis) prüft der Quelltext.
+eingehängt, Herkunftsleiste, Umschalter, Hinweis auf ein veraltetes Ergebnis) prüft
+der Quelltext. Seit FA96 übernimmt der Stepper die Sprünge zurück; die Schritt-Regeln
+(erreichbar, Haken, Start) prüft `test_fa96_frontend_wizard_steps.py`.
 """
 
 from __future__ import annotations
@@ -20,7 +21,7 @@ import pytest
 FRONTEND = Path(__file__).resolve().parents[2] / "frontend"
 ORIGIN = FRONTEND / "lib" / "configOrigin.ts"
 BASIS = FRONTEND / "lib" / "runBasis.ts"
-ENTRY = FRONTEND / "lib" / "entryMode.ts"
+WIZARD = FRONTEND / "lib" / "wizardSteps.ts"
 DRIVER = Path(__file__).resolve().parent / "fa86_origin_driver.mjs"
 APP_SHELL = FRONTEND / "components" / "app-shell.tsx"
 PROMPT_PANEL = FRONTEND / "components" / "prompt-panel.tsx"
@@ -42,15 +43,18 @@ def js() -> dict:
     if node is None:
         pytest.skip("node not available")
     proc = subprocess.run(
-        [node, str(DRIVER), str(ORIGIN), str(BASIS), str(ENTRY)],
+        [node, str(DRIVER), str(ORIGIN), str(BASIS), str(WIZARD)],
         capture_output=True,
         text=True,
         encoding="utf-8",
         timeout=60,
         check=False,
     )
-    if proc.returncode != 0:
-        pytest.skip(f"node cannot run the TypeScript helpers: {proc.stderr[-300:]}")
+    # Nur ein node ohne Typ-Stripping ist ein Grund zum Überspringen; jeder andere
+    # Fehler (Syntax, fehlender Export, Laufzeitfehler im Treiber) lässt die Tests scheitern.
+    if proc.returncode != 0 and "ERR_UNKNOWN_FILE_EXTENSION" in proc.stderr:
+        pytest.skip("node without TypeScript type stripping")
+    assert proc.returncode == 0, proc.stderr
     return json.loads(proc.stdout.strip().splitlines()[-1])
 
 
@@ -158,62 +162,49 @@ def test_fa86_notes_belong_to_a_generated_origin_only(js: dict) -> None:
     assert n["generate_without_notes"] is None
 
 
-def test_fa86_adjust_prompt_restores_prompt_and_region_of_a_generation_only(
-    js: dict,
-) -> None:
-    p = js["prompt_values"]
-    assert p["generate"]["prompt"].startswith("Welche Umspannwerke")
-    assert p["generate"]["region"] == "Dresden, Deutschland"
-    assert p["load"] is None and p["unknown"] is None
-
-
 # --- Einstieg an Ort und Stelle wechseln ------------------------------------------
 
 
-def test_fa86_mode_switch_shows_the_last_view_of_that_mode(js: dict) -> None:
-    v = js["view_for_mode"]
+def test_fa86_mode_switch_shows_the_last_step_of_that_mode(js: dict) -> None:
+    v = js["step_for_mode"]
     assert v["last_config_with_text"] == "config"
     assert v["last_input_with_text"] == "input"
+    # FA96: auch ein zuletzt gezeigtes Ergebnis führt zur Konfiguration des Einstiegs
+    assert v["last_result_with_text"] == "config"
 
 
 def test_fa86_first_visit_of_a_mode_shows_its_input(js: dict) -> None:
-    v = js["view_for_mode"]
+    v = js["step_for_mode"]
     assert v["first_generate"] == "input" and v["first_load"] == "input"
 
 
 def test_fa86_config_view_needs_a_config_text(js: dict) -> None:
     """Randfall: die zuletzt gezeigte Konfiguration ist leer geworden -> Eingabe."""
-    assert js["view_for_mode"]["last_config_without_text"] == "input"
+    assert js["step_for_mode"]["last_config_without_text"] == "input"
 
 
 def test_fa86_a_text_from_another_way_shows_the_input_of_the_chosen_way(
     js: dict,
 ) -> None:
     """Erzeugen, dann zu "Laden" wechseln: dort steht die Szenarioauswahl, nicht der erzeugte Text."""
-    v = js["view_for_mode"]
+    v = js["step_for_mode"]
     assert v["load_after_generating"] == "input"
     assert v["generate_after_loading"] == "input"
     assert v["load_unknown_origin"] == "input"
 
 
-def test_fa86_the_input_of_the_chosen_way_stays_reachable_from_the_config_view() -> (
+def test_fa86_the_input_of_the_chosen_way_stays_reachable_from_the_config_step() -> (
     None
 ):
-    bar = _text(ORIGIN_BAR)
-    assert (
-        '(view.kind === "load" || mode === "load") && (' in bar
-        and "Szenario wählen" in bar
-    )
-    assert (
-        '(view.kind === "generate" || mode === "generate") && (' in bar
-        and "Zum Prompt" in bar
-    )
+    """FA96: Schritt 1 des Steppers ist immer erreichbar (reachableSteps, node-geprüft in
+    test_fa96), und der Hinweis der Konfiguration hat einen „Zurück“-Knopf zur Frage bzw. Auswahl."""
     body = _between(_text(APP_SHELL), "function PromptStep(", "function ExecutionStep(")
-    assert "mode={entryMode}" in body
+    assert 'backLabel(entryMode, "config")' in body and "onClick: onBack" in body
+    assert 'input: mode !== "write",' in _text(WIZARD)
 
 
 def test_fa86_writing_always_shows_the_editor(js: dict) -> None:
-    v = js["view_for_mode"]
+    v = js["step_for_mode"]
     assert v["write_empty"] == "config" and v["write_remembers_input"] == "config"
 
 
@@ -270,8 +261,8 @@ def test_fa86_prompt_and_region_live_in_the_app_shell_and_are_persisted() -> Non
 
 def test_fa86_step_one_stays_mounted_while_other_steps_show() -> None:
     shell = _text(APP_SHELL)
-    assert 'className={cn(step !== "prompt" && "hidden")}' in shell
-    assert '{step === "prompt" && (\n          <PromptStep' not in shell
+    assert 'className={cn(step !== "input" && step !== "config" && "hidden")}' in shell
+    assert '{step === "input" && (\n          <PromptStep' not in shell
     assert shell.count("<PromptStep") == 1
     # Ausführung und Ergebnis NICHT: Karte und Graph messen sich verborgen falsch
     assert '{step === "execution" && (' in shell and '{step === "result" && (' in shell
@@ -281,16 +272,21 @@ def test_fa86_a_generation_finishing_elsewhere_applies_the_config_and_notifies()
     None
 ):
     shell = _text(APP_SHELL)
-    handler = _between(shell, "const handleGenerated = (", "// FA86: Direktsprünge")
+    handler = _between(
+        shell, "const handleGenerated = (", "// FA96: Fakten für den Stepper"
+    )
     assert "applyConfigYaml(yaml);" in handler
     assert 'kind: "generate", prompt: used.prompt, region: used.region' in handler
-    # nur wer in der Eingabe der Erzeugung steht, wird zur Konfiguration geleitet
-    assert (
-        'stepRef.current === "prompt"' in handler
-        and 'entryViewRef.current === "input"' in handler
-    )
+    # nur wer in der Frage des Generierens steht, wird zur Konfiguration geleitet (FA96)
+    guard = 'if (stepRef.current === "input" && entryModeRef.current === "generate") {'
+    assert guard in handler
     assert "notify.success(" in handler
-    assert "setStep(" not in handler  # der Schritt wird nie umgeschaltet
+    assert handler.count("setStep(") == 1  # nur diese eine Umschaltung ...
+    assert handler.index('setStep("config")') > handler.index(guard)
+    assert handler.index('setStep("config")') < handler.index(
+        "} else {"
+    )  # ... im Zweig der Frage
+    assert 'setStep("execution")' not in handler and 'setStep("result")' not in handler
     panel = _text(PROMPT_PANEL)
     assert (
         "const used = { prompt, region };" in panel
@@ -335,67 +331,45 @@ def test_fa86_origin_is_persisted_and_read_tolerantly() -> None:
 # --- Herkunftsleiste mit Direktsprüngen ----------------------------------------------
 
 
-def test_fa86_origin_bar_is_shown_on_steps_two_and_three_and_above_the_editor() -> None:
+def test_fa86_origin_bar_is_shown_on_execution_and_result_and_above_the_editor() -> (
+    None
+):
     shell = _text(APP_SHELL)
     outer = _between(
         shell,
-        '{step !== "prompt" && (\n          <OriginBar',
+        '{(step === "execution" || step === "result") && (\n          <OriginBar',
         '{step === "result" && staleRun',
     )
-    assert "onAdjustPrompt={jumpAdjustPrompt}" in outer
     assert (
-        "onPickScenario={jumpPickScenario}" in outer
-        and "onEditConfig={jumpEditConfig}" in outer
+        '<OriginBar record={originRecord} yaml={configYaml} className="mb-4" />'
+        in outer
     )
-    inner = _between(
-        shell,
-        "<OriginBar\n              record={originRecord}",
-        "originNotes(originRecord) && (",
-    )
+    body = _between(shell, "function PromptStep(", "function ExecutionStep(")
+    config = body[body.index('data-entry="config"') :]
     assert (
-        "hideEdit" in inner
-    )  # im Editor selbst ist "Konfiguration bearbeiten" überflüssig
+        '<OriginBar record={originRecord} yaml={configYaml} className="mb-3" />'
+        in config
+    )
     bar = _text(ORIGIN_BAR)
     assert "if (!yaml.trim()) return null;" in bar  # ohne Konfiguration keine Leiste
 
 
-def test_fa86_origin_bar_actions_depend_on_the_origin() -> None:
+def test_fa86_origin_bar_only_names_the_origin() -> None:
+    """FA96: die Sprünge zurück gehören dem Stepper; die Leiste hat keine Knöpfe mehr."""
     bar = _text(ORIGIN_BAR)
-    assert (
-        '(view.kind === "generate" || mode === "generate") && (' in bar
-        and "Prompt anpassen" in bar
-    )
-    assert (
-        '(view.kind === "load" || mode === "load") && (' in bar
-        and "Anderes Szenario wählen" in bar
-    )
-    assert "Konfiguration bearbeiten" in bar and "{!hideEdit && (" in bar
     assert "bearbeitet" in bar and "{view.edited && (" in bar
-
-
-def test_fa86_adjust_prompt_jumps_to_the_prompt_with_the_values_of_the_origin() -> None:
-    shell = _text(APP_SHELL)
-    jump = _between(shell, "const jumpAdjustPrompt", "const jumpPickScenario")
-    assert "promptValues(originRecord)" in jump
+    assert "<Button" not in bar
     assert (
-        "values && !generatingRef.current" in jump
-    )  # eine laufende Erzeugung behält ihren Prompt
-    assert "setPrompt(values.prompt);" in jump and "setRegion(values.region);" in jump
-    assert 'setEntryMode("generate");' in jump and 'setEntryView("input");' in jump
-    assert 'setStep("prompt");' in jump
-
-
-def test_fa86_edit_config_jumps_to_the_config_view_of_step_one() -> None:
-    shell = _text(APP_SHELL)
-    jump = shell[shell.index("const jumpEditConfig") :]
-    jump = jump[: jump.index("};")]
-    assert 'setEntryView("config");' in jump and 'setStep("prompt");' in jump
+        "onAdjustPrompt" not in bar
+        and "onPickScenario" not in bar
+        and "onEditConfig" not in bar
+    )
 
 
 def test_fa86_guide_text_and_notes_follow_the_origin_not_the_mode() -> None:
     body = _between(_text(APP_SHELL), "function PromptStep(", "function ExecutionStep(")
     assert (
-        'entryView === "config" && entryMode !== "write" ? configGuideText(originRecord, configYaml)'
+        'step === "config" && entryMode !== "write" ? configGuideText(originRecord, configYaml)'
         in body
     )
     assert "originNotes(originRecord)" in body
@@ -405,21 +379,21 @@ def test_fa86_guide_text_and_notes_follow_the_origin_not_the_mode() -> None:
 # --- Umschalter ---------------------------------------------------------------------------
 
 
-def test_fa86_mode_switch_keeps_the_editor_text_and_uses_the_last_view() -> None:
-    """Die Kopfzeile (FA80) wechselt den Einstieg; FA86 setzt dabei die zuletzt gezeigte Ansicht."""
+def test_fa86_mode_switch_keeps_the_editor_text_and_uses_the_last_step() -> None:
+    """Die Kopfzeile (FA80) wechselt den Einstieg; FA86 setzt dabei den zuletzt gezeigten Schritt."""
     shell = _text(APP_SHELL)
     change = _between(shell, "const changeEntryMode", "}, []);")
     assert "setEntryMode(mode);" in change
     assert (
-        "viewForMode(mode, lastViewsRef.current, configYamlRef.current, originKindRef.current)"
+        "stepForMode(mode, lastStepsRef.current, configYamlRef.current, originKindRef.current)"
         in change
     )
     assert "setConfigYaml" not in change and "applyConfigYaml" not in change
-    assert "lastViewsRef.current[entryMode] = entryView;" in shell
+    assert "lastStepsRef.current[entryMode] = step;" in shell
     switch = _between(shell, "const switchEntryMode = ", "};")
     assert (
         "if (mode !== entryMode) changeEntryMode(mode);" in switch
-        and 'setStep("prompt");' in switch
+        and "setStep(firstStep(mode))" in switch
     )
 
 
@@ -427,7 +401,7 @@ def test_fa86_the_question_is_only_for_the_first_choice_of_a_session() -> None:
     shell = _text(APP_SHELL)
     assert "<EntryChooser" in shell and "onChooseEntryMode" in shell
     choose = _between(shell, "const chooseEntryMode", "}, []);")
-    assert 'setEntryView(mode === "write" ? "config" : "input");' in choose
+    assert "setStep(firstStep(mode));" in choose
 
 
 def test_fa86_guide_has_no_second_mode_switch_next_to_the_header_one() -> None:
@@ -499,8 +473,10 @@ def test_fa86_step_two_shows_the_plan_of_the_current_config_for_a_stale_run() ->
     assert "status={status}" in result and "graphStatus={graphStatus}" in result
 
 
-def test_fa86_a_stale_run_is_not_marked_as_completed_in_the_stepper() -> None:
-    assert "execution: !!isDone && !staleRun," in _text(APP_SHELL)
+def test_fa86_a_stale_run_is_not_marked_as_completed_in_the_stepper(js: dict) -> None:
+    assert "completedSteps(wizardMode, facts)" in _text(APP_SHELL)
+    assert js["steps"]["stale_run_completed"]["execution"] is False
+    assert js["steps"]["fresh_run_completed"]["execution"] is True
 
 
 def test_fa86_a_lost_run_clears_its_basis_and_a_link_open_does_too() -> None:
@@ -518,23 +494,16 @@ def test_fa86_a_lost_run_clears_its_basis_and_a_link_open_does_too() -> None:
 # --- ohne Konfiguration kein Ergebnis ------------------------------------------------------------
 
 
-def test_fa86_without_a_config_neither_execution_nor_result_is_reachable() -> None:
+def test_fa86_without_a_config_neither_execution_nor_result_is_reachable(
+    js: dict,
+) -> None:
     """Nachbedingung (12): ein gemerkter Lauf allein öffnet Schritt 3 nicht."""
-    shell = _text(APP_SHELL)
-    assert "const hasConfig = configYaml.trim().length > 0;" in shell
-    reachable = _between(
-        shell, "const reachable: Record<WizardStep, boolean> = {", "};"
-    )
-    assert "execution: !!validation?.valid," in reachable
-    assert "result: !!runId && hasConfig," in reachable
+    assert "reachableSteps(wizardMode, facts)" in _text(APP_SHELL)
+    r = js["steps"]["no_config_but_run"]
+    assert r["execution"] is False and r["result"] is False
 
 
-def test_fa86_reload_without_a_config_starts_on_step_one() -> None:
-    shell = _text(APP_SHELL)
-    initial = _between(
-        shell, "const [step, setStep] = useState<WizardStep>(() => {", "});"
-    )
-    assert (
-        'if (!(readLocalStorage(CONFIG_YAML_STORAGE_KEY) ?? "").trim()) return "prompt";'
-        in initial
-    )
+def test_fa86_reload_without_a_config_starts_on_step_one(js: dict) -> None:
+    s = js["steps"]
+    assert s["reload_generate_no_config_stored_result"] == "input"
+    assert s["reload_write_blank_stored_result"] == "config"

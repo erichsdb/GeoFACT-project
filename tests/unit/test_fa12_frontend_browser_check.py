@@ -165,7 +165,7 @@ def test_fa12_yaml_editor_and_list_parameters_have_a_height_limit():
 def test_fa12_reload_on_step_two_without_a_run_stays_on_step_two():
     shell = _read("app-shell.tsx")
     guard = _between(shell, "    if (!runId) {", "      return;\n    }")
-    assert 'if (step === "result") setStep("prompt");' in guard
+    assert 'if (step === "result") setStep("config");' in guard
 
 
 def test_fa12_live_preview_is_only_shown_while_generating():

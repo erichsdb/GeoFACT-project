@@ -150,8 +150,8 @@ def complete(spec: dict[str, Any]) -> dict[str, Any]:
 
 
 def install(app: FastAPI) -> None:
-    """Hängt ``complete`` an die Spezifikation der App; ``/openapi.json``, ``/docs``,
-    ``/redoc`` und ``spec_text`` liefern dieselbe Fassung."""
+    """Hängt ``complete`` an die Spezifikation der App; ``/api/openapi.json``, ``/api/docs``,
+    ``/api/redoc`` (FA95) und ``spec_text`` liefern dieselbe Fassung."""
 
     def openapi() -> dict[str, Any]:
         if app.openapi_schema is None:

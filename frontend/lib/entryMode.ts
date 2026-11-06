@@ -1,13 +1,9 @@
-// FA80: die drei Einstiege in Schritt 1. Nach der Anmeldung (bzw. beim Öffnen
-// der App) fragt die Oberfläche zuerst, WAS der Nutzer tun will; danach führt
-// sie ihn auf genau diesem Weg zu einer Konfiguration.
+// Implements: FA80 - die drei Einstiege. Nach der Anmeldung (bzw. beim Öffnen der App)
+// fragt die Oberfläche zuerst, WAS der Nutzer tun will; danach führt sie ihn
+// auf genau diesem Weg zu einer Konfiguration. Die Schrittfolge je Einstieg
+// steht in wizardSteps.ts (FA96).
 
 export type EntryMode = "generate" | "load" | "write";
-
-// Innerhalb von "generate" und "load": erst die Eingabe (Prompt bzw.
-// Szenarioauswahl), danach die entstandene Konfiguration. "write" kennt nur
-// die Konfiguration.
-export type EntryView = "input" | "config";
 
 // Die Wahl gilt je Tab-Sitzung (sessionStorage): ein Neuladen behält sie, eine
 // neue Sitzung oder eine neue Anmeldung fragt wieder.
@@ -38,53 +34,31 @@ export const ENTRY_MODES: { id: EntryMode; label: string; short: string; descrip
   },
 ];
 
-/** Überschrift und Anweisung je Einstieg und Ansicht: sagt, wo der Nutzer
- * steht und was als Nächstes zu tun ist. `step`/`of` zählen die Schritte
- * bis zur fertigen Konfiguration. */
-export const ENTRY_GUIDE: Record<
-  EntryMode,
-  Record<EntryView, { step: number; of: number; title: string; text: string }>
-> = {
+/** Überschrift und Anweisung je Einstieg und Schritt der Szenario-Erstellung
+ * ("input" = Frage bzw. Auswahl, "config" = Konfiguration): sagt, wo der Nutzer
+ * steht und was als Nächstes zu tun ist. Die Zählung "Schritt x von y" trägt der
+ * Stepper (FA96); "write" kennt nur die Konfiguration. Beim Generieren und Laden
+ * hat die Konfiguration keinen festen Text: er folgt der Herkunft des Editortextes
+ * (`configGuideText`, FA86). */
+export const ENTRY_GUIDE: Record<EntryMode, Partial<Record<"input" | "config", { title: string; text?: string }>>> = {
   generate: {
     input: {
-      step: 1,
-      of: 2,
       title: "Frage stellen",
-      text: "Beschreiben Sie, was Sie wissen möchten, und klicken Sie auf „Konfiguration generieren“.",
+      text: "Beschreiben Sie, was Sie wissen möchten, und klicken Sie auf „Konfiguration generieren“. Die Konfiguration erscheint danach in Schritt 2.",
     },
-    config: {
-      step: 2,
-      of: 2,
-      title: "Konfiguration prüfen",
-      text: "Das Sprachmodell hat diese Konfiguration geschrieben. Ist sie gültig, geht es mit „Weiter zur Ausführung“ weiter.",
-    },
+    config: { title: "Konfiguration prüfen" },
   },
   load: {
     input: {
-      step: 1,
-      of: 2,
       title: "Szenario auswählen",
-      text: "Wählen Sie links ein Szenario, sehen Sie sich rechts die Konfiguration an und klicken Sie auf „Laden“.",
+      text: "Wählen Sie links ein Szenario, sehen Sie sich rechts die Konfiguration an und klicken Sie auf „Laden“. Die Konfiguration erscheint danach in Schritt 2.",
     },
-    config: {
-      step: 2,
-      of: 2,
-      title: "Konfiguration prüfen",
-      text: "Das Szenario ist geladen. Ist die Konfiguration gültig, geht es mit „Weiter zur Ausführung“ weiter.",
-    },
+    config: { title: "Konfiguration prüfen" },
   },
   write: {
-    input: {
-      step: 1,
-      of: 1,
-      title: "Konfiguration schreiben",
-      text: "Beginnen Sie mit „Vorlage“ über dem Editor, ersetzen Sie die Platzhalter und fügen Sie rechts Quellen und Operationen als Bausteine ein.",
-    },
     config: {
-      step: 1,
-      of: 1,
       title: "Konfiguration schreiben",
-      text: "Beginnen Sie mit „Vorlage“ über dem Editor, ersetzen Sie die Platzhalter und fügen Sie rechts Quellen und Operationen als Bausteine ein.",
+      text: "Beginnen Sie mit „Vorlage“ über dem Editor, ersetzen Sie die Platzhalter und fügen Sie rechts Quellen und Operationen als Bausteine ein. Das (?) neben dem Titel erklärt den Aufbau.",
     },
   },
 };
@@ -99,34 +73,6 @@ export function parseEntryMode(raw: string | null): EntryMode | null {
 export function initialEntryMode(sessionValue: string | null, fromLink: boolean): EntryMode | null {
   if (fromLink) return "load";
   return parseEntryMode(sessionValue);
-}
-
-/** Welche Ansicht ein Einstieg zuerst zeigt. */
-export function initialEntryView(mode: EntryMode | null, configYaml: string): EntryView {
-  if (mode === "write") return "config";
-  return configYaml.trim() ? "config" : "input";
-}
-
-/** FA86: Ansicht beim Wechsel des Einstiegs an Ort und Stelle - die zuletzt
- * gezeigte Ansicht dieses Einstiegs (Konfiguration nur, wenn es einen Text
- * gibt); beim ersten Mal die Eingabe. "write" kennt nur die Konfiguration. */
-export function viewForMode(
-  mode: EntryMode,
-  lastViews: Partial<Record<EntryMode, EntryView>>,
-  configYaml: string,
-  // Woher der Editortext stammt ("generate" | "load" | "write", null = unbekannt).
-  originKind: string | null
-): EntryView {
-  if (mode === "write") return "config";
-  // Die Konfiguration gehört nur dann zu diesem Einstieg, wenn er sie hervorgebracht
-  // hat: ein erzeugter Text ist beim Laden nicht "das geladene Szenario" - dort steht
-  // dann die Szenarioauswahl (und umgekehrt der Prompt).
-  return lastViews[mode] === "config" && canResume(configYaml) && originKind === mode ? "config" : "input";
-}
-
-/** Der Editor ist nur im Einstieg "write" oder nach Erzeugen/Laden sichtbar. */
-export function showsEditor(mode: EntryMode | null, view: EntryView): boolean {
-  return mode === "write" || (mode !== null && view === "config");
 }
 
 /** Ein gemerkter Editortext aus einer früheren Sitzung lässt sich fortsetzen. */

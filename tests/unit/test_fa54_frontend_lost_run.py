@@ -168,7 +168,7 @@ def test_fa54_a_lost_run_is_dropped_from_state_and_local_storage():
 
 def test_fa54_the_notice_offers_to_run_the_scenario_again():
     source = _text(APP_SHELL)
-    notice = _between(source, "function RunGoneNotice", "// --- Step 1")
+    notice = _between(source, "function RunGoneNotice", "// --- Schritte Eingabe")
     assert (
         "RUN_GONE_MESSAGE" in notice
         and "Erneut ausführen" in notice
@@ -186,7 +186,10 @@ def test_fa54_the_notice_offers_to_run_the_scenario_again():
         "setGoneRunId(null)"
     )
     assert "notify.error" in started
-    assert "<RunGoneNotice" in source and 'goneRunId && step !== "prompt"' in source
+    assert (
+        "<RunGoneNotice" in source
+        and 'goneRunId && (step === "execution" || step === "result")' in source
+    )
 
 
 def test_fa54_event_stream_failure_asks_the_backend_before_reporting_a_lost_connection():
@@ -235,9 +238,9 @@ def test_fa54_page_reload_with_a_forgotten_run_explains_instead_of_jumping_to_st
         "// eslint-disable-next-line react-hooks/exhaustive-deps",
     )
     assert "isNotFoundError(e)" in recheck and "handleRunGone(runId)" in recheck
-    # jeder andere Fehler: wie bisher zurück auf Schritt 1
+    # jeder andere Fehler: wie bisher zurück zur Konfiguration
     assert re.search(
-        r'setRunId\(null\);\s*setStatus\(null\);\s*setStep\("prompt"\);', recheck
+        r'setRunId\(null\);\s*setStatus\(null\);\s*setStep\("config"\);', recheck
     )
 
 

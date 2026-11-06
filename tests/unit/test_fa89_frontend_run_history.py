@@ -143,7 +143,7 @@ def test_fa89_each_run_shows_name_time_status_counts_and_its_files() -> None:
         "const current = run.run_id === currentRunId;" in dialog
         and "geöffnet" in dialog
     )
-    # dieselbe Dateiliste wie in Schritt 3 (FA88), erst beim Aufklappen geladen
+    # dieselbe Dateiliste wie im Schritt „Ergebnis“ (FA88), erst beim Aufklappen geladen
     assert (
         "{isOpen && (" in dialog
         and "<RunFiles" in dialog

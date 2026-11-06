@@ -1,38 +1,60 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { ChevronRight, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type { WizardStep, WizardStepInfo } from "@/lib/wizardSteps";
 
-export type WizardStep = "prompt" | "execution" | "result";
-
-const STEPS: { id: WizardStep; index: number; label: string; hint: string }[] = [
-  { id: "prompt", index: 1, label: "Szenario", hint: "Generieren, laden oder selbst schreiben" },
-  { id: "execution", index: 2, label: "Ausführung", hint: "Pipeline starten und verfolgen" },
-  { id: "result", index: 3, label: "Ergebnis", hint: "Karte, Tabelle, Statistik" },
-];
+// Implements: FA96 - der Stepper zeigt die Schritte des gewählten Einstiegs (lib/wizardSteps.ts).
+export type { WizardStep };
 
 export default function Stepper({
+  steps,
   current,
   reachable,
   completed,
+  reasons,
   onSelect,
 }: {
+  steps: WizardStepInfo[];
   current: WizardStep;
   reachable: Record<WizardStep, boolean>;
   completed?: Partial<Record<WizardStep, boolean>>;
+  // Grund, warum ein Schritt gesperrt ist (title des gesperrten Knopfes).
+  reasons?: Partial<Record<WizardStep, string | null>>;
   onSelect: (step: WizardStep) => void;
 }) {
+  // Vier Schritte sind auf einem schmalen Bildschirm breiter als die Leiste: der
+  // aktuelle Schritt wird in die Mitte geschoben. Nur waagerecht und nur in der
+  // Leiste (scrollIntoView verschöbe unter Umständen auch die Seite).
+  const navRef = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const nav = navRef.current;
+    const active = nav?.querySelector<HTMLElement>('[aria-current="step"]');
+    if (!nav || !active || nav.scrollWidth <= nav.clientWidth) return;
+    const navBox = nav.getBoundingClientRect();
+    const box = active.getBoundingClientRect();
+    nav.scrollTo({ left: nav.scrollLeft + box.left - navBox.left - (nav.clientWidth - box.width) / 2 });
+  }, [current, steps.length]);
+
   return (
-    <nav className="sticky top-13.25 z-10 flex items-stretch gap-0 overflow-x-auto border-b bg-muted/30 px-3 backdrop-blur sm:px-6">
-      {STEPS.map((step, i) => {
+    <nav
+      ref={navRef}
+      className="sticky top-13.25 z-10 flex items-stretch gap-0 overflow-x-auto border-b bg-muted/30 px-3 backdrop-blur sm:px-6"
+    >
+      {steps.map((step, i) => {
         const active = step.id === current;
         const enabled = reachable[step.id];
         const isDone = completed?.[step.id] && !active;
         return (
           <div key={step.id} className="flex shrink-0 items-stretch">
             <button
-              onClick={() => enabled && onSelect(step.id)}
-              disabled={!enabled}
+              onClick={() => onSelect(step.id)}
+              // Der aktuelle Schritt wird nie entzogen, auch wenn er (noch) nicht erreichbar wäre.
+              disabled={!enabled && !active}
+              data-step={step.id}
+              aria-current={active ? "step" : undefined}
+              title={!enabled && !active ? (reasons?.[step.id] ?? undefined) : undefined}
               className={cn(
                 "group relative flex items-center gap-2 px-3 py-3 text-left transition-colors sm:gap-3 sm:px-5 sm:py-4",
                 active
@@ -54,7 +76,7 @@ export default function Stepper({
                     : "bg-muted text-muted-foreground/50"
                 )}
               >
-                {isDone ? <Check className="size-4" /> : step.index}
+                {isDone ? <Check className="size-4" /> : i + 1}
               </span>
               <div className="leading-tight">
                 <div className="text-sm font-semibold whitespace-nowrap">{step.label}</div>
@@ -65,7 +87,7 @@ export default function Stepper({
               </div>
               {active && <span className="absolute inset-x-0 bottom-0 h-0.5 bg-primary" />}
             </button>
-            {i < STEPS.length - 1 && (
+            {i < steps.length - 1 && (
               <span className="flex shrink-0 items-center text-muted-foreground/30" aria-hidden>
                 <ChevronRight className="size-4" />
               </span>

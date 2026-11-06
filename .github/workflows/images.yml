@@ -4,6 +4,10 @@ name: Demo-Images
 # und legt sie in der GitHub Container Registry ab:
 #   ghcr.io/<owner>/<repo>-backend    Dockerfile.backend, Ziel "demo"
 #   ghcr.io/<owner>/<repo>-frontend   Dockerfile.frontend
+# und für das Serverpaket (docker-compose.server.yml, FA98, docs/server_installation.md):
+#   ghcr.io/<owner>/<repo>-osm              Dockerfile.osm (PostGIS + osm2pgsql-Import)
+#   ghcr.io/<owner>/<repo>-frontend-proxy   Dockerfile.frontend mit leerem
+#                                            NEXT_PUBLIC_API_BASE (hinter dem Proxy)
 #
 # Auslöser: ein Tag v* (z. B. v1.0-abgabe) oder von Hand. Das Datenpaket
 # (scripts/build_demo_data.py) kommt als Anhang des Releases "demo-data";
@@ -49,6 +53,8 @@ jobs:
     outputs:
       backend: ${{ steps.names.outputs.backend }}
       frontend: ${{ steps.names.outputs.frontend }}
+      osm: ${{ steps.names.outputs.osm }}
+      frontend_proxy: ${{ steps.names.outputs.frontend_proxy }}
       version: ${{ steps.names.outputs.version }}
     steps:
       - uses: actions/checkout@v4
@@ -59,6 +65,8 @@ jobs:
           prefix="ghcr.io/${GITHUB_REPOSITORY,,}"
           echo "backend=${prefix}-backend" >> "$GITHUB_OUTPUT"
           echo "frontend=${prefix}-frontend" >> "$GITHUB_OUTPUT"
+          echo "osm=${prefix}-osm" >> "$GITHUB_OUTPUT"
+          echo "frontend_proxy=${prefix}-frontend-proxy" >> "$GITHUB_OUTPUT"
           if [ "$GITHUB_REF_TYPE" = "tag" ]; then
             echo "version=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
           else
@@ -143,11 +151,35 @@ jobs:
           outputs: type=image,name=${{ steps.names.outputs.frontend }},push-by-digest=true,name-canonical=true,push=true
           cache-from: type=gha,scope=frontend-${{ matrix.arch }}
 
+      # Serverpaket: OSM-Image (PostGIS + osm2pgsql) und Frontend hinter dem Proxy, das
+      # /api unter derselben Adresse aufruft (leeres NEXT_PUBLIC_API_BASE).
+      - name: OSM-Image hochladen
+        id: push_osm
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.osm
+          outputs: type=image,name=${{ steps.names.outputs.osm }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=osm-${{ matrix.arch }}
+          cache-to: type=gha,scope=osm-${{ matrix.arch }},mode=max
+
+      - name: Frontend (Proxy) hochladen
+        id: push_frontend_proxy
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.frontend
+          build-args: NEXT_PUBLIC_API_BASE=
+          outputs: type=image,name=${{ steps.names.outputs.frontend_proxy }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=gha,scope=frontend-${{ matrix.arch }}
+
       - name: Digests merken
         run: |
           mkdir -p digests
           echo "${{ steps.push_backend.outputs.digest }}" > "digests/backend-${{ matrix.arch }}"
           echo "${{ steps.push_frontend.outputs.digest }}" > "digests/frontend-${{ matrix.arch }}"
+          echo "${{ steps.push_osm.outputs.digest }}" > "digests/osm-${{ matrix.arch }}"
+          echo "${{ steps.push_frontend_proxy.outputs.digest }}" > "digests/frontend_proxy-${{ matrix.arch }}"
           cat digests/*
 
       - uses: actions/upload-artifact@v4
@@ -194,13 +226,37 @@ jobs:
         env:
           BACKEND: ${{ needs.build.outputs.backend }}
           FRONTEND: ${{ needs.build.outputs.frontend }}
+          OSM: ${{ needs.build.outputs.osm }}
+          FRONTEND_PROXY: ${{ needs.build.outputs.frontend_proxy }}
           VERSION: ${{ needs.build.outputs.version }}
         run: |
           ls digests
-          for part in backend frontend; do
-            if [ "$part" = backend ]; then image="$BACKEND"; else image="$FRONTEND"; fi
+          for part in backend frontend osm frontend_proxy; do
+            case "$part" in
+              backend) image="$BACKEND" ;;
+              frontend) image="$FRONTEND" ;;
+              osm) image="$OSM" ;;
+              frontend_proxy) image="$FRONTEND_PROXY" ;;
+            esac
             docker buildx imagetools create \
               -t "$image:$VERSION" -t "$image:latest" \
               "$image@$(cat digests/$part-amd64)" "$image@$(cat digests/$part-arm64)"
             docker buildx imagetools inspect "$image:$VERSION"
           done
+
+  server-paket:
+    # Die Dateien des Serverpakets am Release, damit ein Befehl genügt
+    # (docs/server_installation.md): .../releases/latest/download/docker-compose.server.yml
+    needs: manifest
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compose-Datei und Vorlage an das Release haengen
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Die Version des Tags als Standard, damit das Paket zum Release passt.
+          sed "s/\${GEOFACT_VERSION:-latest}/\${GEOFACT_VERSION:-$GITHUB_REF_NAME}/g"             docker-compose.server.yml > /tmp/docker-compose.server.yml
+          grep -q "GEOFACT_VERSION:-$GITHUB_REF_NAME" /tmp/docker-compose.server.yml
+          gh release upload "$GITHUB_REF_NAME" /tmp/docker-compose.server.yml .env.server.example --clobber

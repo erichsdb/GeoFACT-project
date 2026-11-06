@@ -3,7 +3,7 @@
 import { pathToFileURL } from "node:url";
 
 const mod = await import(pathToFileURL(process.argv[2]).href);
-const { ENTRY_MODES, ENTRY_GUIDE, parseEntryMode, initialEntryMode, initialEntryView, showsEditor, canResume } = mod;
+const { ENTRY_MODES, ENTRY_GUIDE, parseEntryMode, initialEntryMode, canResume } = mod;
 
 const out = {};
 out.modes = ENTRY_MODES.map((m) => ({ id: m.id, label: m.label }));
@@ -20,19 +20,5 @@ out.initial_mode = {
   link_new_session: initialEntryMode(null, true),
   link_beats_session: initialEntryMode("write", true),
 };
-out.initial_view = {
-  write_empty: initialEntryView("write", ""),
-  generate_empty: initialEntryView("generate", ""),
-  generate_with_text: initialEntryView("generate", "scenario:\n"),
-  load_empty: initialEntryView("load", ""),
-  load_with_text: initialEntryView("load", "scenario:\n"),
-  none_empty: initialEntryView(null, ""),
-};
-out.editor = {};
-for (const mode of [null, "generate", "load", "write"]) {
-  for (const view of ["input", "config"]) {
-    out.editor[`${mode}/${view}`] = showsEditor(mode, view);
-  }
-}
 out.resume = { empty: canResume(""), blank: canResume("  \n"), text: canResume("scenario:\n") };
 console.log(JSON.stringify(out));

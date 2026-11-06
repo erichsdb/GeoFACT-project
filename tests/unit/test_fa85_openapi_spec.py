@@ -177,9 +177,9 @@ def test_fa85_documented_401_is_what_a_protected_route_answers(app, one_user):
 
 def test_fa85_spec_and_docs_stay_reachable_without_a_token(app, one_user):
     client = TestClient(app)
-    assert client.get("/openapi.json").json() == app.openapi()
-    assert client.get("/docs").status_code == 200
-    assert client.get("/redoc").status_code == 200
+    assert client.get("/api/openapi.json").json() == app.openapi()
+    assert client.get("/api/docs").status_code == 200
+    assert client.get("/api/redoc").status_code == 200
 
 
 # --- Erfolgsantworten: Schema und Medientyp -----------------------------

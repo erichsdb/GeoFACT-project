@@ -1,6 +1,6 @@
 """Zugriffskontrolle für das Web-Backend.
 
-Implements: FA24
+Implements: FA24, FA95
 
 Bewusst minimal (nur stdlib): feste Nutzerliste (GEOFACT_WEB_USERS), PBKDF2-Hashes,
 signierte Tokens mit Ablaufzeit statt Sessions/DB. Kein Self-Signup, keine Rollen.
@@ -22,9 +22,26 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from .settings import Settings, get_settings
 
-# Ohne Token erreichbar: Login und Health-Check. Alles andere unter /api/ verlangt
-# ein Bearer-Token, sobald GEOFACT_WEB_USERS gesetzt ist.
-_PUBLIC_PATHS = {"/api/auth/login", "/api/health"}
+# FA95: Die Dokumentationspfade liegen unter /api/, weil das gehostete Routing nur dieses
+# Präfix zum Backend leitet. Ein Browser-Aufruf kann kein Bearer-Token mitschicken, die
+# eingecheckte Spezifikation (docs/openapi.json) enthält keine Geheimnisse.
+DOCS_URL = "/api/docs"
+REDOC_URL = "/api/redoc"
+OPENAPI_URL = "/api/openapi.json"
+# Swagger UI ruft diesen Pfad nach OAuth-Anmeldungen auf; GeoFACT nutzt kein OAuth, aber
+# die Seite nennt ihn, also bleibt er mit den Seiten zusammen erreichbar.
+OAUTH2_REDIRECT_URL = "/api/docs/oauth2-redirect"
+DOCS_PATHS = (DOCS_URL, REDOC_URL, OPENAPI_URL, OAUTH2_REDIRECT_URL)
+
+# Ohne Token erreichbar: Login, Health-Check und die API-Dokumentation. Alles andere
+# unter /api/ verlangt ein Bearer-Token, sobald GEOFACT_WEB_USERS gesetzt ist.
+_PUBLIC_PATHS = {
+    "/api/auth/login",
+    "/api/health",
+    *DOCS_PATHS,
+    # Mit Schrägstrich am Ende eingetippt: leitet auf den Pfad ohne weiter (main.py).
+    *(path + "/" for path in DOCS_PATHS),
+}
 
 # Diese vier Endpunkte rufen Browser-APIs ohne Authorization-Header auf (EventSource,
 # <img src>, <a href> für das ZIP und einzelne Dateien, FA88); nur hier gilt das Token
@@ -161,7 +178,8 @@ async def require_auth_middleware(request: Request, call_next):
     """App-weites Gate (FA24) zusätzlich zu require_user, damit kein Endpunkt, auch
     kein später hinzugefügter, versehentlich ungeschützt bleibt.
 
-    Nur für /api/*; /docs und /openapi.json bleiben erreichbar.
+    Nur für /api/*; Login, Health-Check und die Dokumentation (/api/docs, /api/redoc,
+    /api/openapi.json, FA95) bleiben ohne Token erreichbar.
     """
     settings = get_settings()
     path = request.url.path

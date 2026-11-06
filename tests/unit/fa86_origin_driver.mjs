@@ -1,12 +1,12 @@
 // Implements: FA86 - runs the pure helpers of frontend/lib/configOrigin.ts,
-// frontend/lib/runBasis.ts and the mode-switch helper of frontend/lib/entryMode.ts
-// under node (type stripping) and prints the results as JSON for the pytest module.
+// frontend/lib/runBasis.ts and the mode-switch helper of frontend/lib/wizardSteps.ts
+// (FA96) under node (type stripping) and prints the results as JSON for the pytest module.
 import { pathToFileURL } from "node:url";
 
-const [originPath, basisPath, entryPath] = process.argv.slice(2);
+const [originPath, basisPath, wizardPath] = process.argv.slice(2);
 const origin = await import(pathToFileURL(originPath).href);
 const basis = await import(pathToFileURL(basisPath).href);
-const entry = await import(pathToFileURL(entryPath).href);
+const wizard = await import(pathToFileURL(wizardPath).href);
 
 const gen = {
   origin: { kind: "generate", prompt: "Welche Umspannwerke versorgen die meisten Menschen in Dresden?", region: "Dresden, Deutschland", notes: "Hinweis des Modells" },
@@ -86,26 +86,32 @@ out.notes = {
   unknown: origin.originNotes(null),
   generate_without_notes: origin.originNotes({ origin: { ...gen.origin, notes: null }, yaml: "x" }),
 };
-out.prompt_values = {
-  generate: origin.promptValues(gen),
-  load: origin.promptValues(load),
-  unknown: origin.promptValues(null),
-};
-
 // --- Einstieg an Ort und Stelle wechseln ----------------------------------------
 const text = "scenario:\n";
-out.view_for_mode = {
-  first_generate: entry.viewForMode("generate", {}, text, "generate"),
-  first_load: entry.viewForMode("load", {}, "", null),
-  last_config_with_text: entry.viewForMode("load", { load: "config" }, text, "load"),
-  last_config_without_text: entry.viewForMode("load", { load: "config" }, "  \n", "load"),
-  last_input_with_text: entry.viewForMode("generate", { generate: "input" }, text, "generate"),
+out.step_for_mode = {
+  first_generate: wizard.stepForMode("generate", {}, text, "generate"),
+  first_load: wizard.stepForMode("load", {}, "", null),
+  last_config_with_text: wizard.stepForMode("load", { load: "config" }, text, "load"),
+  last_config_without_text: wizard.stepForMode("load", { load: "config" }, "  \n", "load"),
+  last_input_with_text: wizard.stepForMode("generate", { generate: "input" }, text, "generate"),
+  // FA96: auch ein zuletzt gezeigtes Ergebnis führt zur Konfiguration des Einstiegs
+  last_result_with_text: wizard.stepForMode("load", { load: "result" }, text, "load"),
   // der Text entstand auf einem anderen Weg: die Eingabe dieses Einstiegs
-  load_after_generating: entry.viewForMode("load", { load: "config" }, text, "generate"),
-  generate_after_loading: entry.viewForMode("generate", { generate: "config" }, text, "load"),
-  load_unknown_origin: entry.viewForMode("load", { load: "config" }, text, null),
-  write_empty: entry.viewForMode("write", {}, "", null),
-  write_remembers_input: entry.viewForMode("write", { write: "input" }, text, "generate"),
+  load_after_generating: wizard.stepForMode("load", { load: "config" }, text, "generate"),
+  generate_after_loading: wizard.stepForMode("generate", { generate: "config" }, text, "load"),
+  load_unknown_origin: wizard.stepForMode("load", { load: "config" }, text, null),
+  write_empty: wizard.stepForMode("write", {}, "", null),
+  write_remembers_input: wizard.stepForMode("write", { write: "input" }, text, "generate"),
+};
+
+// --- Stepper (FA96): Haken, Erreichbarkeit, Start ---------------------------------
+const facts = { hasConfig: true, valid: true, hasRun: true, runDone: true, staleRun: false, originKind: "generate" };
+out.steps = {
+  fresh_run_completed: wizard.completedSteps("generate", facts),
+  stale_run_completed: wizard.completedSteps("generate", { ...facts, staleRun: true }),
+  no_config_but_run: wizard.reachableSteps("generate", { ...facts, hasConfig: false }),
+  reload_generate_no_config_stored_result: wizard.initialStep("generate", "", "result", false),
+  reload_write_blank_stored_result: wizard.initialStep("write", "  ", "result", false),
 };
 
 // --- veraltetes Ergebnis ----------------------------------------------------------

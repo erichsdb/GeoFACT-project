@@ -4,7 +4,8 @@ Es gibt kein Frontend-Testwerkzeug im Repo (siehe test_fa54_frontend_lost_run.py
 Die Logik der Einstiege liegt deshalb in reinen Helfern (`frontend/lib/entryMode.ts`),
 die hier unter node ausgeführt werden; die Nachbedingungen an die Ansicht
 (die Frage steht allein, nie Prompt und Editor zugleich, Auswahl statt Dialog,
-Katalog zum Einfügen nur beim Schreiben) prüft der Quelltext.
+Katalog zum Einfügen nur beim Schreiben) prüft der Quelltext. Die Schritte je
+Einstieg (Stepper) gehören seit FA96 zu `frontend/lib/wizardSteps.ts`.
 """
 
 from __future__ import annotations
@@ -61,8 +62,11 @@ def js() -> dict:
         timeout=60,
         check=False,
     )
-    if proc.returncode != 0:
-        pytest.skip(f"node cannot run the TypeScript helpers: {proc.stderr[-300:]}")
+    # Nur ein node ohne Typ-Stripping ist ein Grund zum Überspringen; jeder andere
+    # Fehler (Syntax, fehlender Export, Laufzeitfehler im Treiber) lässt die Tests scheitern.
+    if proc.returncode != 0 and "ERR_UNKNOWN_FILE_EXTENSION" in proc.stderr:
+        pytest.skip("node without TypeScript type stripping")
+    assert proc.returncode == 0, proc.stderr
     return json.loads(proc.stdout.strip().splitlines()[-1])
 
 
@@ -80,8 +84,6 @@ def test_fa80_there_are_exactly_three_entry_modes_in_order(js: dict) -> None:
 
 def test_fa80_a_new_session_has_no_mode_so_the_question_is_asked(js: dict) -> None:
     assert js["initial_mode"]["new_session"] is None
-    assert js["initial_view"]["none_empty"] == "input"
-    assert js["editor"]["null/input"] is False and js["editor"]["null/config"] is False
 
 
 def test_fa80_the_choice_of_the_session_is_restored(js: dict) -> None:
@@ -106,36 +108,23 @@ def test_fa80_an_opened_link_is_a_loaded_scenario(js: dict) -> None:
     assert js["initial_mode"]["link_beats_session"] == "load"
 
 
-def test_fa80_generate_and_load_start_with_their_input_and_show_an_existing_config(
-    js: dict,
-) -> None:
-    view = js["initial_view"]
-    assert view["generate_empty"] == "input" and view["load_empty"] == "input"
-    assert view["generate_with_text"] == "config" and view["load_with_text"] == "config"
-    assert view["write_empty"] == "config"
-
-
-def test_fa80_editor_is_hidden_while_prompt_or_picker_is_shown(js: dict) -> None:
-    editor = js["editor"]
-    assert editor["generate/input"] is False and editor["load/input"] is False
-    assert editor["generate/config"] is True and editor["load/config"] is True
-    assert editor["write/input"] is True and editor["write/config"] is True
-
-
-def test_fa80_every_view_has_a_step_a_title_and_an_instruction(js: dict) -> None:
+def test_fa80_every_scenario_step_has_a_title_and_an_instruction(js: dict) -> None:
+    """FA96: die Zählung der Schritte trägt der Stepper, der Hinweis nennt sie nicht mehr."""
     guide = js["guide"]
     assert set(guide) == {"generate", "load", "write"}
-    for mode, views in guide.items():
-        assert set(views) == {"input", "config"}, mode
-        for view, entry in views.items():
-            assert entry["title"] and entry["text"], (mode, view)
-            assert 1 <= entry["step"] <= entry["of"], (mode, view)
-    # zwei Schritte bis zur Konfiguration beim Generieren und Laden, einer beim Schreiben
     for mode in ("generate", "load"):
-        assert (guide[mode]["input"]["step"], guide[mode]["input"]["of"]) == (1, 2)
-        assert (guide[mode]["config"]["step"], guide[mode]["config"]["of"]) == (2, 2)
-    assert guide["write"]["input"] == guide["write"]["config"]
-    assert guide["write"]["config"]["of"] == 1
+        assert set(guide[mode]) == {"input", "config"}, mode
+    assert set(guide["write"]) == {"config"}
+    for mode, steps in guide.items():
+        for step, entry in steps.items():
+            assert entry["title"], (mode, step)
+            # Die Konfiguration hat beim Generieren und Laden keinen festen Text: er
+            # folgt der Herkunft des Editortextes (configGuideText, FA86).
+            if step == "config" and mode != "write":
+                assert set(entry) == {"title"}, (mode, step)
+            else:
+                assert entry["text"], (mode, step)
+                assert set(entry) == {"title", "text"}, (mode, step)  # kein step/of
 
 
 def test_fa80_only_a_non_blank_editor_text_can_be_resumed(js: dict) -> None:
@@ -167,18 +156,17 @@ def test_fa80_a_login_and_a_logout_forget_the_choice() -> None:
 
 def test_fa80_without_a_choice_the_question_comes_before_any_remembered_step() -> None:
     shell = _text(APP_SHELL)
-    init = _between(
-        shell, "const [step, setStep] = useState<WizardStep>(() => {", "});"
-    )
-    assert 'if (entryMode === null) return "prompt";' in init
-    assert init.index("entryMode === null") < init.index(
-        "readLocalStorage(STEP_STORAGE_KEY)"
+    init = _between(shell, "const [step, setStep] = useState<WizardStep>(() =>", ");")
+    # FA96: initialStep fragt zuerst nach dem Einstieg (ohne ihn: "input"), dann nach dem gemerkten Schritt
+    assert (
+        'initialStep(entryMode, readLocalStorage(CONFIG_YAML_STORAGE_KEY) ?? "", '
+        'readLocalStorage(STEP_STORAGE_KEY), linkMode === "open")' in init
     )
 
 
 def test_fa80_the_open_question_stands_alone() -> None:
     shell = _text(APP_SHELL)
-    assert 'const entryQuestionOpen = step === "prompt" && entryMode === null;' in shell
+    assert "const entryQuestionOpen = entryMode === null;" in shell
     assert "{!entryQuestionOpen && (\n        <Stepper" in shell
     body = _prompt_step()
     assert "{entryMode === null ? (" in body and "<EntryChooser" in body
@@ -212,9 +200,10 @@ def test_fa80_question_offers_the_three_ways_and_resuming_earlier_work() -> None
 def test_fa80_guide_names_way_step_and_next_action() -> None:
     shell = _text(APP_SHELL)
     guide = _between(shell, "function EntryGuide(", "function PromptStep(")
-    assert "const guide = ENTRY_GUIDE[mode][view];" in guide
+    assert "const guide = ENTRY_GUIDE[mode][step]" in guide
     assert "{guide.title}" in guide and "{text ?? guide.text}" in guide
-    assert "Schritt ${guide.step} von ${guide.of}" in guide
+    # FA96: gezählt wird im Stepper
+    assert "Schritt ${" not in guide
     # der Wechsel des Einstiegs steht in der Kopfzeile, nicht mehr hier
     assert "onReset" not in guide and "Anderen Weg wählen" not in guide
     assert "<EntryGuide" in _prompt_step()
@@ -229,9 +218,10 @@ def test_fa80_the_way_can_be_switched_from_the_header_in_every_step() -> None:
     # alle drei Wege stehen sichtbar nebeneinander, kein Aufklappmenü
     assert "Dropdown" not in shell
     switch = _between(shell, "const switchEntryMode = ", "};")
-    # FA86: ein anderer Einstieg zeigt seine zuletzt gezeigte Ansicht (viewForMode)
+    # FA86/FA96: ein anderer Einstieg zeigt seinen zuletzt gezeigten Schritt (stepForMode),
+    # der gewählte führt zu seinem ersten Schritt zurück
     assert "if (mode !== entryMode) changeEntryMode(mode);" in switch
-    assert 'setStep("prompt");' in switch
+    assert "else setStep(firstStep(mode));" in switch
     # der Wechsel fasst den Editortext nicht an
     assert "setConfigYaml" not in switch
     menu = _between(shell, "function EntrySwitch(", "function EntryGuide(")
@@ -243,14 +233,9 @@ def test_fa80_the_way_can_be_switched_from_the_header_in_every_step() -> None:
 
 def test_fa80_prompt_picker_and_editor_have_disjoint_conditions() -> None:
     body = _prompt_step()
-    assert (
-        'const promptVisible = entryMode === "generate" && entryView === "input";'
-        in body
-    )
-    assert (
-        'const pickerVisible = entryMode === "load" && entryView === "input";' in body
-    )
-    assert "const editorVisible = showsEditor(entryMode, entryView);" in body
+    assert 'const promptVisible = entryMode === "generate" && step === "input";' in body
+    assert 'const pickerVisible = entryMode === "load" && step === "input";' in body
+    assert 'const editorVisible = step === "config";' in body
     assert body.count("<PromptPanel") == 1
     assert body.count("<ScenarioPicker") == 1
     assert body.count("<ConfigEditor") == 1
@@ -266,25 +251,28 @@ def test_fa80_choosing_a_mode_shows_its_input_first() -> None:
     shell = _text(APP_SHELL)
     handler = _between(shell, "const chooseEntryMode", "}, []);")
     assert "setEntryMode(mode);" in handler
-    assert 'setEntryView(mode === "write" ? "config" : "input");' in handler
+    assert "setStep(firstStep(mode));" in handler
 
 
 def test_fa80_generating_and_loading_lead_to_the_config() -> None:
     shell = _text(APP_SHELL)
-    # FA86: ein fertiges Ergebnis öffnet die Konfiguration, wenn der Nutzer in der Eingabe
-    # der Erzeugung steht; sonst wird nichts umgeschaltet, sondern gemeldet.
-    generated = _between(shell, "const handleGenerated = (", "// FA86: Direktsprünge")
+    # FA86/FA96: ein fertiges Ergebnis öffnet die Konfiguration, wenn der Nutzer in der Frage
+    # des Generierens steht; sonst wird nichts umgeschaltet, sondern gemeldet.
+    generated = _between(
+        shell, "const handleGenerated = (", "// FA96: Fakten für den Stepper"
+    )
     assert (
-        'entryModeRef.current === "generate"' in generated
-        and 'setEntryView("config");' in generated
+        'stepRef.current === "input" && entryModeRef.current === "generate"'
+        in generated
+        and 'setStep("config");' in generated
     )
     assert "notify.success(" in generated
     load = _between(shell, "const loadScenario = async", "const setUrlScenario")
-    assert 'setEntryView("config");' in load
+    assert 'setStep("config");' in load
     link = _between(
         shell, "const openLink = async", "useEffect(() => {\n    if (linkMode"
     )
-    assert 'setEntryMode("load");' in link and 'setEntryView("config");' in link
+    assert 'setEntryMode("load");' in link and 'setStep("config");' in link
 
 
 def test_fa80_scenarios_are_chosen_inline_not_in_a_dialog() -> None:
@@ -316,17 +304,19 @@ def test_fa80_insert_catalog_only_while_writing() -> None:
     assert re.search(r"\{onToggle && \(\s*<Checkbox", api_panel)
 
 
-def test_fa80_config_view_leads_back_to_its_input() -> None:
-    """FA86: der Weg zurück läuft über die Herkunftsleiste (Prompt bzw. Auswahl); den
-    Katalog erreicht man über den Umschalter (Einstieg "Schreiben")."""
-    config = _block(_prompt_step(), 'data-entry="config"')
-    assert "<OriginBar" in config and "onAdjustPrompt={onAdjustPrompt}" in config
-    assert "onPickScenario={onPickScenario}" in config
+def test_fa80_config_step_leads_back_to_its_input_through_the_guide() -> None:
+    """FA96: der Weg zurück läuft über den Stepper und den „Zurück“-Knopf des Hinweises;
+    die Herkunftsleiste nennt nur noch die Herkunft. Den Katalog erreicht man über den
+    Umschalter (Einstieg "Schreiben")."""
+    body = _prompt_step()
+    assert (
+        'back={\n            step === "config" && entryMode !== "write"' in body
+        and 'label: backLabel(entryMode, "config")!, onClick: onBack' in body
+    )
+    config = _block(body, 'data-entry="config"')
+    assert "<OriginBar" in config and "onAdjustPrompt" not in config
     bar = _text(COMPONENTS / "origin-bar.tsx")
-    assert "Prompt anpassen" in bar and "Anderes Szenario wählen" in bar
+    assert "Prompt anpassen" not in bar and "Anderes Szenario wählen" not in bar
     shell = _text(APP_SHELL)
-    jump = _between(shell, "const jumpAdjustPrompt", "const jumpPickScenario")
-    assert 'setEntryMode("generate");' in jump and 'setEntryView("input");' in jump
-    jump = _between(shell, "const jumpPickScenario", "const jumpEditConfig")
-    assert 'setEntryMode("load");' in jump and 'setEntryView("input");' in jump
+    assert "jumpAdjustPrompt" not in shell and "jumpPickScenario" not in shell
     assert "Mit Katalog weiterbearbeiten" not in shell

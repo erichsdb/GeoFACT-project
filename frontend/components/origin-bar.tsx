@@ -1,12 +1,10 @@
 "use client";
 
-// Implements: FA86 - Herkunftsleiste mit Direktsprüngen.
+// Implements: FA86 (Herkunft) - die Sprünge zurück übernimmt der Stepper (FA96).
 
-import { ArrowLeft, FolderOpen, PencilLine, Sparkles, CircleHelp } from "lucide-react";
+import { FolderOpen, PencilLine, Sparkles, CircleHelp } from "lucide-react";
 import { describeOrigin, type OriginRecord } from "@/lib/configOrigin";
-import type { EntryMode } from "@/lib/entryMode";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 
 const ICON = {
   generate: Sparkles,
@@ -15,29 +13,16 @@ const ICON = {
   unknown: CircleHelp,
 } as const;
 
-/** Sagt, woher die aktuelle Konfiguration stammt, und bietet von jedem Schritt
- * aus den Sprung dorthin zurück: zum Prompt, zur Szenarioauswahl oder in den
- * Editor. `hideEdit` blendet "Konfiguration bearbeiten" aus, wo der Editor
- * ohnehin zu sehen ist (Schritt 1). `mode` (nur Schritt 1) nennt den gewählten
- * Einstieg: dessen Eingabe bleibt erreichbar, auch wenn der Text anders entstand -
- * sonst gäbe es beim Laden mit einem erzeugten Text keinen Weg zur Szenarioauswahl. */
+/** Sagt, woher die aktuelle Konfiguration stammt (Prompt, Szenario oder selbst
+ * geschrieben, ggf. "bearbeitet"). Den Weg dorthin zurück zeigt der Stepper:
+ * Schritt 1 ist von jedem Schritt aus erreichbar. */
 export default function OriginBar({
   record,
   yaml,
-  onAdjustPrompt,
-  onPickScenario,
-  onEditConfig,
-  hideEdit = false,
-  mode = null,
   className,
 }: {
   record: OriginRecord | null;
   yaml: string;
-  onAdjustPrompt: () => void;
-  onPickScenario: () => void;
-  onEditConfig: () => void;
-  hideEdit?: boolean;
-  mode?: EntryMode | null;
   className?: string;
 }) {
   if (!yaml.trim()) return null;
@@ -59,26 +44,6 @@ export default function OriginBar({
           </Badge>
         )}
       </p>
-      <div className="flex flex-wrap items-center gap-2">
-        {(view.kind === "generate" || mode === "generate") && (
-          <Button variant="outline" size="sm" onClick={onAdjustPrompt}>
-            <ArrowLeft className="size-4" />
-            {view.kind === "generate" ? "Prompt anpassen" : "Zum Prompt"}
-          </Button>
-        )}
-        {(view.kind === "load" || mode === "load") && (
-          <Button variant="outline" size="sm" onClick={onPickScenario}>
-            <ArrowLeft className="size-4" />
-            {view.kind === "load" ? "Anderes Szenario wählen" : "Szenario wählen"}
-          </Button>
-        )}
-        {!hideEdit && (
-          <Button variant="ghost" size="sm" onClick={onEditConfig}>
-            <PencilLine className="size-4" />
-            Konfiguration bearbeiten
-          </Button>
-        )}
-      </div>
     </div>
   );
 }

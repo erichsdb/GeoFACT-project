@@ -7,6 +7,7 @@ import { useTheme } from "next-themes";
 import type { ReactNode } from "react";
 import { CircleCheck, CircleX, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import YamlHelpButton from "@/components/yaml-help";
 import { useMediaQuery } from "@/lib/useMediaQuery";
 import type { ValidateResponse } from "@/lib/types";
 
@@ -56,6 +57,8 @@ export default function ConfigEditor({
     <div className="flex flex-col">
       <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2">
         <h3 className="text-base font-semibold">Szenario-Konfiguration (YAML)</h3>
+        {/* FA97: Hilfe zum Schreiben der YAML, überall wo der Editor steht. */}
+        <YamlHelpButton />
         {toolbar && <div className="flex items-center gap-1.5">{toolbar}</div>}
         <div className="ml-auto flex items-center gap-3">
           {validating && <span className="text-sm text-muted-foreground">prüfe…</span>}

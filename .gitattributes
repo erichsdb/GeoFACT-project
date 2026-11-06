@@ -1,0 +1,4 @@
+# Skripte, die in Linux-Containern laufen, immer mit LF auschecken (core.autocrlf=true
+# unter Windows machte sonst CRLF daraus, und ein lokaler Docker-Build backte sie kaputt ein).
+*.sh text eol=lf
+*.lua text eol=lf

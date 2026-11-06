@@ -132,10 +132,3 @@ export function configGuideText(record: OriginRecord | null, yaml: string): stri
 export function originNotes(record: OriginRecord | null): string | null {
   return record?.origin.kind === "generate" ? record.origin.notes : null;
 }
-
-/** Werte, mit denen "Prompt anpassen" Eingabe und Region füllt; null ohne Erzeugung. */
-export function promptValues(record: OriginRecord | null): { prompt: string; region: string } | null {
-  return record?.origin.kind === "generate"
-    ? { prompt: record.origin.prompt, region: record.origin.region }
-    : null;
-}

@@ -1,8 +1,8 @@
-# Lokale Demo für Prüfer und Leser: fertige Images, ein Befehl, kein Konto.
+# Lokale Demo zum Ausprobieren: fertige Images, ein Befehl, kein Konto.
 #
 #   docker compose -f docker-compose.demo.yml up
 #   -> http://localhost:3000   (Web-Demo)
-#   -> http://localhost:8000/docs   (API)
+#   -> http://localhost:8000/api/docs   (API-Dokumentation, ohne Anmeldung)
 #
 # Anleitung, CLI im Container und Fehlersuche: docs/schnellstart.md.
 # Aus dem Quelltext statt aus der Registry bauen:

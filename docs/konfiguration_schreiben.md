@@ -12,7 +12,8 @@ Editor der Web-Oberfläche (Einstieg „Szenario selbst schreiben“) und für d
 In der Web-Oberfläche: Einstieg **„Szenario selbst schreiben“** wählen und über dem leeren Editor
 auf **„Vorlage“** klicken. Die Vorlage enthält alle vier Abschnitte mit Platzhaltern in
 `<spitzen Klammern>`. Solange Platzhalter stehen, meldet die Prüfung unter dem Editor, was noch
-fehlt. Die Vorlage ersetzt nie vorhandenen Text.
+fehlt. Die Vorlage ersetzt nie vorhandenen Text. Das **(?)** neben dem Titel des Editors
+öffnet eine Kurzfassung dieser Anleitung mit Ausschnitten zum Kopieren (in allen drei Einstiegen).
 
 ```yaml
 scenario:
@@ -170,8 +171,8 @@ output:
 
 **Web-Oberfläche:** Die Konfiguration wird beim Tippen geprüft. Fehler stehen unter dem Editor, mit
 der Stelle in der Datei. Ist sie gültig, zeigt die Oberfläche die Ausführungsreihenfolge und die
-Lizenzen; „Weiter zur Ausführung“ startet den Lauf. „Speichern“ legt das Szenario unter einem Namen
-ab, es erscheint danach unter „Szenario laden“.
+Lizenzen; „Weiter zur Ausführung“ führt zum Ausführungsgraphen, „Ausführen“ startet dort den
+Lauf. „Speichern“ legt das Szenario unter einem Namen ab, es erscheint danach unter „Szenario laden“.
 
 **Kommandozeile:**
 

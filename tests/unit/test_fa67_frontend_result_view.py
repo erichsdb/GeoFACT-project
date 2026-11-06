@@ -71,12 +71,14 @@ def test_fa67_final_result_button_leads_from_any_view_to_the_final_node():
 
 def test_fa67_header_has_back_button_attribution_slot_and_view_toggle():
     body = _result_step()
-    assert "Zurück zur Ausführung" in body
+    # Die Beschriftung „Zurück zur Ausführung“ kommt aus wizardSteps.backLabel (FA96).
+    back = "onClick={onBackToExecution}"
+    assert back in body and "{backLabel}" in body
     assert '<div data-slot="run-attribution"' in body
     assert "Ausführungsgraph" in body and "Zurück zum Ergebnis" in body
     # Reihenfolge der Kopfzeile: Zurück, Attribution, Endergebnis, Umschalter
     order = [
-        body.index("Zurück zur Ausführung"),
+        body.index(back),
         body.index('data-slot="run-attribution"'),
         body.index("Endergebnis anzeigen"),
         body.index("Zurück zum Ergebnis"),

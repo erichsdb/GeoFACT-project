@@ -9,6 +9,7 @@ laufen dabei ohne Netz, weil ihre Daten im Image liegen.
 | [Web-Demo mit Docker](#1-web-demo-mit-docker) | Docker Desktop oder Docker Engine mit Compose | rund 5 Minuten, davon fast alles Download (etwa 1,5 GB) |
 | [Kommandozeile im Container](#3-kommandozeile-im-container) | wie oben | Sekunden je Szenario |
 | [Ohne Docker](#6-ohne-docker) | Python ≥ 3.11, `uv`, für die Oberfläche Node ≥ 18 | rund 10 Minuten |
+| [Serverpaket mit OSM-Datenbank Deutschland](server_installation.md) | Docker mit Compose ≥ 2.23, 16 GB RAM, rund 250 GB frei | ein Befehl; der erste Import dauert Stunden |
 
 ## 1. Web-Demo mit Docker
 
@@ -21,7 +22,7 @@ docker compose -f docker-compose.demo.yml up
 Sobald beide Container laufen:
 
 - **Oberfläche:** <http://localhost:3000>
-- API-Dokumentation: <http://localhost:8000/docs>
+- API-Dokumentation: <http://localhost:8000/api/docs> (Swagger UI, ohne Anmeldung erreichbar)
 
 Beenden mit `Strg+C`, aufräumen mit `docker compose -f docker-compose.demo.yml down`.
 
@@ -31,13 +32,14 @@ das passende selbst. Rechner mit 32-Bit-System werden nicht unterstützt.
 
 ## 2. Ein Szenario ausführen
 
-1. In Schritt 1 „Szenario“ den Einstieg **Szenario laden** wählen, ein Beispiel aus der Liste
+1. Den Einstieg **Szenario laden** wählen (Schritt 1 „Szenario wählen“), ein Beispiel aus der Liste
    anklicken und **Laden**. Ein Link öffnet ein Beispiel direkt, zum Beispiel
    <http://localhost:3000/?scenario=example:sachsen_nachthimmel>.
-2. Der Editor zeigt die YAML-Konfiguration: Layer (Datenquellen), Schritte (Operationen) und
-   Ausgaben. Die Prüfung läuft beim Tippen mit und nennt Fehler mit Position.
-3. **Ausführen:** Der Ausführungsgraph färbt sich je Knoten, während der Lauf fortschreitet.
-4. **Ergebnis:** Jeder Knoten lässt sich als Karte, Tabelle, Diagramm und Statistik ansehen; die
+2. **Konfiguration** (Schritt 2): Der Editor zeigt die YAML-Konfiguration: Layer (Datenquellen), Schritte
+   (Operationen) und Ausgaben. Die Prüfung läuft beim Tippen mit und nennt Fehler mit Position. Das (?)
+   neben dem Titel erklärt, wie man eine YAML schreibt. **Weiter zur Ausführung** führt zum nächsten Schritt.
+3. **Ausführung** (Schritt 3): Der Ausführungsgraph färbt sich je Knoten, während der Lauf fortschreitet.
+4. **Ergebnis** (Schritt 4): Jeder Knoten lässt sich als Karte, Tabelle, Diagramm und Statistik ansehen; die
    deklarierten Ausgaben gibt es am Ende als ZIP.
 
 Gute erste Beispiele:

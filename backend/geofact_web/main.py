@@ -1,5 +1,7 @@
 """FastAPI-App-Fabrik + Entry-Point für das GeoFACT-Web-Backend.
 
+Implements: FA12, FA95
+
 Start (lokal):
     uv run --extra web geofact-api
 oder:
@@ -14,15 +16,16 @@ import warnings
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.responses import RedirectResponse
 
 from geofact import api
 
-from . import __version__, openapi
+from . import __version__, docs_pages, openapi
 from . import options as option_module
-from .auth import require_auth_middleware
+from .auth import DOCS_URL, DOCS_PATHS, OPENAPI_URL, REDOC_URL, require_auth_middleware
 from .routers import auth as auth_router
 from .routers import apis, catalog, config, meta, runs, scenarios, uploads
 from .run_manager import manager
@@ -58,6 +61,12 @@ def create_app() -> FastAPI:
         description="Backend-API zur interaktiven Demonstration des GeoFACT-Frameworks.",
         openapi_tags=openapi.TAGS,
         lifespan=lifespan,
+        # FA95: Dokumentation unter /api/, sonst im gehosteten Routing unerreichbar.
+        # Die beiden Seiten liefert docs_pages aus (Skripte in fester Fassung mit
+        # Prüfsumme), nicht FastAPIs Voreinstellung.
+        docs_url=None,
+        redoc_url=None,
+        openapi_url=OPENAPI_URL,
     )
     # FA24: Auth-Gate vor CORS registrieren; die zuletzt registrierte Middleware liegt
     # außen. CORS muss außen liegen, sonst trägt die 401 keine CORS-Header und
@@ -82,9 +91,32 @@ def create_app() -> FastAPI:
     app.include_router(config.router)
     app.include_router(runs.router)
     app.include_router(scenarios.router)
+    docs_pages.install(app)
+    redirect_legacy_docs(app)
     # FA85: Security und 401 je geschütztem Pfad in der Spezifikation.
     openapi.install(app)
     return app
+
+
+def redirect_legacy_docs(app: FastAPI) -> None:
+    """FA95: Die alten Wurzelpfade /docs, /redoc und /openapi.json (lokale Demo, Links in
+    der Doku) leiten auf die Pfade unter /api/ weiter; sie stehen nicht in der Spezifikation.
+    Dasselbe gilt für jeden Dokumentationspfad mit Schrägstrich am Ende (/api/docs/,
+    /api/redoc/, /api/openapi.json/, /api/docs/oauth2-redirect/): ohne eigene Route
+    verlangte das Auth-Gate dort ein Token, und ohne Anmeldung antwortete Starlette mit
+    einer absoluten Adresse, die hinter einem Proxy das falsche Schema trägt."""
+    for old, new in (
+        ("/docs", DOCS_URL),
+        ("/redoc", REDOC_URL),
+        ("/openapi.json", OPENAPI_URL),
+        *((path + "/", path) for path in DOCS_PATHS),
+    ):
+
+        def redirect(_request: Request, target: str = new) -> RedirectResponse:
+            return RedirectResponse(target)
+
+        # Einfache Starlette-Route: steht damit nicht in der Spezifikation.
+        app.add_route(old, redirect, methods=["GET"], include_in_schema=False)
 
 
 app = create_app()
