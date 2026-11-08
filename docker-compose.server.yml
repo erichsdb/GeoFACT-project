@@ -14,7 +14,8 @@
 # Stand anzeigen: dieselben Befehle mit "status".
 # Werkzeug aktualisieren: GEOFACT_VERSION in .env ändern, dann "pull" und "up -d".
 #
-# Einstellungen (Adresse, Konten, Version): .env neben dieser Datei, Vorlage .env.server.example.
+# Einstellungen (Adresse, Konten, Version): .env neben dieser Datei, Vorlage env.server.example
+# (am Release; im Repository .env.server.example).
 # Anleitung: docs/server_installation.md.
 #
 # Alle Dienste hängen an EINEM Netz (geofact); nach außen offen ist nur der Proxy.
@@ -97,6 +98,11 @@ services:
   backend:
     image: ${GEOFACT_IMAGE:-ghcr.io/erichsdb/geofact-project}-backend:${GEOFACT_VERSION:-latest}
     restart: unless-stopped
+    # Jede Zeile der .env erreicht das Backend (etwa GEOFACT_LLM_CHOICES,
+    # GEOFACT_WEB_TOKEN_TTL_S); die Werte unter environment gehen vor. Ohne .env kein Fehler.
+    env_file:
+      - path: .env
+        required: false
     environment:
       GEOFACT_WEB_HOST: 0.0.0.0
       GEOFACT_WEB_DATA_DIR: /data

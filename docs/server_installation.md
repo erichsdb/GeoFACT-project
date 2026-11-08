@@ -12,7 +12,7 @@ Wer nur ausprobieren will, ohne Datenbank und in fünf Minuten: `docs/schnellsta
 
 | | |
 |---|---|
-| Software | Docker Engine oder Docker Desktop mit Compose 2.23 oder neuer (`docker compose version`) |
+| Software | Docker Engine oder Docker Desktop mit Compose 2.24 oder neuer (`docker compose version`) |
 | Arbeitsspeicher | 16 GB empfohlen (der Import nutzt rund 4 GB Cache plus PostgreSQL) |
 | Speicherplatz | rund 250 GB frei: Extrakt 4,5 GB, Zwischentabellen beim Import, Datenbank, GHS-POP-Raster 6,5 GB. Beim Aktualisieren liegen alter und neuer Stand kurz nebeneinander. |
 | Netz | beim ersten Start rund 10 GB Download (Geofabrik, JRC, Zenodo) |
@@ -53,10 +53,11 @@ die deutschlandweiten nicht.
 ## Einstellungen
 
 Alle Einstellungen sind optional. Sie stehen in einer Datei `.env` neben der Compose-Datei.
-Die Vorlage mit allen Werten ist `.env.server.example`; sie liegt ebenfalls am Release.
+Die Vorlage mit allen Werten ist `.env.server.example`; am Release heißt sie `env.server.example`.
+Jede Zeile der `.env` erreicht auch das Backend, also jede Einstellung aus `docs/web_demo.md`.
 
 ```bash
-curl -fsSL -o .env https://github.com/erichsdb/GeoFACT-project/releases/latest/download/.env.server.example
+curl -fsSL -o .env https://github.com/erichsdb/GeoFACT-project/releases/latest/download/env.server.example
 ```
 
 | Ziel | Einstellung |

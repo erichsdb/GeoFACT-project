@@ -15,7 +15,8 @@
 #
 # Umgebung: PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE (libpq), dazu
 #   GEOFACT_OSM_PBF_URL       Extrakt (Standard: Geofabrik Deutschland)
-#   GEOFACT_OSM_PBF_MD5_URL   MD5-Datei dazu (Standard: <URL>.md5; "none" prüft nicht)
+#   GEOFACT_OSM_PBF_MD5_URL   MD5-Datei dazu (Standard: <URL nach Weiterleitung>.md5;
+#                             "none" prüft nicht)
 #   GEOFACT_OSM_CACHE_MB      osm2pgsql --cache (Standard 4000)
 #   GEOFACT_OSM_PROCESSES     osm2pgsql --number-processes (Standard: Anzahl Kerne)
 #   GEOFACT_OSM_WORK_DIR      Download-Verzeichnis (Standard /work, ein Volume)
@@ -26,7 +27,8 @@ STAGE=osm_import
 OLD=osm_previous
 STYLE=/styles/pipeline.lua
 URL="${GEOFACT_OSM_PBF_URL:-https://download.geofabrik.de/europe/germany-latest.osm.pbf}"
-MD5_URL="${GEOFACT_OSM_PBF_MD5_URL:-$URL.md5}"
+# leer: <URL nach Weiterleitung>.md5, siehe download()
+MD5_URL="${GEOFACT_OSM_PBF_MD5_URL:-}"
 CACHE_MB="${GEOFACT_OSM_CACHE_MB:-4000}"
 PROCESSES="${GEOFACT_OSM_PROCESSES:-$(nproc)}"
 WORK="${GEOFACT_OSM_WORK_DIR:-/work}"
@@ -77,13 +79,31 @@ status() {
     fi
 }
 
+# Ziel der Weiterleitung: Geofabrik leitet große Extrakte (Deutschland) auf einen Mirror um
+# und hat die .md5 dann nur dort. Extrakt und Summe kommen so vom selben Server und passen
+# auch zusammen, wenn "latest" währenddessen wechselt. Ohne HEAD-Antwort bleibt die URL.
+resolve() {
+    # curl schreibt url_effective auch bei einem Fehler: nur bei Erfolg übernehmen
+    if out="$(curl -fsSIL --retry 3 -o /dev/null -w '%{url_effective}' "$1" 2>/dev/null)" \
+        && [ -n "$out" ]; then
+        printf '%s' "$out"
+    else
+        printf '%s' "$1"
+    fi
+}
+
 download() {
     mkdir -p "$WORK"
     expected=""
-    if [ "$MD5_URL" != none ]; then
-        expected="$(curl -fsSL "$MD5_URL" | cut -d' ' -f1)" \
-            || die "MD5-Datei nicht abrufbar: $MD5_URL (GEOFACT_OSM_PBF_MD5_URL=none schaltet die Prüfung bewusst ab)"
-        [ -n "$expected" ] || die "MD5-Datei leer: $MD5_URL"
+    src="$(resolve "$URL")"
+    [ "$src" = "$URL" ] || log "Extrakt liegt auf $src"
+    md5_url="${MD5_URL:-$src.md5}"
+    if [ "$md5_url" != none ]; then
+        # ohne Pipe: sonst ginge ein Fehler von curl (404) im Status von cut verloren
+        raw="$(curl -fsSL --retry 3 "$md5_url")" \
+            || die "MD5-Datei nicht abrufbar: $md5_url (GEOFACT_OSM_PBF_MD5_URL setzt sie, \"none\" schaltet die Prüfung bewusst ab)"
+        expected="${raw%% *}"
+        [ -n "$expected" ] || die "MD5-Datei leer: $md5_url"
         if [ -f "$PBF" ] && [ "$(md5sum "$PBF" | cut -d' ' -f1)" = "$expected" ]; then
             log "Extrakt liegt schon vor und passt zur MD5-Summe"
             echo "$expected"
@@ -91,18 +111,18 @@ download() {
         fi
     fi
     rm -f "$PBF"
-    log "lade $URL (ein Abbruch wird beim nächsten Start fortgesetzt)"
+    log "lade $src (ein Abbruch wird beim nächsten Start fortgesetzt)"
     # Fortschritt als Logzeile je Minute statt als Balken (docker compose logs).
     ( while sleep 60; do
           [ -f "$PBF.part" ] && log "geladen: $(du -h "$PBF.part" | cut -f1)"
       done ) &
     watcher=$!
     # -C -: setzt eine abgebrochene .part-Datei fort.
-    if ! curl -fL --retry 5 --retry-delay 10 -C - -sS -o "$PBF.part" "$URL"; then
+    if ! curl -fL --retry 5 --retry-delay 10 -C - -sS -o "$PBF.part" "$src"; then
         kill "$watcher" 2>/dev/null || true
         # Ein vollständiges .part (Abbruch vor dem Umbenennen) beantwortet der Server mit 416.
         if [ -z "$expected" ] || [ ! -f "$PBF.part" ]             || [ "$(md5sum "$PBF.part" | cut -d' ' -f1)" != "$expected" ]; then
-            die "Download fehlgeschlagen: $URL"
+            die "Download fehlgeschlagen: $src"
         fi
     fi
     kill "$watcher" 2>/dev/null || true

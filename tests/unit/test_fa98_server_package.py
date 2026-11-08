@@ -200,7 +200,12 @@ def test_fa98_only_one_import_at_a_time():
 
 def test_fa98_download_checks_md5_and_resumes():
     script = IMPORT_SH.read_text(encoding="utf-8")
-    assert 'MD5_URL="${GEOFACT_OSM_PBF_MD5_URL:-$URL.md5}"' in script
+    # .md5 vom Ziel der Weiterleitung (Geofabrik leitet Deutschland auf einen Mirror um)
+    assert 'md5_url="${MD5_URL:-$src.md5}"' in script
+    assert 'src="$(resolve "$URL")"' in script
+    assert '-o "$PBF.part" "$src"' in script
+    # kein Pipe hinter curl: ein 404 der MD5-Datei muss als Fehler ankommen
+    assert 'raw="$(curl -fsSL --retry 3 "$md5_url")"' in script
     assert "curl -fL --retry 5 --retry-delay 10 -C -" in script
     assert "MD5-Summe passt nicht" in script
     # Meldungen auf stderr, stdout von download() ist die Summe
@@ -433,7 +438,7 @@ def test_fa98_workflow_publishes_all_package_images(compose):
     workflow = WORKFLOW.read_text(encoding="utf-8")
     assert "for part in backend frontend osm frontend_proxy" in workflow
     assert "file: Dockerfile.osm" in workflow
-    assert "docker-compose.server.yml .env.server.example" in workflow
+    assert "/tmp/docker-compose.server.yml /tmp/env.server.example" in workflow
     images = {_repo(svc["image"]) for svc in compose["services"].values()}
     # Präfix nicht fest: der Abgabe-Zweig nennt die Images ghcr.io/erichsdb/geofact-project
     suffixes = {re.sub(r"^\$\{GEOFACT_IMAGE:-[^}]+\}", "", i) for i in images}
@@ -473,3 +478,23 @@ def test_fa98_backend_image_ships_the_package_scripts():
     osm = (REPO_ROOT / "Dockerfile.osm").read_text(encoding="utf-8")
     assert "COPY docker/osm/pipeline.lua /styles/pipeline.lua" in osm
     assert "postgresql-17-postgis-3" in osm and "osm2pgsql" in osm
+
+
+# --- (12) .env erreicht das Backend, (13) Name der Vorlage am Release ---------------------
+
+
+def test_fa98_every_env_line_reaches_the_backend_and_the_package_values_win(compose):
+    backend = compose["services"]["backend"]
+    assert backend["env_file"] == [{"path": ".env", "required": False}]
+    env = backend["environment"]
+    assert env["GEOFACT_OSM_BACKEND"] == "postgis"
+    assert env["GEOFACT_PG_DSN"].startswith("postgresql://geofact:")
+
+
+def test_fa98_release_template_has_no_leading_dot():
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    assert "cp .env.server.example /tmp/env.server.example" in workflow
+    for doc in ("server_installation.md", "deployment_linux.md"):
+        text = (REPO_ROOT / "docs" / doc).read_text(encoding="utf-8")
+        assert "download/.env.server.example" not in text, doc
+        assert "default.env.server.example" not in text, doc

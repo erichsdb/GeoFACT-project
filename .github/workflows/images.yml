@@ -259,4 +259,6 @@ jobs:
           # Die Version des Tags als Standard, damit das Paket zum Release passt.
           sed "s/\${GEOFACT_VERSION:-latest}/\${GEOFACT_VERSION:-$GITHUB_REF_NAME}/g"             docker-compose.server.yml > /tmp/docker-compose.server.yml
           grep -q "GEOFACT_VERSION:-$GITHUB_REF_NAME" /tmp/docker-compose.server.yml
-          gh release upload "$GITHUB_REF_NAME" /tmp/docker-compose.server.yml .env.server.example --clobber
+          # ohne führenden Punkt: GitHub benennt ".env..." in "default.env..." um
+          cp .env.server.example /tmp/env.server.example
+          gh release upload "$GITHUB_REF_NAME" /tmp/docker-compose.server.yml /tmp/env.server.example --clobber

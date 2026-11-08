@@ -9,7 +9,7 @@ laufen dabei ohne Netz, weil ihre Daten im Image liegen.
 | [Web-Demo mit Docker](#1-web-demo-mit-docker) | Docker Desktop oder Docker Engine mit Compose | rund 5 Minuten, davon fast alles Download (etwa 1,5 GB) |
 | [Kommandozeile im Container](#3-kommandozeile-im-container) | wie oben | Sekunden je Szenario |
 | [Ohne Docker](#6-ohne-docker) | Python ≥ 3.11, `uv`, für die Oberfläche Node ≥ 18 | rund 10 Minuten |
-| [Serverpaket mit OSM-Datenbank Deutschland](server_installation.md) | Docker mit Compose ≥ 2.23, 16 GB RAM, rund 250 GB frei | ein Befehl; der erste Import dauert Stunden |
+| [Serverpaket mit OSM-Datenbank Deutschland](server_installation.md) | Docker mit Compose ≥ 2.24, 16 GB RAM, rund 250 GB frei | ein Befehl; der erste Import dauert Stunden |
 
 ## 1. Web-Demo mit Docker
 
